@@ -17,7 +17,8 @@ export default Service.extend({
             recentlyClosed: true,
             roomsV2: true,
             logger: Ember.Logger,
-            authKey: token
+            authKey: token,
+            host: 'https://apps.inindca.com'
         });
 
         instance.connect();
