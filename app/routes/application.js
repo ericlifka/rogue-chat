@@ -1,10 +1,16 @@
 import Route from '@ember/routing/route';
-import { inject as service } from '@ember/service';
+import {inject as service} from '@ember/service';
 
 export default Route.extend({
     session: service(),
+    realtime: service(),
 
     beforeModel() {
-        return this.get('session').authenticate();
+        const session = this.get('session');
+        const realtime = this.get('realtime');
+
+        return session
+            .authenticate()
+            .then(token => realtime.connect(token))
     }
 });

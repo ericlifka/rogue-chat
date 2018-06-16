@@ -24,9 +24,6 @@ module.exports = function (defaults) {
                 match: 'CLIENT_ID',
                 replacement: CLIENT_ID
             }],
-        },
-        "ember-cli-babel": {
-            includePolyfill: true
         }
     });
 
