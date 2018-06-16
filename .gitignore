@@ -4,6 +4,9 @@
 rogue-chat.iml
 .idea/
 
+# secrets
+.env
+
 # compiled output
 /dist
 /tmp
