@@ -6,11 +6,11 @@ export default Route.extend({
     realtime: service(),
 
     beforeModel() {
-        const session = this.get('session');
-        const realtime = this.get('realtime');
-
-        return Promise.resolve()
-            .then(() => session.authenticate())
-            .then(token => realtime.connect(token));
+        // const session = this.get('session');
+        // const realtime = this.get('realtime');
+        //
+        // return Promise.resolve()
+        //     .then(() => session.authenticate())
+        //     .then(token => realtime.connect(token));
     }
 });
