@@ -9,8 +9,8 @@ export default Route.extend({
         const session = this.get('session');
         const realtime = this.get('realtime');
 
-        return session
-            .authenticate()
-            .then(token => realtime.connect(token))
+        return Promise.resolve()
+            .then(() => session.authenticate())
+            .then(token => realtime.connect(token));
     }
 });
