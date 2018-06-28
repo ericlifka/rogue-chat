@@ -1,0 +1,26 @@
+& {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 90px;
+    background-color: @rogue-grey;
+
+    .nav-icon {
+        font-size: 34px;
+        color: @rogue-navbar-unselected;
+
+        &.rotate {
+            transform: rotate(-90deg);
+        }
+    }
+
+    .nav-button {
+        display: inline-block;
+        padding: 5px;
+        margin: 5px 25px;
+        border: none;
+        background: transparent;
+
+    }
+}
