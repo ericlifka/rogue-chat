@@ -30,10 +30,10 @@ app.on('window-all-closed', () => {
     }
 });
 
+//TODO: not sure what this _should_ be in an electron context, this works for now because the purecloud integration is configure to look for it
 let REDIRECT_URI = "http://localhost:4200";
 let CLIENT_ID = process.env.CLIENT_ID || '';
 const envPath = path.join(path.dirname(__filename), '../../../', '.env');
-console.log(`ENV PATH: "${envPath}"`);
 if (fs.existsSync(envPath)) {
     CLIENT_ID = require(envPath).CLIENT_ID;
     console.info('Using client id:', CLIENT_ID);
@@ -67,7 +67,7 @@ function launchAuthWindow() {
         }
 
         if (code) {
-            console.info('CODE', code);
+            console.info('Auth Token', code);
             authWindow.destroy();
             launchEmberWindow(code);
         }
