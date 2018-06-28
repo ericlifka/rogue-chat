@@ -40,8 +40,10 @@ if (fs.existsSync(envPath)) {
 }
 
 app.on('ready', () => {
+    launchAuthWindow();
+});
 
-    // Build the OAuth consent page URL
+function launchAuthWindow() {
     let authWindow = new BrowserWindow({
         width: 800,
         height: 600,
@@ -49,19 +51,14 @@ app.on('ready', () => {
             nodeIntegration: false
         }
     });
-    let purecloudAuthUrl =
-        `https://login.inindca.com/oauth/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}/`;
 
-    console.log(`AUTH URL: ${purecloudAuthUrl}`);
-    authWindow.loadURL(purecloudAuthUrl);
+    authWindow.loadURL(`https://login.inindca.com/oauth/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}/`);
     authWindow.show();
 
-
-    function handleCallback (url) {
+    authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, url) =>{
         let raw_code = /token=([^&]*)/.exec(url);
-        let code = (raw_code || [])[1];
-
         let raw_error = /\?errorKey=(.+)$/.exec(url);
+        let code = (raw_code || [])[1];
         let error = (raw_error || [])[1];
 
         if (error) {
@@ -70,59 +67,55 @@ app.on('ready', () => {
         }
 
         if (code) {
-            /* start ember window and pass token to it some how */
-            console.log('CODE', code);
+            console.info('CODE', code);
             authWindow.destroy();
+            launchEmberWindow(code);
         }
-    }
-
-    authWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
-        console.log('DID-GET-REDIRECT-REQUEST', oldUrl, newUrl);
-        handleCallback(newUrl);
     });
 
-    // Reset the authWindow on close
     authWindow.on('close', function() {
         authWindow = null;
     }, false);
+}
 
+function launchEmberWindow() {
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+    });
 
-    // mainWindow = new BrowserWindow({
-    //     width: 800,
-    //     height: 600,
-    // });
-    //
-    // // If you want to open up dev tools programmatically, call
-    // // mainWindow.openDevTools();
-    //
-    // const emberAppLocation = 'serve://dist';
-    //
-    // // Load the ember application using our custom protocol/scheme
-    // mainWindow.loadURL(emberAppLocation);
-    //
-    // // If a loading operation goes wrong, we'll send Electron back to
-    // // Ember App entry point
-    // mainWindow.webContents.on('did-fail-load', () => {
-    //     mainWindow.loadURL(emberAppLocation);
-    // });
-    //
-    // mainWindow.webContents.on('crashed', () => {
-    //     console.log('Your Ember app (or other code) in the main window has crashed.');
-    //     console.log('This is a serious issue that needs to be handled and/or debugged.');
-    // });
-    //
-    // mainWindow.on('unresponsive', () => {
-    //     console.log('Your Ember app (or other code) has made the window unresponsive.');
-    // });
-    //
-    // mainWindow.on('responsive', () => {
-    //     console.log('The main window has become responsive again.');
-    // });
-    //
-    // mainWindow.on('closed', () => {
-    //     mainWindow = null;
-    // });
-});
+    // If you want to open up dev tools programmatically, call
+    // mainWindow.openDevTools();
+
+    const emberAppLocation = 'serve://dist';
+
+    // Load the ember application using our custom protocol/scheme
+    mainWindow.loadURL(emberAppLocation);
+
+    // If a loading operation goes wrong, we'll send Electron back to
+    // Ember App entry point
+    mainWindow.webContents.on('did-fail-load', () => {
+        mainWindow.loadURL(emberAppLocation);
+    });
+
+    mainWindow.webContents.on('crashed', () => {
+        console.log('Your Ember app (or other code) in the main window has crashed.');
+        console.log('This is a serious issue that needs to be handled and/or debugged.');
+    });
+
+    mainWindow.on('unresponsive', () => {
+        console.log('Your Ember app (or other code) has made the window unresponsive.');
+    });
+
+    mainWindow.on('responsive', () => {
+        console.log('The main window has become responsive again.');
+    });
+
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+}
+
 
 // Handle an unhandled error in the main thread
 //
