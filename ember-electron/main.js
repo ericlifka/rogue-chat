@@ -78,7 +78,7 @@ function launchAuthWindow() {
     }, false);
 }
 
-function launchEmberWindow() {
+function launchEmberWindow(token) {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
@@ -87,7 +87,7 @@ function launchEmberWindow() {
     // If you want to open up dev tools programmatically, call
     // mainWindow.openDevTools();
 
-    const emberAppLocation = 'serve://dist';
+    const emberAppLocation = `serve://dist?token=${token}`;
 
     // Load the ember application using our custom protocol/scheme
     mainWindow.loadURL(emberAppLocation);
