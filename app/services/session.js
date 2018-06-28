@@ -3,17 +3,20 @@ import Service from '@ember/service';
 
 export default Service.extend({
 
-    clientId: '@@CLIENT_ID',
-    redirectUri: computed(() => `${window.location.origin}${window.location.pathname}`),
-
     authenticate() {
-        const platformClient = window.require('platformClient');
-        platformClient.ApiClient.instance.setEnvironment('inindca.com');
+        //TODO: this should probably call out to session or users me to validate the token as an authentication
 
-        return platformClient.ApiClient.instance
-            .loginImplicitGrant(this.get('clientId'), this.get('redirectUri'))
-            .then(({accessToken}) =>
-                this.set('accessToken', accessToken));
+        let token = (
+            /token=([^&]*)/.exec(window.location.href)
+            || []
+        )[1];
+
+        if (!token) {
+            throw new Error('NO VALID TOKEN FOUND APP CANNOT BOOTSTRAP');
+        }
+
+        this.set('accessToken', token);
+        return token;
     }
 
 });
