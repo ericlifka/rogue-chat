@@ -1,7 +1,6 @@
 /* eslint-env node */
 const fs = require('fs');
 const path = require('path');
-
 const {app, BrowserWindow, protocol} = require('electron');
 const {dirname, join, resolve} = require('path');
 const protocolServe = require('electron-protocol-serve');
@@ -46,8 +45,9 @@ app.on('ready', () => {
     let authWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        // show: false,
-        // 'node-integration': false
+        webPreferences: {
+            nodeIntegration: false
+        }
     });
     let purecloudAuthUrl =
         `https://login.inindca.com/oauth/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}/`;
@@ -55,6 +55,37 @@ app.on('ready', () => {
     console.log(`AUTH URL: ${purecloudAuthUrl}`);
     authWindow.loadURL(purecloudAuthUrl);
     authWindow.show();
+
+
+    function handleCallback (url) {
+        let raw_code = /token=([^&]*)/.exec(url);
+        let code = (raw_code || [])[1];
+
+        let raw_error = /\?errorKey=(.+)$/.exec(url);
+        let error = (raw_error || [])[1];
+
+        if (error) {
+            console.error(`Auth Error: ${error}`);
+            authWindow.destroy();
+        }
+
+        if (code) {
+            /* start ember window and pass token to it some how */
+            console.log('CODE', code);
+            authWindow.destroy();
+        }
+    }
+
+    authWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
+        console.log('DID-GET-REDIRECT-REQUEST', oldUrl, newUrl);
+        handleCallback(newUrl);
+    });
+
+    // Reset the authWindow on close
+    authWindow.on('close', function() {
+        authWindow = null;
+    }, false);
+
 
     // mainWindow = new BrowserWindow({
     //     width: 800,
