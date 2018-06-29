@@ -4,6 +4,22 @@ const path = require('path');
 const {app, BrowserWindow, protocol} = require('electron');
 const {dirname, join, resolve} = require('path');
 const protocolServe = require('electron-protocol-serve');
+const SocketIoProxy = require('./proxy/SocketIoProxy');
+
+/* mock a bunch of client state to get realtime to not crash on load */
+const { JSDOM } = require('jsdom');
+const { window } = new JSDOM(``);
+const { document } = window;
+global.window = window;
+global.document = document;
+global.WebSocket = require('ws');
+global.navigator = {};
+global.location = global.window.location;
+global.localStorage = window.localStorage;
+
+require('./realtime_node.js');
+const Realtime = window.Realtime;
+global.Realtime = window.Realtime;
 
 let mainWindow = null;
 
@@ -15,14 +31,15 @@ protocolServe({
     protocol,
 });
 
-// Uncomment the lines below to enable Electron's crash reporter
-// For more information, see http://electron.atom.io/docs/api/crash-reporter/
-// electron.crashReporter.start({
-//     productName: 'YourName',
-//     companyName: 'YourCompany',
-//     submitURL: 'https://your-domain.com/url-to-submit',
-//     autoSubmit: true
-// });
+// Start our proxy server
+const socketIoProxy = new SocketIoProxy(8000, 'https://realtime.inindca.com');
+socketIoProxy.start((err, result) => {
+    if (err) {
+        console.error('Failed to start proxy server', err);
+        return process.exit(1);
+    }
+    console.log('Successfully started proxy server');
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -69,13 +86,46 @@ function launchAuthWindow() {
         if (code) {
             console.info('Auth Token', code);
             authWindow.destroy();
-            launchEmberWindow(code);
+            // launchEmberWindow(code);
+            connectToRealtime(code);
         }
     });
 
     authWindow.on('close', function() {
         authWindow = null;
     }, false);
+}
+
+function connectToRealtime(token) {
+    let config = {
+        carrierPigeon: true,
+        fetchGroupsOnConnect: false,
+        fetchRosterOnConnect: false,
+        focusV2: true,
+        jidResource: 'roguechat',
+        jidRouting: true,
+        offlineJoinNotifications: true,
+        rawMessageIds: true,
+        recentlyClosed: true,
+        roomsV2: true,
+        //debug: true,
+        //logger: console,
+
+        authKey: token,
+        host: 'http://localhost:8000'
+    };
+
+    let realtime = new Realtime(config);
+
+    realtime.on('connect', function () {
+        console.log('REALTIME CONNECTED', arguments);
+        launchEmberWindow(token);
+    });
+    realtime.on('error', function () {
+        console.error('REALTIME ERROR', arguments);
+    });
+
+    realtime.connect();
 }
 
 function launchEmberWindow(token) {
@@ -135,5 +185,5 @@ function launchEmberWindow(token) {
 process.on('uncaughtException', (err) => {
     console.log('An exception in the main thread was not handled.');
     console.log('This is a serious issue that needs to be handled and/or debugged.');
-    console.log(`Exception: ${err}`);
+    console.log(`Exception: `, err);
 });
