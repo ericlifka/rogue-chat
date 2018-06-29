@@ -1,0 +1,39 @@
+& {
+    display: flex;
+    flex-direction: row;
+    height: 45px;
+    background-color: @rogue-grey;
+    padding: 10px 20px;
+
+    .profile-image {
+        border-radius: 50%;
+        border: 3px solid @rogue-presence-available;
+    }
+
+    .presence {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .presence-status {
+        align-self: center;
+        font-size: 24px;
+        color: @rogue-presence-available;
+        margin: 0 15px;
+    }
+
+    .arrow-icons {
+        display: flex;
+        flex-direction: column;
+        font-size: 22px;
+        color: @rogue-presence-available;
+
+        .bottom {
+           transform: translateY(-4px);
+        }
+
+        .top {
+            transform: translateY(7px);
+        }
+    }
+}

@@ -1,4 +1,9 @@
 <div class="navigation-portal">
     {{nav-bar}}
-    BOO HOO!
+    {{#if showConversationPane}}
+        <div class="conversation-pane">
+            BOO YAH!
+        </div>
+    {{/if}}
+    {{presence-selector}}
 </div>
