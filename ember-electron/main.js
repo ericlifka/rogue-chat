@@ -5,6 +5,22 @@ const {app, BrowserWindow, protocol} = require('electron');
 const {dirname, join, resolve} = require('path');
 const protocolServe = require('electron-protocol-serve');
 
+/* mock a bunch of client state to get realtime to not crash on load */
+const { JSDOM } = require('jsdom');
+const { window } = new JSDOM(``);
+const { document } = window;
+global.window = window;
+global.document = document;
+global.WebSocket = require('ws');
+global.navigator = {};
+global.location = global.window.location;
+global.localStorage = window.localStorage;
+
+require('./realtime.js');
+const Realtime = window.Realtime;
+
+
+
 let mainWindow = null;
 
 // Registering a protocol & schema to serve our Ember application
@@ -69,13 +85,48 @@ function launchAuthWindow() {
         if (code) {
             console.info('Auth Token', code);
             authWindow.destroy();
-            launchEmberWindow(code);
+            // launchEmberWindow(code);
+            connectToRealtime(code);
         }
     });
 
     authWindow.on('close', function() {
         authWindow = null;
     }, false);
+}
+
+function connectToRealtime(token) {
+    let config = {
+        carrierPigeon: true,
+        fetchGroupsOnConnect: false,
+        fetchRosterOnConnect: false,
+        focusV2: true,
+        jidResource: 'roguechat',
+        jidRouting: true,
+        offlineJoinNotifications: true,
+        rawMessageIds: true,
+        recentlyClosed: true,
+        roomsV2: true,
+        debug: true,
+        // logger: console,
+
+        authKey: token,
+        host: 'https://apps.inindca.com'
+    };
+
+    console.log('Estabishing realtime connection w/ config:', config);
+
+    let realtime = new Realtime(config);
+
+    realtime.on('connect', function () {
+        console.log('REALTIME CONNECTED', arguments);
+        launchEmberWindow(code);
+    });
+    realtime.on('error', function () {
+        console.error('REALTIME ERROR', arguments);
+    });
+    realtime.connect();
+
 }
 
 function launchEmberWindow(token) {
