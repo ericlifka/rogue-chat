@@ -80,7 +80,7 @@ function launchAuthWindow() {
 
 function launchEmberWindow(token) {
     mainWindow = new BrowserWindow({
-        width: 800,
+        width: 350,
         height: 600,
     });
 
