@@ -6,6 +6,7 @@ rogue-chat.iml
 
 # secrets
 .env
+.npmrc
 
 # compiled output
 /dist
@@ -28,3 +29,5 @@ testem.log
 .node_modules.ember-try/
 bower.json.ember-try
 package.json.ember-try
+
+electron-out/

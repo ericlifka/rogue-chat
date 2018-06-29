@@ -11,6 +11,6 @@ export default Route.extend({
 
         return Promise.resolve()
             .then(() => session.authenticate())
-            .then(token => realtime.connect(token));
+            // .then(token => realtime.connect(token));
     }
 });

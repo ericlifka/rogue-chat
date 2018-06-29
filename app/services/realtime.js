@@ -22,15 +22,15 @@ const realtimeConfig = authKey => ({
 export default Service.extend({
 
     connect(token) {
-        return new Promise(resolve => {
-            const instance = new window.Realtime(realtimeConfig(token));
+        // return new Promise(resolve => {
+        //     const instance = new window.Realtime(realtimeConfig(token));
 
-            this.set('realtime', instance);
-            this.bindEvents(instance);
+        //     this.set('realtime', instance);
+        //     this.bindEvents(instance);
 
-            instance.on('connect', resolve);
-            instance.connect();
-        });
+        //     instance.on('connect', resolve);
+        //     instance.connect();
+        // });
 
 
     },
