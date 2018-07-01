@@ -1,7 +1,7 @@
 /* eslint-env node */
 const fs = require('fs');
 const path = require('path');
-const {app, BrowserWindow, protocol} = require('electron');
+const {app, BrowserWindow, protocol, ipcMain} = require('electron');
 const {dirname, join, resolve} = require('path');
 const protocolServe = require('electron-protocol-serve');
 const SocketIoProxy = require('./proxy/SocketIoProxy');
@@ -86,8 +86,8 @@ function launchAuthWindow() {
         if (code) {
             console.info('Auth Token', code);
             authWindow.destroy();
-            // launchEmberWindow(code);
-            connectToRealtime(code);
+            app.accessToken = code;
+            launchEmberWindow();
         }
     });
 
@@ -96,7 +96,7 @@ function launchAuthWindow() {
     }, false);
 }
 
-function connectToRealtime(token) {
+function setupRealtime(token) {
     let config = {
         carrierPigeon: true,
         fetchGroupsOnConnect: false,
@@ -108,36 +108,33 @@ function connectToRealtime(token) {
         rawMessageIds: true,
         recentlyClosed: true,
         roomsV2: true,
-        //debug: true,
-        //logger: console,
-
         authKey: token,
         host: 'http://localhost:8000'
     };
 
-    let realtime = new Realtime(config);
-
-    realtime.on('connect', function () {
-        console.log('REALTIME CONNECTED', arguments);
-        launchEmberWindow(token);
-    });
-    realtime.on('error', function () {
-        console.error('REALTIME ERROR', arguments);
-    });
-
-    realtime.connect();
+    return new Realtime(config);
 }
 
-function launchEmberWindow(token) {
+function launchEmberWindow() {
     mainWindow = new BrowserWindow({
         width: 350,
         height: 600,
     });
 
-    // If you want to open up dev tools programmatically, call
-    // mainWindow.openDevTools();
+    const accessToken = app.accessToken;
+    const realtime = setupRealtime(accessToken);
 
-    const emberAppLocation = `serve://dist?token=${token}`;
+    realtime.on('activeChat', function(activeChatEvent) {
+        mainWindow.webContents.send('activeChat', activeChatEvent);
+    });
+
+    ipcMain.on('main-window-ready', function () {
+        console.log('connecting to realtime');
+        realtime.connect();
+    });
+
+
+    const emberAppLocation = `serve://dist?token=${accessToken}`;
 
     // Load the ember application using our custom protocol/scheme
     mainWindow.loadURL(emberAppLocation);
