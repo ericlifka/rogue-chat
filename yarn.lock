@@ -4084,7 +4084,7 @@ ember-ast-helpers@0.3.5:
     "@glimmer/compiler" "^0.27.0"
     "@glimmer/syntax" "^0.27.0"
 
-ember-auto-import@^1.0.0:
+ember-auto-import@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-1.0.1.tgz#1b5bd09dfd5fc49422ddf711b4dd913c9dfa90b9"
   dependencies:
@@ -4206,7 +4206,7 @@ ember-cli-htmlbars-inline-precompile@^1.0.0:
     heimdalljs-logger "^0.1.9"
     silent-error "^1.1.0"
 
-ember-cli-htmlbars@^2.0.1, ember-cli-htmlbars@^2.0.2, ember-cli-htmlbars@^2.0.3:
+ember-cli-htmlbars@^2.0.1, ember-cli-htmlbars@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-2.0.3.tgz#e116e1500dba12f29c94b05b9ec90f52cb8bb042"
   dependencies:
@@ -4704,14 +4704,6 @@ ember-try@^0.2.23:
     rimraf "^2.3.2"
     rsvp "^3.0.17"
     semver "^5.1.0"
-
-ember-welcome-page@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ember-welcome-page/-/ember-welcome-page-3.2.0.tgz#fe9903dbbaccfb4a2a05f42c716b7d07470f2d78"
-  dependencies:
-    broccoli-funnel "^1.0.1"
-    ember-cli-babel "^6.6.0"
-    ember-cli-htmlbars "^2.0.3"
 
 emojis-list@^2.0.0:
   version "2.1.0"
