@@ -6,7 +6,7 @@ import Service from '@ember/service';
 export default Service.extend({
     ipc: service(),
 
-    entries: [],
+    activeChats: [],
     activeChatHandler: null,
 
     init () {
@@ -24,12 +24,12 @@ export default Service.extend({
     },
 
     activeChatEvent (event, message) {
-        const {jid, active, last, subject} = message;
+        const {jid, active, last, subject, type} = message;
 
         if (isSupervisorJid(jid) || isAcdJid(jid) || isScreenRecordingJid(jid)) {
             return;
         }
 
-        this.get('entries').pushObject({jid, active, last, subject});
+        this.get('activeChats').pushObject({jid, active, last, subject, type});
     }
 });

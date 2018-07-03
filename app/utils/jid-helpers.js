@@ -1,4 +1,3 @@
-
 import _ from 'lodash';
 const isPersonRegex = /^[0-9a-f]{24}@(?:[-a-z0-9\._]+)\.orgspan\.com$/i;
 const isGroupRegex = /^[0-9a-f]{24}@conference\.(?:[-a-z0-9\._]+)\.orgspan\.com$/i;

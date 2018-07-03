@@ -130,6 +130,8 @@ function launchEmberWindow() {
 
     ipcMain.on('main-window-ready', function () {
         console.log('connecting to realtime');
+        // Shitty way to re-establish a realtime connect on ember reload
+        realtime.disconnect();
         realtime.connect();
     });
 

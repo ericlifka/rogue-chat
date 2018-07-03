@@ -1,0 +1,20 @@
+<div class="header">
+    <div class="header-left">
+        <span class="title">CONVERSATIONS</span>
+    </div>
+    <div class="header-right">
+        <button class="sort-order icon">
+            <i class="fa fa-sort"></i>
+        </button>
+        <button class="add-participant icon">
+            <i class="fa fa-plus-circle"></i>
+        </button>
+    </div>
+</div>
+<div class="participants">
+    {{#each roster.activeChats as |activeChat|}}
+        {{conversation-pane/conversation-item chatRoom=activeChat}}
+    {{/each}}
+</div>
+
+
