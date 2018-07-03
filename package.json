@@ -13,7 +13,7 @@
   "scripts": {
     "build": "ember build",
     "lint:js": "eslint ./*.js app blueprints config lib server tests",
-    "start": "ember serve --proxy https://apps.inindca.com",
+    "start": "ember electron",
     "test": "ember test",
     "deploy": "ember surge"
   },
