@@ -119,6 +119,9 @@ function launchEmberWindow() {
     mainWindow = new BrowserWindow({
         width: 350,
         height: 600,
+        webPreferences: {
+            webSecurity: false
+        }
     });
 
     const accessToken = app.accessToken;
