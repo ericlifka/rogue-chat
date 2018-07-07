@@ -15,7 +15,8 @@ export default Service.extend({
         this.set('accessToken', sessionToken);
         const user = await this.getUser();
         this.set('user', user);
-
+        const org = await this.getOrg();
+        this.set('org', org);
         return sessionToken;
     },
 
@@ -36,6 +37,11 @@ export default Service.extend({
         //TODO: Don't hard code path for user me endpoint
         const user = await this.get('ajax').request('https://api.inindca.com/api/v2/users/me');
         this.get('store').createRecord('user', user);
+    },
+
+    async getOrg() {
+        //TODO: Don't hard code path for org me endpoint
+       return this.get('ajax').request('https://api.inindca.com/api/v2/organizations/me');
     }
 
 });
