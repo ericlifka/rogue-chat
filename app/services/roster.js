@@ -5,6 +5,8 @@ import Service from '@ember/service';
 
 export default Service.extend({
     ipc: service(),
+    chat: service(),
+    store: service(),
 
     activeChats: [],
     activeChatHandler: null,
@@ -23,13 +25,19 @@ export default Service.extend({
         this.activeChatHandler = null;
     },
 
-    activeChatEvent (event, message) {
-        const {jid, active, last, subject, type} = message;
+    async activeChatEvent (event, message) {
+        let {jid, active, last, subject, type} = message;
 
         if (isSupervisorJid(jid) || isAcdJid(jid) || isScreenRecordingJid(jid)) {
             return;
         }
 
-        this.get('activeChats').pushObject({jid, active, last, subject, type});
+        const room = await this.get('chat').getChatRoom(jid);
+        room.setProperties({
+            rawSubject: subject,
+            type
+        });
+
+        this.get('activeChats').pushObject(room);
     }
 });

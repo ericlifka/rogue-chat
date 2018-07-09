@@ -17,6 +17,7 @@ export default Service.extend({
         this.set('user', user);
         const org = await this.getOrg();
         this.set('org', org);
+
         return sessionToken;
     },
 
