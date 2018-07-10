@@ -1,23 +1,26 @@
 import { isPersonJid, isGroupJid } from "../utils/jid-helpers";
 import { inject as service } from '@ember/service';
+import { getOwner } from '@ember/application';
 import ChatRoom from '../models/chat-room';
-import { computed } from '@ember/object';
 import Service from '@ember/service';
-import Ember from 'ember';
-
-const { getOwner } = Ember;
+import { set } from '@ember/object';
 
 export default Service.extend({
     store: service(),
 
-    roomCache: {},
+    roomCache: null,
+
+    init() {
+        this._super(...arguments);
+        this.set('roomCache', {});
+    },
 
     async getChatRoom(jid) {
         let room = this.get(`roomCache.${jid}`);
         if (!room) {
             room = ChatRoom.create({jid}, getOwner(this).ownerInjection());
             this.setupRoom(room);
-            Ember.set(this.roomCache, jid, room, true);
+            set(this.roomCache, jid, room, true);
         }
         return room;
     },

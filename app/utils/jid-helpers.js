@@ -1,6 +1,6 @@
 import _ from 'lodash';
-const isPersonRegex = /^[0-9a-f]{24}@(?!conference)(?:[-a-z0-9\._]+)\.orgspan\.com$/i;
-const isGroupRegex = /^[0-9a-f]{24}@conference\.(?:[-a-z0-9\._]+)\.orgspan\.com$/i;
+const isPersonRegex = /^[0-9a-f]{24}@(?!conference)(?:[-a-z0-9._]+).orgspan.com$/i;
+const isGroupRegex = /^[0-9a-f]{24}@conference\.(?:[-a-z0-9._]+).orgspan.com$/i;
 
 export function isPersonJid(jid) {
     return jid && isPersonRegex.test(jid);

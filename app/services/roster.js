@@ -1,6 +1,5 @@
 import {isAcdJid, isSupervisorJid, isScreenRecordingJid} from "../utils/jid-helpers";
 import {inject as service} from '@ember/service';
-import {computed} from '@ember/object';
 import Service from '@ember/service';
 
 export default Service.extend({
@@ -8,11 +7,12 @@ export default Service.extend({
     chat: service(),
     store: service(),
 
-    activeChats: [],
+    activeChats: null,
     activeChatHandler: null,
 
     init () {
         this._super(...arguments);
+        this.set('activeChats', []);
     },
 
     bindToEvents () {
@@ -26,7 +26,8 @@ export default Service.extend({
     },
 
     async activeChatEvent (event, message) {
-        let {jid, active, last, subject, type} = message;
+        //Properties available from realtime -> {jid, active, last, subject, type}
+        let {jid, subject, type} = message;
 
         if (isSupervisorJid(jid) || isAcdJid(jid) || isScreenRecordingJid(jid)) {
             return;
