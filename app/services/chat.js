@@ -35,8 +35,8 @@ export default Service.extend({
         if (isPersonJid(jid)) {
             return this.get('store').findRecord('user', jid);
         } else if (isGroupJid(jid)) {
-            //TODO: Finish group model so we can load group data
-            return null;//this.get('store').findRecord('group', jid);
+            return this.get('store').findRecord('group', jid);
         }
+        return null;
     }
 });
