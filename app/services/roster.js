@@ -39,6 +39,6 @@ export default Service.extend({
             type
         });
 
-        this.get('activeChats').pushObject(room);
+        this.get('activeChats').addObject(room);
     }
 });

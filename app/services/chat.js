@@ -3,7 +3,8 @@ import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import ChatRoom from '../models/chat-room';
 import Service from '@ember/service';
-import { set } from '@ember/object';
+import Ember from 'ember';
+import _ from 'lodash';
 
 export default Service.extend({
     store: service(),
@@ -16,11 +17,12 @@ export default Service.extend({
     },
 
     async getChatRoom(jid) {
-        let room = this.get(`roomCache.${jid}`);
+        const roomId = _.first(jid.split('@'));
+        let room = this.get(`roomCache.${roomId}`);
         if (!room) {
-            room = ChatRoom.create({jid}, getOwner(this).ownerInjection());
+            room = ChatRoom.create({id: roomId, jid}, getOwner(this).ownerInjection());
             this.setupRoom(room);
-            set(this.roomCache, jid, room, true);
+            this.set(`roomCache.${roomId}`, room);
         }
         return room;
     },
