@@ -1,7 +1,6 @@
 import { inject as service } from '@ember/service';
 import PresenceModel from '../models/presence';
 import { getOwner } from '@ember/application';
-import { filter } from '@lodash/collection';
 import Service from '@ember/service';
 
 //TODO: Don't hard code path for requests, seriously stop doing this...
@@ -21,7 +20,7 @@ export default Service.extend({
 
         const [systemPresences, secondaryPresences] = await Promise.all([systemPromise, secondaryPromise]);
         const primaryPresences = await this.loadPrimaryPresences(systemPresences);
-        this.sortSecondaryPresences(primaryPresences, secondaryPresences);
+        this.sortSecondaryPresences(primaryPresences, secondaryPresences.entities);
         this.set('presences', primaryPresences);
     },
 
@@ -37,9 +36,9 @@ export default Service.extend({
         });
     },
 
-    sortSecondaryPresences(primaryPresences, secondaryPresences) {
+    sortSecondaryPresences(primaryPresences, secondaryPresences = []) {
         primaryPresences.map(presence => {
-            const secondaries = filter(secondaryPresences, {systemPresence: presence.key});
+            const secondaries = secondaryPresences.filter(({ systemPresence }) => systemPresence === presence.key);
             presence.set('secondaryPresences', secondaries);
         });
     }
