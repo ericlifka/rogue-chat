@@ -3,7 +3,6 @@ import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import ChatRoom from '../models/chat-room';
 import Service from '@ember/service';
-import Ember from 'ember';
 import _ from 'lodash';
 
 export default Service.extend({
