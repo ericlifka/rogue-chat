@@ -15,31 +15,47 @@ export default Service.extend({
     },
 
     async loadPresences() {
-        const systemPromise = this.get('ajax').request('https://api.inindca.com/api/v2/systempresences');
-        const secondaryPromise = this.get('ajax').request('https://api.inindca.com/api/v2/presencedefinitions');
-
-        const [systemPresences, secondaryPresences] = await Promise.all([systemPromise, secondaryPromise]);
-        const primaryPresences = await this.loadPrimaryPresences(systemPresences);
-        this.sortSecondaryPresences(primaryPresences, secondaryPresences.entities);
+        const primaryPresences = await this.loadPrimaryPresences();
+        const secondaryPresences = await this.loadSecondaryPresences();
+        this.sortSecondaryPresences(primaryPresences, secondaryPresences);
         this.set('presences', primaryPresences);
     },
 
-    async loadPrimaryPresences(systemPresences) {
+    async loadPrimaryPresences() {
+        const systemPresences = await this.get('ajax').request('https://api.inindca.com/api/v2/systempresences');
+
         const primaryPromises = systemPresences.map((presence) => {
             return this.get('ajax').request(`https://api.inindca.com/api/v2/presencedefinitions/${presence.id}`);
         });
         const primaryPresences = await Promise.all(primaryPromises);
         return primaryPresences.map(presence => {
             return PresenceModel.create({
+                locale: "en_US",
                 presence
             }, getOwner(this).ownerInjection());
         });
     },
 
+    async loadSecondaryPresences() {
+        //TODO: Secondary Presences are a paged api, were only fetching the first page for now
+        let secondaryPresences = await this.get('ajax').request('https://api.inindca.com/api/v2/presencedefinitions');
+        secondaryPresences = secondaryPresences.entities || [];
+        return secondaryPresences
+            .filter(({primary}) => !primary)
+            .map(presence => {
+                return PresenceModel.create({
+                    locale: "en_US",
+                    presence
+                }, getOwner(this).ownerInjection());
+            });
+    },
+
     sortSecondaryPresences(primaryPresences, secondaryPresences = []) {
-        primaryPresences.map(presence => {
-            const secondaries = secondaryPresences.filter(({ systemPresence }) => systemPresence === presence.key);
-            presence.set('secondaryPresences', secondaries);
+        primaryPresences.map(primaryPresence => {
+            const secondaries = secondaryPresences.filter((secondaryPresence) => {
+                return secondaryPresence.get('key') === primaryPresence.get('key');
+            });
+            primaryPresence.set('secondaryPresences', secondaries);
         });
     }
 });
