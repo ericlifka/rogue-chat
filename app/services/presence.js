@@ -6,6 +6,7 @@ import Service from '@ember/service';
 //TODO: Don't hard code path for requests, seriously stop doing this...
 export default Service.extend({
     ajax: service(),
+    session: service(),
 
     presences: null,
 
@@ -56,6 +57,17 @@ export default Service.extend({
                 return secondaryPresence.get('key') === primaryPresence.get('key');
             });
             primaryPresence.set('secondaryPresences', secondaries);
+        });
+    },
+
+    setUserPresence(presence) {
+        const uri = `https://api.inindca.com/api/v2/users/${this.get('session.user.id')}/presences/PURECLOUD`;
+        return this.get('ajax').patch(uri, {
+            data: {
+                presenceDefinition: {
+                    id: presence.get('id')
+                }
+            }
         });
     }
 });

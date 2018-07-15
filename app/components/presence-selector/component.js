@@ -8,16 +8,15 @@ export default Component.extend({
 
     showPresencePicker: false,
 
-    init() {
-        this._super(...arguments);
-    },
-
     presences: reads('presence.presences'),
 
     actions: {
         togglePicker() {
-            console.log('Presence: ', this.get('presence.presences'));
             this.toggleProperty('showPresencePicker');
+        },
+
+        setPresence(presence) {
+            this.get('presence').setUserPresence(presence);
         }
     }
 });

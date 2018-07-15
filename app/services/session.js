@@ -36,7 +36,7 @@ export default Service.extend({
     async getUser() {
         //TODO: Don't hard code path for user me endpoint
         const user = await this.get('ajax').request('https://api.inindca.com/api/v2/users/me');
-        this.get('store').createRecord('user', user);
+        return this.get('store').createRecord('user', user);
     },
 
     async getOrg() {

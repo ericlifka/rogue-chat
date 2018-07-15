@@ -1,7 +1,10 @@
 {{#if showPresencePicker}}
     <div class="presence-picker">
         {{#each presences as |presence|}}
-            {{presence-selector/presence-list-item presence=presence}}
+            {{presence-selector/presence-list-item
+                presence=presence
+                setPresence=(action "setPresence")
+            }}
         {{/each}}
     </div>
 {{/if}}

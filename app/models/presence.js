@@ -12,16 +12,14 @@ export default EmberObject.extend({
     deactivated: computed.reads('presence.deactivated'),
 
     hasSecondaryPresences: computed('primary', 'secondaryPresences.[]', function () {
-        return this.get('primary') &&  this.get('secondaryPresences.length') > 0;
+        return this.get('primary') &&  this.get('activeSecondaryPresences.length') > 0;
     }),
 
-    secondaryPresencesNames: computed('secondaryPresences.[]', function () {
-        if (!this.get('hasSecondaryPresences')) {
+    activeSecondaryPresences: computed('secondaryPresences.[]', function () {
+        if (!this.get('secondaryPresences')) {
             return null;
         }
-        return this.get('secondaryPresences')
-            .filter(presence => !presence.get('deactivated'))
-            .map(presence => ({id: presence.get('id'), name: presence.get('label')}));
+        return this.get('secondaryPresences').filter(presence => !presence.get('deactivated'));
     }),
 
     label: computed('presence.languageLabels', 'locale', function () {
