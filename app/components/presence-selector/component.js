@@ -41,6 +41,7 @@ export default Component.extend({
 
         setPresence(presence) {
             this.get('presence').setUserPresence(presence);
+            this.toggleProperty('showPresencePicker');
         }
     }
 });
