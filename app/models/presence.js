@@ -9,7 +9,7 @@ export default EmberObject.extend({
     id: reads('presence.id'),
     key: reads('presence.systemPresence'),
     primary: reads('presence.primary'),
-    deactivated: computed.reads('presence.deactivated'),
+    deactivated: reads('presence.deactivated'),
 
     hasSecondaryPresences: computed('primary', 'secondaryPresences.[]', function () {
         return this.get('primary') &&  this.get('activeSecondaryPresences.length') > 0;

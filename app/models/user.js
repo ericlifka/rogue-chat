@@ -15,5 +15,6 @@ export default DS.Model.extend({
     email: attr(),
     externalId: attr(),
     version: attr(),
-    department: attr()
+    department: attr(),
+    presence: attr()
 });
