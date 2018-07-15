@@ -1,0 +1,25 @@
+& {
+    display: flex;
+    width: 100%;
+    min-height: 65px;
+    flex-direction: row;
+    align-self: center;
+    font-size: 24px;
+    border: none;
+    background: transparent;
+    border-bottom: 1px solid grey;
+
+    .presence-label {
+        margin-left: 40px;
+        align-self: center;
+
+        p::first-letter {
+            border-bottom: 2px solid;
+        }
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+}

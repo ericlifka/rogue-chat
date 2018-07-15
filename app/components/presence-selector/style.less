@@ -1,40 +1,63 @@
 & {
-    display: flex;
-    flex-direction: row;
-    height: 45px;
-    min-height: 45px;
-    background-color: @rogue-grey;
-    padding: 10px 20px;
+    .presence-footer {
+        display: flex;
+        flex-direction: row;
+        height: 45px;
+        min-height: 45px;
+        background-color: @rogue-grey;
+        padding: 10px 20px;
+    }
 
     .profile-image {
         border-radius: 50%;
         border: 3px solid @rogue-presence-available;
+        margin-right: 15px;
     }
 
     .presence {
         display: flex;
         flex-direction: row;
+        border: none;
+        background: transparent;
+        padding: 0 20px;
     }
 
-    .presence-status {
+    .status {
         align-self: center;
         font-size: 24px;
         color: @rogue-presence-available;
         margin: 0 15px;
     }
 
-    .arrow-icons {
+    .arrow-icon {
+        font-size: 22px;
+        align-self: center;
+        color: @rogue-presence-available;
+    }
+
+    .presence-picker {
+        width: 100%;
+        height: ~"calc(100% - 65px)";
+        max-height: ~"calc(100% - 65px)";
+        background-color: @rogue-grey;
+
         display: flex;
         flex-direction: column;
-        font-size: 22px;
-        color: @rogue-presence-available;
+        overflow-y: auto;
 
-        .bottom {
-           transform: translateY(-4px);
-        }
+        position: absolute;
+        z-index: 2;
+        top: 0;
+    }
 
-        .top {
-            transform: translateY(7px);
-        }
+    div::-webkit-scrollbar {
+        width: 5px;
+        color: @rogue-light-grey;
+        box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+
+    div::-webkit-scrollbar-thumb {
+        background-color: @rogue-white-grey;
+        outline: 1px solid whitesmoke;
     }
 }

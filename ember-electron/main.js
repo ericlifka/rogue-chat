@@ -118,10 +118,11 @@ function setupRealtime(token) {
 function launchEmberWindow() {
     mainWindow = new BrowserWindow({
         width: 350,
-        height: 600,
+        height: 650,
         webPreferences: {
             webSecurity: false
-        }
+        },
+        resizable: false
     });
 
     const accessToken = app.accessToken;

@@ -5,3 +5,30 @@
 body {
     margin: 0;
 }
+
+.presence-status {
+    &.available {
+        color: @rogue-presence-available;
+    }
+
+    &.away, &.idle, &.break, &.training, &.meal {
+        color: @rogue-presence-away;
+    }
+
+    &.busy, &.meeting {
+        color: @rogue-presence-busy;
+    }
+
+    &.out-of-office {
+        color: @rogue-presence-out-of-office;
+    }
+
+    &.on-queue {
+        color: @rogue-presence-on-queue;
+    }
+
+    &.offline {
+        color: @rogue-presence-offline;
+    }
+}
+
