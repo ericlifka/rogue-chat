@@ -60,14 +60,16 @@ export default Service.extend({
         });
     },
 
-    setUserPresence(presence) {
-        const uri = `https://api.inindca.com/api/v2/users/${this.get('session.user.id')}/presences/PURECLOUD`;
-        return this.get('ajax').patch(uri, {
+    async setUserPresence(presence) {
+        const user = this.get('session.user');
+        const uri = `https://api.inindca.com/api/v2/users/${user.get('id')}/presences/PURECLOUD`;
+        const setPresence = await this.get('ajax').patch(uri, {
             data: {
                 presenceDefinition: {
                     id: presence.get('id')
                 }
             }
         });
+        user.set('presence', setPresence.presenceDefinition);
     }
 });
