@@ -7,15 +7,23 @@ import _ from 'lodash';
 //TODO: localize system presences or fetch from presence service for localization
 //TODO: create application service to fetch domain from for requests
 
+const filteredPresences = [
+    'Idle'
+];
+
 export default Component.extend({
     presence: service(),
     session: service(),
 
     showPresencePicker: false,
 
-    presences: reads('presence.presences'),
     user: reads('session.user'),
     presenceLabel: reads('user.presence.systemPresence'),
+
+    presences: computed('presence.presences', function () {
+        const presences = this.get('presence.presences') || [];
+        return presences.filter((presence) => !filteredPresences.includes(presence.key));
+    }),
 
     profileImageUrl: computed('user.images.[]', function () {
         const imageUrl = _.find(this.get('user.images'), {resolution: 'x96'});
