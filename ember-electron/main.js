@@ -118,7 +118,7 @@ function setupRealtime(token) {
 function launchEmberWindow() {
     mainWindow = new BrowserWindow({
         width: 350,
-        height: 650,
+        height: 700,
         webPreferences: {
             webSecurity: false
         },
