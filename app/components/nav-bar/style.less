@@ -1,15 +1,22 @@
 & {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     height: 85px;
     min-height: 85px;
     background-color: @rogue-grey;
 
     .nav-icon {
-        font-size: 34px;
+        padding: 5px;
+        border: none;
+        background: transparent;
+
         color: @rogue-white-darker-grey;
+
+        > * {
+            font-size: 34px;
+        }
 
         &.rotate {
             transform: rotate(-90deg);
@@ -18,13 +25,5 @@
         &.active {
             color: @rogue-white-grey;
         }
-    }
-
-    .nav-button {
-        padding: 5px;
-        margin: 5px 20px;
-        border: none;
-        background: transparent;
-
     }
 }
