@@ -8,6 +8,7 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
     this.route('navigation-portal', { path: '/' });
+    this.route('chat-portal', { path: '/chat'});
 });
 
 export default Router;
