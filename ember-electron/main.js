@@ -21,7 +21,7 @@ require('./realtime_node.js');
 const Realtime = window.Realtime;
 global.Realtime = window.Realtime;
 
-let mainWindow = null;
+let mainWindow, chatWindow = null;
 
 // Registering a protocol & schema to serve our Ember application
 protocol.registerStandardSchemes(['serve'], {secure: true});
@@ -125,6 +125,15 @@ function launchEmberWindow() {
         resizable: false
     });
 
+    //eventually split these but for now launch both
+    chatWindow = new BrowserWindow({
+        width: 1000,
+        height: 500,
+        webPreferences: {
+            webSecurity: false
+        }
+    });
+
     const accessToken = app.accessToken;
     const realtime = setupRealtime(accessToken);
 
@@ -139,12 +148,9 @@ function launchEmberWindow() {
         realtime.connect();
     });
 
-
-    const emberAppLocation = `serve://dist?token=${accessToken}`;
-
     // Load the ember application using our custom protocol/scheme
-    mainWindow.loadURL(emberAppLocation);
-
+    mainWindow.loadURL(`serve://dist?token=${accessToken}`);
+    chatWindow.loadURL(`serve://dist/chat?token=${accessToken}`);
     // If a loading operation goes wrong, we'll send Electron back to
     // Ember App entry point
     mainWindow.webContents.on('did-fail-load', () => {

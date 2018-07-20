@@ -12,6 +12,8 @@ const filteredPresences = [
 ];
 
 export default Component.extend({
+    classNames: ['presence-selector'],
+
     presence: service(),
     session: service(),
 
