@@ -67,42 +67,43 @@ module.exports = class RealtimeAdapter {
             eventList[scope] = [];
         }
         const id = uuid.v4();
-        eventList[scope].push({
-            id,
-            handler
-        });
+        eventList[scope].push(handler);
 
         return id;
     }
 
-    removeBoundEvent(event, scope, id) {
+    removeBoundEvent(event, scope, handler) {
         const eventList = this.subscribedEvents[event] || {};
         const scopedEvents = eventList[scope] || [];
-        const filteredEvents = scopedEvents.filter(({scopeId}) => scopeId !== id);
+        const filteredEvents = scopedEvents.filter(originalHandler => originalHandler === handler);
         eventList[scope] = filteredEvents;
 
         // Return if an event was actually deleted by comparing array lengths
         return scopedEvents.length !== filteredEvents.length;
     }
 
-    bindRealtimeEvents () {
+    bindRealtimeEvents() {
         const realtime = this.realtime;
         realtime.on('activeChat', this.activeChat.bind(this));
         realtime.on('message', this.message.bind(this));
     }
 
+    notifyListeners(eventList, event) {
+        // Search the wild card and the event id
+        const wildcard = eventList['*'] || [];
+        const scoped = eventList[event.jid] || [];
+
+        wildcard.concat(scoped).forEach(handler => handler(event));
+    }
+
     //Realtime Events
     activeChat(activeChatEvent) {
         const activeChatEventList = this.subscribedEvents['activeChat'];
-
-        const wildcard = activeChatEventList['*'] || [];
-        wildcard.forEach(({handler}) => handler(activeChatEvent));
-
-        const jidScope = activeChatEvent[activeChatEvent.jid] || [];
-        jidScope.forEach(({handler}) => handler(activeChatEvent));
+        this.notifyListeners(activeChatEventList, activeChatEvent);
     }
 
-    message() {
-
+    message(messageEvent) {
+        const messageEventList = this.subscribedEvents['message'];
+        this.notifyListeners(messageEventList, messageEvent);
     }
 };

@@ -26,6 +26,7 @@ module.exports = class RosterWindow extends EventEmitter {
     }
 
     show() {
+        const { accessToken } = this.opts;
         this.window.loadURL(`serve://dist/chat?token=${accessToken}`);
         this.window.show();
     }

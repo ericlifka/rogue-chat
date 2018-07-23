@@ -52,8 +52,13 @@ app.on('ready', () => {
            accessToken,
            realtime
        });
-       rosterWindow.show();
 
+       const chatWindow = WindowFactory.createWindow('ChatWindow', {
+           accessToken,
+           realtime
+       });
+       rosterWindow.show();
+       chatWindow.show();
     });
     authWindow.show();
 });
