@@ -1,18 +1,27 @@
-import {isAcdJid, isSupervisorJid, isScreenRecordingJid} from "../utils/jid-helpers";
+import {isAcdJid, isSupervisorJid, isScreenRecordingJid, isPersonJid, isGroupJid} from "../utils/jid-helpers";
 import {inject as service} from '@ember/service';
+import { getOwner } from '@ember/application';
+import RosterModel from '../models/roster';
 import Service from '@ember/service';
+import _ from 'lodash';
 
 export default Service.extend({
     ipc: service(),
-    chat: service(),
     store: service(),
 
+    rosterCache: null,
     activeChats: null,
     activeChatHandler: null,
 
     init () {
         this._super(...arguments);
         this.set('activeChats', []);
+        this.set('rosterCache', {});
+    },
+
+    willDestroy () {
+        this.get('ipc').removeListener('activeChat', this.activeChatHandler);
+        this.activeChatHandler = null;
     },
 
     bindToEvents () {
@@ -20,9 +29,25 @@ export default Service.extend({
         this.get('ipc').registerListener('activeChat', this.activeChatHandler);
     },
 
-    willDestroy () {
-        this.get('ipc').removeListener('activeChat', this.activeChatHandler);
-        this.activeChatHandler = null;
+    async loadRosterModel (jid) {
+        const rosterId = _.first(jid.split('@'));
+        let rosterItem = this.get(`rosterCache.${rosterId}`);
+        if (!rosterItem) {
+            rosterItem = RosterModel.create({id: rosterId, jid}, getOwner(this).ownerInjection());
+            const entity = await this.loadRosterEntityData(jid);
+            rosterItem.set('entity', entity);
+            this.set(`rosterCache.${rosterId}`, rosterItem);
+        }
+        return rosterItem;
+    },
+
+    loadRosterEntityData (jid) {
+        if (isPersonJid(jid)) {
+            return this.get('store').findRecord('user', jid);
+        } else if (isGroupJid(jid)) {
+            return this.get('store').findRecord('group', jid);
+        }
+        return null;
     },
 
     async activeChatEvent (event, message) {
@@ -33,12 +58,12 @@ export default Service.extend({
             return;
         }
 
-        const room = await this.get('chat').getChatRoom(jid);
-        room.setProperties({
+        const rosterItem = await this.loadRosterModel(jid);
+        rosterItem.setProperties({
             rawSubject: subject,
             type
         });
 
-        this.get('activeChats').addObject(room);
+        this.get('activeChats').addObject(rosterItem);
     }
 });
