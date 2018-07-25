@@ -12,6 +12,10 @@ export default Service.extend({
         this.ipcRenderer.on(topic, handler);
     },
 
+    registerOneTimeListener(topic, handler) {
+        this.ipcRenderer.once(topic, handler);
+    },
+
     removeListener(topic, handler) {
         this.ipcRenderer.removeListener(topic, handler);
     },

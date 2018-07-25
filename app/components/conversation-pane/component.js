@@ -1,4 +1,4 @@
-import {inject as service} from '@ember/service';
+import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 
 export default Component.extend({
@@ -11,7 +11,7 @@ export default Component.extend({
         openRoom(rosterModel) {
             this.get('ipc').sendEvent('open-room', {
                 jid: rosterModel.jid,
-                subject: rosterModel.get('subject')
+                rawSubject: rosterModel.get('rawSubject')
             })
         }
     }

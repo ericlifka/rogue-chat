@@ -9,13 +9,20 @@ export default Service.extend({
     store: service(),
     ipc: service(),
 
+    /**
+     * We keep a cache of the rooms and array as well. The cache is used for all rooms this
+     * window has ever seen and the array is all the current open rooms. The cache allows us to reopen
+     * rooms quickly without all the setup if the user chooses to open the room again.
+     */
+    rooms: null,
     roomCache: null,
     openRoomHandler: null,
 
     init() {
         this._super(...arguments);
-        this.set('roomCache', {});
         this.registerListeners();
+        this.set('roomCache', {});
+        this.set('rooms', []);
     },
 
     willDestroy() {
@@ -23,13 +30,12 @@ export default Service.extend({
         this.openRoomHandler = null;
     },
 
-    registerListeners() {
-        this.openRoomHandler = this.openRoomEvent.bind(this);
-        this.get('ipc').registerListener('open-room', this.openRoomHandler);
-    },
-
-    openRoomEvent(event, message) {
-
+    async openRoomEvent(event, message) {
+        const { jid, rawSubject } = message;
+        const room = await this.getChatRoom(jid);
+        // Update the raw subject received from active chat
+        room.set('rawSubject', rawSubject);
+        this.get('rooms').addObject(room);
     },
 
     async getChatRoom(jid) {
@@ -37,24 +43,36 @@ export default Service.extend({
         let room = this.get(`roomCache.${roomId}`);
         if (!room) {
             room = ChatRoom.create({id: roomId, jid}, getOwner(this).ownerInjection());
-            this.setupRoom(room);
+            await this.setupRoom(room);
             this.set(`roomCache.${roomId}`, room);
         }
         return room;
     },
 
     async setupRoom(room) {
+        await this.loadEntityData(room);
+        this.setupRoomBindings(room);
+    },
+
+    async loadEntityData(room) {
         const jid = room.get('jid');
-        const entity = await this.loadEntityData(jid);
+
+        let entity;
+        if (isPersonJid(jid)) {
+            entity = await this.get('store').findRecord('user', jid);
+        } else if (isGroupJid(jid)) {
+            entity = await this.get('store').findRecord('group', jid);
+        }
         room.set('entity', entity);
     },
 
-    loadEntityData(jid) {
-        if (isPersonJid(jid)) {
-            return this.get('store').findRecord('user', jid);
-        } else if (isGroupJid(jid)) {
-            return this.get('store').findRecord('group', jid);
-        }
-        return null;
-    }
+    registerListeners() {
+        this.openRoomHandler = this.openRoomEvent.bind(this);
+        this.get('ipc').registerListener('open-room', this.openRoomHandler);
+    },
+
+    setupRoomBindings(room) {
+        const messageHandler = room.handleMessage.bind(this);
+        const scopedMessageTopic = `message:${room.get('id')}`;
+        this.get('ipc').registerListener(scopedMessageTopic, message
 });

@@ -1,5 +1,6 @@
 const { BrowserWindow } = require('electron');
 const { EventEmitter } = require('events');
+const _ = require('lodash');
 
 module.exports = class ChatWindow extends EventEmitter {
     constructor(opts = {}) {
@@ -21,7 +22,9 @@ module.exports = class ChatWindow extends EventEmitter {
 
         //TODO: Should not subscribe to events until browser ask for them
         realtime.bindToEvent('message', '*', (messageEvent) => {
-           webContents.send('message', messageEvent);
+            const id = _.first(messageEvent.to.split('@'));
+            const scope = `message:${id}`;
+            webContents.send(scope, messageEvent);
         });
     }
 
