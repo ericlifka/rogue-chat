@@ -1,5 +1,5 @@
-import {isAcdJid, isSupervisorJid, isScreenRecordingJid, isPersonJid, isGroupJid} from "../utils/jid-helpers";
-import {inject as service} from '@ember/service';
+import { isAcdJid, isSupervisorJid, isScreenRecordingJid, isPersonJid, isGroupJid } from "../utils/jid-helpers";
+import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import RosterModel from '../models/roster';
 import Service from '@ember/service';

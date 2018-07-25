@@ -4,5 +4,15 @@ import Component from '@ember/component';
 export default Component.extend({
     classNames: ['conversation-pane'],
 
-    roster: service()
+    roster: service(),
+    ipc: service(),
+
+    actions: {
+        openRoom(rosterModel) {
+            this.get('ipc').sendEvent('open-room', {
+                jid: rosterModel.jid,
+                subject: rosterModel.get('subject')
+            })
+        }
+    }
 });

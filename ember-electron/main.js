@@ -35,30 +35,35 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
     const authWindow = WindowFactory.createWindow('AuthWindow');
     authWindow.on('authenticated', (accessToken) => {
-       app.accessToken = accessToken;
-       authWindow.close();
+        app.accessToken = accessToken;
+        authWindow.close();
 
-       //TODO: This shouldn't all be in the event handler
-       const realtime = new RealtimeAdapter({
-           authKey: accessToken
-       });
+        //TODO: This shouldn't all be in the event handler
+        const realtime = new RealtimeAdapter({
+            authKey: accessToken
+        });
 
-       ipcMain.on('main-window-ready', function () {
-           realtime.disconnect();
-           realtime.connect();
-       });
+        const rosterWindow = WindowFactory.createWindow('RosterWindow', {
+            accessToken,
+            realtime
+        });
 
-       const rosterWindow = WindowFactory.createWindow('RosterWindow', {
-           accessToken,
-           realtime
-       });
+        const chatWindow = WindowFactory.createWindow('ChatWindow', {
+            accessToken,
+            realtime
+        });
 
-       const chatWindow = WindowFactory.createWindow('ChatWindow', {
-           accessToken,
-           realtime
-       });
-       rosterWindow.show();
-       chatWindow.show();
+        ipcMain.on('main-window-ready', function () {
+            realtime.disconnect();
+            realtime.connect();
+        });
+
+        ipcMain.on('open-room', function (event, args) {
+            chatWindow.sendEvent('open-room', args);
+        });
+
+        rosterWindow.show();
+        chatWindow.show();
     });
     authWindow.show();
 });

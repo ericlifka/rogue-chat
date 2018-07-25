@@ -13,7 +13,10 @@
 </div>
 <div class="participants">
     {{#each roster.activeChats as |activeChat|}}
-        {{conversation-pane/conversation-item chatRoom=activeChat}}
+        {{conversation-pane/conversation-item
+            rosterModel=activeChat
+            openRoom=(action "openRoom")
+        }}
     {{/each}}
 </div>
 

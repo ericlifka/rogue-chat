@@ -4,7 +4,12 @@ import {computed} from '@ember/object';
 export default Component.extend({
     classNames: ['conversation-item'],
 
-    chatRoom: null,
+    rosterModel: null,
 
-    isPerson: computed.equal('chatRoom.type', 'person')
+    isPerson: computed.equal('rosterModel.type', 'person'),
+
+    click() {
+        const rosterModel = this.get('rosterModel');
+        this.get('openRoom')(rosterModel);
+    }
 });

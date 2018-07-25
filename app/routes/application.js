@@ -14,7 +14,7 @@ export default Route.extend({
         return Promise.resolve()
             .then(() => session.authenticate())
             .then(() => roster.bindToEvents())
-            .then(() => ipc.notifyReady());
+            .then(() => ipc.sendEvent('main-window-ready', true));
 
     }
 });

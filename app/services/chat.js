@@ -7,12 +7,29 @@ import _ from 'lodash';
 
 export default Service.extend({
     store: service(),
+    ipc: service(),
 
     roomCache: null,
+    openRoomHandler: null,
 
     init() {
         this._super(...arguments);
         this.set('roomCache', {});
+        this.registerListeners();
+    },
+
+    willDestroy() {
+        this.get('ipc').removeListener('open-room', this.openRoomHandler);
+        this.openRoomHandler = null;
+    },
+
+    registerListeners() {
+        this.openRoomHandler = this.openRoomEvent.bind(this);
+        this.get('ipc').registerListener('open-room', this.openRoomHandler);
+    },
+
+    openRoomEvent(event, message) {
+        console.log('Event received: ', message);
     },
 
     async getChatRoom(jid) {

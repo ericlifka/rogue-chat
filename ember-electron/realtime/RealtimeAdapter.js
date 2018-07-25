@@ -1,7 +1,6 @@
 "use strict";
 
 const assert = require('assert');
-const uuid = require('uuid');
 
 // Mock a bunch of client state to get realtime to not crash on load
 const { JSDOM } = require('jsdom');
@@ -66,10 +65,8 @@ module.exports = class RealtimeAdapter {
         if (!eventList[scope]) {
             eventList[scope] = [];
         }
-        const id = uuid.v4();
-        eventList[scope].push(handler);
 
-        return id;
+        eventList[scope].push(handler);
     }
 
     removeBoundEvent(event, scope, handler) {

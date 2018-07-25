@@ -16,7 +16,7 @@ export default Service.extend({
         this.ipcRenderer.removeListener(topic, handler);
     },
 
-    notifyReady() {
-        this.ipcRenderer.send('main-window-ready', true);
+    sendEvent(topic, message) {
+        this.ipcRenderer.send(topic, message);
     }
 });

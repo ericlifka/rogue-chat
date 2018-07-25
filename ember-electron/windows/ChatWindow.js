@@ -1,7 +1,7 @@
 const { BrowserWindow } = require('electron');
 const { EventEmitter } = require('events');
 
-module.exports = class RosterWindow extends EventEmitter {
+module.exports = class ChatWindow extends EventEmitter {
     constructor(opts = {}) {
         super(...arguments);
         this.opts = opts;
@@ -23,6 +23,10 @@ module.exports = class RosterWindow extends EventEmitter {
         realtime.bindToEvent('message', '*', (messageEvent) => {
            webContents.send('message', messageEvent);
         });
+    }
+
+    sendEvent(event, message) {
+        this.window.webContents.send(event, message);
     }
 
     show() {
