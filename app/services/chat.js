@@ -29,7 +29,7 @@ export default Service.extend({
     },
 
     openRoomEvent(event, message) {
-        console.log('Event received: ', message);
+
     },
 
     async getChatRoom(jid) {

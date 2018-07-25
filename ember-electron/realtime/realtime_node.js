@@ -9228,12 +9228,12 @@ function BlobBuilderConstructor(ary, options) {
   }
 
   return options.type ? bb.getBlob(options.type) : bb.getBlob();
-};
+}
 
 function BlobConstructor(ary, options) {
   mapArrayBufferViews(ary);
   return new Blob(ary, options || {});
-};
+}
 
 module.exports = function () {
   if (blobSupported) {
@@ -9651,7 +9651,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     return fn.apply(obj, this);
                 }
                 Promise.prototype.call = function (methodName) {
-                    var args = [].slice.call(arguments, 1);;
+                    var args = [].slice.call(arguments, 1);
                     if (!true) {
                         if (canEvaluate) {
                             var maybeCaller = getMethodCaller(methodName);
@@ -10225,17 +10225,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 };
                 Promise.prototype._onCancel = function () {};
                 Promise.prototype._setOnCancel = function (handler) {
-                    ;
+                    
                 };
                 Promise.prototype._attachCancellationCallback = function (onCancel) {
-                    ;
+                    
                 };
                 Promise.prototype._captureStackTrace = function () {};
                 Promise.prototype._attachExtraTrace = function () {};
                 Promise.prototype._clearCancellationData = function () {};
                 Promise.prototype._propagateFrom = function (parent, flags) {
-                    ;
-                    ;
+                    
+                    
                 };
 
                 function cancellationExecute(executor, resolve, reject) {
@@ -11369,7 +11369,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                         }
                         maybePromise = maybePromise._target();
                         var bitField = maybePromise._bitField;
-                        ;
+                        
                         if ((bitField & 50397184) === 0) {
                             this._yieldedPromise = maybePromise;
                             maybePromise._proxy(this, null);
@@ -11541,7 +11541,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                                     if (maybePromise instanceof Promise) {
                                         maybePromise = maybePromise._target();
                                         var bitField = maybePromise._bitField;
-                                        ;
+                                        
                                         if ((bitField & 50397184) === 0) {
                                             maybePromise._then(callbacks[i], reject, undefined, ret, holder);
                                             promiseSetters[i](maybePromise, holder);
@@ -11572,7 +11572,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                             }
                         }
                     }
-                    var args = [].slice.call(arguments);;
+                    var args = [].slice.call(arguments);
                     if (fn) args.pop();
                     var ret = new PromiseArray(args).promise();
                     return fn !== undefined ? ret.spread(fn) : ret;
@@ -11645,7 +11645,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                         if (maybePromise instanceof Promise) {
                             maybePromise = maybePromise._target();
                             var bitField = maybePromise._bitField;
-                            ;
+                            
                             if ((bitField & 50397184) === 0) {
                                 if (limit >= 1) this._inFlight++;
                                 values[index] = maybePromise;
@@ -11826,7 +11826,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     } else if (!multiArgs) {
                         promise._fulfill(value);
                     } else {
-                        var args = [].slice.call(arguments, 1);;
+                        var args = [].slice.call(arguments, 1);
                         promise._fulfill(args);
                     }
                     promise = null;
@@ -12664,7 +12664,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     if (values instanceof Promise) {
                         values = values._target();
                         var bitField = values._bitField;
-                        ;
+                        
                         this._values = values;
 
                         if ((bitField & 50397184) === 0) {
@@ -14566,7 +14566,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
             module.exports = ret;
         }, { "./es5": 13 }] }, {}, [4])(4);
-});;if (typeof window !== 'undefined' && window !== null) {
+});if (typeof window !== 'undefined' && window !== null) {
     window.P = window.Promise;
 } else if (typeof self !== 'undefined' && self !== null) {
     self.P = self.Promise;
@@ -14693,7 +14693,7 @@ if (typeof module !== 'undefined') {
 
 function Emitter(obj) {
   if (obj) return mixin(obj);
-};
+}
 
 /**
  * Mixin the emitter properties.
@@ -24223,7 +24223,7 @@ module.exports = Object.keys || function keys(obj) {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
-;(function (root) {
+(function (root) {
 
 	// Detect free variables `exports`
 	var freeExports = (typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) == 'object' && exports;
@@ -26394,7 +26394,7 @@ SessionManager.prototype.process = function (req) {
     var self = this;
 
     // Extract the request metadata that we need to verify
-    var sid = !!req.jingle ? req.jingle.sid : null;
+    var sid = req.jingle ? req.jingle.sid : null;
     var session = this.sessions[sid] || null;
     var rid = req.id;
     var sender = req.from.full || req.from;
@@ -29061,7 +29061,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     DLL.prototype.remove = function (testFn) {
         var curr = this.head;
-        while (!!curr) {
+        while (curr) {
             var next = curr.next;
             if (testFn(curr)) {
                 this.removeLink(curr);
@@ -38508,7 +38508,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
-;(function () {
+(function () {
 
   /** Used as a safe reference for `undefined` in pre-ES5 environments. */
   var undefined;
@@ -59276,7 +59276,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 },{"buffer":undefined}],481:[function(require,module,exports){
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-;(function (sax) {
+(function (sax) {
   // wrapper for non-node envs
   sax.parser = function (strict, opt) {
     return new SAXParser(strict, opt);
@@ -61717,7 +61717,7 @@ exports.toCandidateSDP = function (candidate) {
 },{"./senders":484}],487:[function(require,module,exports){
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-;(function (global) {
+(function (global) {
 
 	'use strict';
 
@@ -61806,7 +61806,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 
 		return semaphore;
-	};
+	}
 
 	if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
 		// node export
