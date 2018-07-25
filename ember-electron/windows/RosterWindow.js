@@ -6,6 +6,7 @@ module.exports = class RosterWindow extends EventEmitter {
         super(...arguments);
         this.opts = opts;
         this.window = new BrowserWindow({
+            minWidth: 350,
             width: 350,
             maxWidth: 350,
             height: 700,
