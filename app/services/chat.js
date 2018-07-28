@@ -74,5 +74,6 @@ export default Service.extend({
     setupRoomBindings(room) {
         const messageHandler = room.handleMessage.bind(this);
         const scopedMessageTopic = `message:${room.get('id')}`;
-        this.get('ipc').registerListener(scopedMessageTopic, message
+        this.get('ipc').registerListener(scopedMessageTopic, messageHandler);
+    }
 });

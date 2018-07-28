@@ -23,8 +23,7 @@ module.exports = class ChatWindow extends EventEmitter {
         //TODO: Should not subscribe to events until browser ask for them
         realtime.bindToEvent('message', '*', (messageEvent) => {
             const id = _.first(messageEvent.to.split('@'));
-            const scope = `message:${id}`;
-            webContents.send(scope, messageEvent);
+            webContents.send(`message:${id}`, messageEvent);
         });
     }
 
