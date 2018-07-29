@@ -1,4 +1,3 @@
-import { isPersonJid, isGroupJid } from "../utils/jid-helpers";
 import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import ChatRoom from '../models/chat-room';
@@ -56,12 +55,12 @@ export default Service.extend({
     },
 
     async loadEntityData(room) {
-        const jid = room.get('jid');
+        const type = room.get('type');
 
         let entity;
-        if (isPersonJid(jid)) {
+        if (type === 'person') {
             entity = await this.get('store').findRecord('user', jid);
-        } else if (isGroupJid(jid)) {
+        } else if (type === 'group') {
             entity = await this.get('store').findRecord('group', jid);
         }
         room.set('entity', entity);
