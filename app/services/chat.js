@@ -3,6 +3,7 @@ import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import ChatRoom from '../models/chat-room';
 import Service from '@ember/service';
+import RSVP from 'rsvp';
 import _ from 'lodash';
 
 export default Service.extend({
@@ -75,5 +76,22 @@ export default Service.extend({
         const messageHandler = room.messageHandler.bind(this);
         const scopedMessageTopic = `message:${room.get('id')}`;
         this.get('ipc').registerListener(scopedMessageTopic, messageHandler);
+    },
+
+    joinRoom(room) {
+        const defer = RSVP.defer();
+        // Create a timeout just in case we don't get a response from realtime
+        const tid = setTimeout(() => {
+            defer.reject(new Error('Never received a join room response from realtime'));
+        }, 5000);
+
+        const scopedJoinTopic = `join:${room.get('id')}`;
+        this.get('ipc').registerOneTimeListener(scopedJoinTopic, () => {
+            clearTimeout(tid);
+            defer.resolve();
+        });
+        this.get('ipc').sendEvent('join-room', room.get('jid'));
+
+        return defer.promise;
     }
 });
