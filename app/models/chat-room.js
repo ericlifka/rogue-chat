@@ -17,7 +17,11 @@ export default EmberObject.extend({
         return this.get('entity.name') || this.get('rawSubject');
     }),
 
-    handleMessage(event, message) {
+    historyHandler(event, messages) {
+
+    },
+
+    messageHandler(event, message) {
         console.log("message: ", message);
     }
 });
