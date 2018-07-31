@@ -19,7 +19,7 @@ export default Service.extend({
         const defer = RSVP.defer();
         // Create a timeout just in case we don't get a response from realtime
         const tid = setTimeout(() => {
-            defer.reject(new Error('Never received a history response from realtime, silly realtime...'));
+            defer.reject(new Error('Never received a history response from realtime'));
         }, 5000);
 
         const scopedHistoryTopic = `history:${room.get('id')}`;
