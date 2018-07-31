@@ -6,6 +6,7 @@ import RSVP from 'rsvp';
 import _ from 'lodash';
 
 export default Service.extend({
+    history: service(),
     store: service(),
     ipc: service(),
 
@@ -17,6 +18,7 @@ export default Service.extend({
     rooms: null,
     roomCache: null,
     openRoomHandler: null,
+    activeInteraction: null,
 
     init() {
         this._super(...arguments);
@@ -28,6 +30,11 @@ export default Service.extend({
     willDestroy() {
         this.get('ipc').removeListener('open-room', this.openRoomHandler);
         this.openRoomHandler = null;
+    },
+
+    registerListeners() {
+        this.openRoomHandler = this.openRoomEvent.bind(this);
+        this.get('ipc').registerListener('open-room', this.openRoomHandler);
     },
 
     async openRoomEvent(event, message) {
@@ -59,16 +66,11 @@ export default Service.extend({
 
         let entity;
         if (type === 'person') {
-            entity = await this.get('store').findRecord('user', jid);
+            entity = await this.get('store').findRecord('user', room.get('jid'));
         } else if (type === 'group') {
-            entity = await this.get('store').findRecord('group', jid);
+            entity = await this.get('store').findRecord('group', room.get('jid'));
         }
         room.set('entity', entity);
-    },
-
-    registerListeners() {
-        this.openRoomHandler = this.openRoomEvent.bind(this);
-        this.get('ipc').registerListener('open-room', this.openRoomHandler);
     },
 
     setupRoomBindings(room) {
@@ -87,10 +89,25 @@ export default Service.extend({
         const scopedJoinTopic = `join:${room.get('id')}`;
         this.get('ipc').registerOneTimeListener(scopedJoinTopic, () => {
             clearTimeout(tid);
+            room.set('activated', true);
             defer.resolve();
         });
-        this.get('ipc').sendEvent('join-room', room.get('jid'));
+        this.get('ipc').sendEvent('join-room', {
+            id: room.get('id'),
+            payload: room.get('jid')
+        });
 
         return defer.promise;
+    },
+
+    async setInteraction(room) {
+        if (!room.get('activated')) {
+            if (room.get('type')!== 'person') {
+                await this.joinRoom(room);
+            }
+            await this.get('history').loadHistoryBefore(room);
+            room.set('activated', true);
+        }
+        this.set('activeInteraction', room);
     }
 });

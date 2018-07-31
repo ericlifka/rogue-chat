@@ -9,7 +9,7 @@ export default Component.extend({
 
     actions: {
         setActive(room) {
-            console.log('Setting room: ', room.get('jid'));
+            this.get('chat').setInteraction(room);
         }
     }
 });

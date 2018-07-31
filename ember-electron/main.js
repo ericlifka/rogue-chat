@@ -62,6 +62,14 @@ app.on('ready', () => {
             chatWindow.sendEvent('open-room', args);
         });
 
+        ipcMain.on('join-room', function (event, args) {
+            chatWindow.handleEvent('join-room', args);
+        });
+
+        ipcMain.on('request-history', function (event, args) {
+            chatWindow.handleEvent('request-history', args);
+        });
+
         rosterWindow.show();
         chatWindow.show();
     });

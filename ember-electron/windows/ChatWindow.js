@@ -31,6 +31,23 @@ module.exports = class ChatWindow extends EventEmitter {
         this.window.webContents.send(event, message);
     }
 
+    handleEvent(event, args) {
+        //TODO: Make a better way of handling these events
+        const { id, payload } = args;
+        switch(event) {
+            case 'join-room':
+                this.opts.realtime.joinRoom(payload, (error) => {
+                    this.window.webContents.send(`join:${id}`, null);
+                });
+                break;
+            case 'request-history':
+                this.opts.realtime.getMessages(payload, (error, messages) => {
+                    this.window.webContents.send(`history:${id}`, messages);
+                });
+                break;
+        }
+    }
+
     show() {
         const { accessToken } = this.opts;
         this.window.loadURL(`serve://dist/chat?token=${accessToken}`);

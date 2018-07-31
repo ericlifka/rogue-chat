@@ -29,7 +29,10 @@ export default Service.extend({
         });
 
         room.set('loadingHistory', true);
-        this.get('ipc').sendEvent('request-history', options);
+        this.get('ipc').sendEvent('request-history', {
+            id: room.get('id'),
+            payload: options
+        });
 
         return defer.promise;
     },

@@ -8,6 +8,18 @@ export default EmberObject.extend({
     rawSubject: null,
     entity: null,
 
+    messageCache: null,
+
+    loadingHistory: false,
+    firstMessageTimestamp: null,
+    lastMessageTimestamp:null,
+
+    init() {
+        this.set('firstMessageTimestamp', Date.now());
+        this.set('lastMessageTimestamp', Date.now());
+        this.set('messageCache', {});
+    },
+
     type: computed('jid', function () {
         const jid = this.get('jid');
         return isPersonJid(jid) ? 'person' : isGroupJid(jid) ? 'group' : 'adhoc';
