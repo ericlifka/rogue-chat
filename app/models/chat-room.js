@@ -9,6 +9,7 @@ export default EmberObject.extend({
     entity: null,
 
     messageCache: null,
+    messages: null,
 
     loadingHistory: false,
     firstMessageTimestamp: null,
@@ -18,6 +19,7 @@ export default EmberObject.extend({
         this.set('firstMessageTimestamp', Date.now());
         this.set('lastMessageTimestamp', Date.now());
         this.set('messageCache', {});
+        this.set('messages', []);
     },
 
     type: computed('jid', function () {
@@ -29,8 +31,8 @@ export default EmberObject.extend({
         return this.get('entity.name') || this.get('rawSubject');
     }),
 
-    historyHandler(event, messages) {
-
+    historyHandler(messages) {
+        this.get('messages').pushObjects(messages);
     },
 
     messageHandler(event, message) {

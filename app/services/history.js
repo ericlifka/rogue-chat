@@ -1,4 +1,6 @@
 import { inject as service } from '@ember/service';
+import { getOwner } from '@ember/application';
+import MessageModel from '../models/message';
 import Service from '@ember/service';
 import Ember from 'ember';
 import RSVP from 'rsvp';
@@ -40,8 +42,10 @@ export default Service.extend({
     loadRoomHistory(room, options) {
         return this.requestHistory(room, options)
             .then(messages => {
-                //TODO: Actually put the messages in the chat room
-                console.log("History Messages: ", messages);
+                messages = messages.map(message => {
+                    return MessageModel.create(message, getOwner(this).ownerInjection());
+                });
+                room.historyHandler(messages);
             })
             .catch(error => {
                 Ember.Logger.error('Failed to fetch history from realtime, error: ', error);
