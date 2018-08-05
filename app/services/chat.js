@@ -1,5 +1,6 @@
 import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
+import MessageModel from '../models/message';
 import ChatRoom from '../models/chat-room';
 import Service from '@ember/service';
 import RSVP from 'rsvp';
@@ -43,6 +44,7 @@ export default Service.extend({
         // Update the raw subject received from active chat
         room.set('rawSubject', rawSubject);
         this.get('rooms').addObject(room);
+        this.setInteraction(room);
     },
 
     async getChatRoom(jid) {
@@ -77,6 +79,14 @@ export default Service.extend({
         const messageHandler = room.messageHandler.bind(this);
         const scopedMessageTopic = `message:${room.get('id')}`;
         this.get('ipc').registerListener(scopedMessageTopic, messageHandler);
+    },
+
+    async setupMessageModel(realtimeMessage) {
+        const message = MessageModel.create(realtimeMessage, getOwner(this).ownerInjection());
+        const user = await this.get('store').findRecord('user', realtimeMessage.from);
+        message.set('user', user);
+
+        return message;
     },
 
     joinRoom(room) {

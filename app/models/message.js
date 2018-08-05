@@ -13,4 +13,10 @@ export default EmberObject.extend({
     links: null,
     stanza: null,
     files: null,
+
+    //properties create when the message is received in chat
+    user: null,
+
+    //set by history service when message is received
+    history: false
 });

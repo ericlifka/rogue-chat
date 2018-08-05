@@ -6,6 +6,5 @@ export default Component.extend({
     classNames: ['interaction-pane'],
     chat: service(),
 
-    activeInteraction: reads('chat.activeInteraction'),
-    messages: reads('activeInteraction.messages')
+    activeInteraction: reads('chat.activeInteraction')
 });

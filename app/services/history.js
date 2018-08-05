@@ -1,12 +1,11 @@
 import { inject as service } from '@ember/service';
-import { getOwner } from '@ember/application';
-import MessageModel from '../models/message';
 import Service from '@ember/service';
 import Ember from 'ember';
 import RSVP from 'rsvp';
 
 export default Service.extend({
     ipc: service(),
+    chat: service(),
 
     messageHistoryRequestDefault: 25,
 
@@ -41,10 +40,11 @@ export default Service.extend({
 
     loadRoomHistory(room, options) {
         return this.requestHistory(room, options)
-            .then(messages => {
-                messages = messages.map(message => {
-                    return MessageModel.create(message, getOwner(this).ownerInjection());
+            .then(async messages => {
+                const messagePromises = messages.map(message => {
+                    return this.get('chat').setupMessageModel(message);
                 });
+                messages = await RSVP.all(messagePromises);
                 room.historyHandler(messages);
             })
             .catch(error => {
