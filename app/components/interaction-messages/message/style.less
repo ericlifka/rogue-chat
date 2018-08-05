@@ -11,10 +11,6 @@
     }
 
     .message {
-        display:flex;
-        flex-direction: row;
-        align-items: center;
-
         background-color: @rogue-light-grey;
         border-radius: 2px;
         padding: 5px 10px;
@@ -22,5 +18,10 @@
 
         word-break: break-all;
         color: @rogue-white-grey;
+
+        > * {
+            word-break: break-all;
+            white-space: normal;
+        }
     }
 }
