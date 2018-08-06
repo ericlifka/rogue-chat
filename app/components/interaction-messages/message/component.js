@@ -1,3 +1,4 @@
+import { inject as service } from '@ember/service';
 import { markdownToHTML } from '../../../utils/markdown'
 import { reads } from '@ember/object/computed';
 import { computed } from '@ember/object';
@@ -6,10 +7,18 @@ import _ from 'lodash';
 
 export default Component.extend({
     classNames: ['message'],
-    markdownParser: null,
+    classNameBindings: [
+        'sentByMe'
+    ],
+    session: service(),
+
     message: null,
 
     user: reads('message.user'),
+
+    sentByMe: computed('message.from', 'session.user.chat.jabberId', function () {
+        return this.get('message.from') === this.get('session.user.chat.jabberId');
+    }),
 
     markdown: computed('message.raw', function () {
         return markdownToHTML(this.get('message.raw'));
