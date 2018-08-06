@@ -7,6 +7,16 @@
 
     &.sent-by-me {
         flex-direction: row-reverse;
+
+        .message {
+            background-color: @rogue-white-darker-grey;
+            filter: drop-shadow(0 2px 8px @rogue-white-darker-grey);
+        }
+
+        .triangle-right {
+            border-top: 15px solid @rogue-white-darker-grey;
+            filter: drop-shadow(0 2px 8px @rogue-white-darker-grey);
+        }
     }
 
     .profile-image {
@@ -38,7 +48,7 @@
         background-color: @rogue-light-grey;
         border-radius: 2px;
         padding: 5px 10px;
-        width: 80%;
+        width: 75%;
 
         word-break: break-all;
         color: @rogue-white-grey;
@@ -49,5 +59,9 @@
             word-break: break-all;
             white-space: normal;
         }
+    }
+
+    .timestamp {
+        margin: 9px 15px;
     }
 }

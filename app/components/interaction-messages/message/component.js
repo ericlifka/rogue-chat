@@ -16,6 +16,10 @@ export default Component.extend({
 
     user: reads('message.user'),
 
+    time: computed('message.time', function () {
+        return this.get('message.time').format('d MMMM hh:mm A');
+    }),
+
     sentByMe: computed('message.from', 'session.user.chat.jabberId', function () {
         return this.get('message.from') === this.get('session.user.chat.jabberId');
     }),

@@ -3,6 +3,7 @@ import { getOwner } from '@ember/application';
 import MessageModel from '../models/message';
 import ChatRoom from '../models/chat-room';
 import Service from '@ember/service';
+import moment from 'moment';
 import RSVP from 'rsvp';
 import _ from 'lodash';
 
@@ -85,6 +86,7 @@ export default Service.extend({
         const message = MessageModel.create(realtimeMessage, getOwner(this).ownerInjection());
         const user = await this.get('store').findRecord('user', realtimeMessage.from);
         message.set('user', user);
+        message.set('time', moment(realtimeMessage.time));
 
         return message;
     },
