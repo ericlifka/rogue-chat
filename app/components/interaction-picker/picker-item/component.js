@@ -13,6 +13,6 @@ export default Component.extend({
     }),
 
     click() {
-        this.get('setActive')(this.get('room'));
+        this.get('switchInteraction')(this.get('room'));
     }
 });

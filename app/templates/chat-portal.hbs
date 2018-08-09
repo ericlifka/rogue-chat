@@ -1,6 +1,13 @@
 <div class="chat-portal">
     {{interaction-header}}
-    {{interaction-pane}}
-    {{interaction-textarea}}
-    {{interaction-picker}}
+    {{interaction-pane
+        activeInteraction=activeInteraction
+    }}
+    {{interaction-textarea
+        sendMesssage=(action "sendMessage")
+    }}
+    {{interaction-picker
+        switchInteraction=(action "switchInteraction")
+        rooms=interactions
+    }}
 </div>

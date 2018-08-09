@@ -1,6 +1,6 @@
 {{#each rooms as |room|}}
     {{interaction-picker/picker-item
-        setActive=(action "setActive")
+        switchInteraction=switchInteraction
         room=room
     }}
 {{/each}}

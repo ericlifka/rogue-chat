@@ -16,6 +16,7 @@ export default EmberObject.extend({
     lastMessageTimestamp:null,
 
     init() {
+        this._super(...arguments);
         this.set('firstMessageTimestamp', Date.now());
         this.set('lastMessageTimestamp', Date.now());
         this.set('messageCache', {});
@@ -35,7 +36,7 @@ export default EmberObject.extend({
         this.get('messages').pushObjects(messages);
     },
 
-    messageHandler(event, message) {
-        console.log("message: ", message);
+    messageHandler(message) {
+        this.get('messages').pushObject(message);
     }
 });
