@@ -32,7 +32,7 @@ module.exports = class ChatWindow extends EventEmitter {
     }
 
     handleEvent(event, args) {
-        //TODO: Make a better way of handling these events
+        //TODO: Make a better way of handling these events, also probably should start handling errors
         const { id, payload } = args;
         switch(event) {
             case 'join-room':
@@ -43,6 +43,11 @@ module.exports = class ChatWindow extends EventEmitter {
             case 'request-history':
                 this.opts.realtime.getMessages(payload, (error, messages) => {
                     this.window.webContents.send(`history:${id}`, messages);
+                });
+                break;
+            case 'send-message':
+                this.opts.realtime.sendMessage(payload, (error, message) => {
+                    this.window.webContents.send(`send-message:${id}`, message);
                 });
                 break;
         }

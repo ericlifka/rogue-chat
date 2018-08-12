@@ -70,6 +70,10 @@ app.on('ready', () => {
             chatWindow.handleEvent('request-history', args);
         });
 
+        ipcMain.on('send-message', function (event, args) {
+           chatWindow.handleEvent('send-message', args);
+        });
+
         rosterWindow.show();
         chatWindow.show();
     });

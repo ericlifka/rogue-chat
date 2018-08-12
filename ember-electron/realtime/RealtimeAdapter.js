@@ -63,6 +63,10 @@ module.exports = class RealtimeAdapter {
         this.realtime.joinRoom(jid, callback);
     }
 
+    sendMessage(options, callback) {
+        this.realtime.sendMessage(options, callback);
+    }
+
     bindToEvent(event, scope, handler) {
         const subscribedEvents = this.subscribedEvents;
         if (!subscribedEvents[event]) {

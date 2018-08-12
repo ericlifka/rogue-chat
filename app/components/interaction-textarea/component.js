@@ -6,6 +6,11 @@ export default Component.extend({
     message: null,
 
     keyPress(event) {
-        console.log(event);
+        const code = event.keyCode;
+        if (code === 13 && !event.shiftKey) {
+            event.preventDefault();
+            this.sendMessage(this.get('message'));
+            this.set('message', null);
+        }
     }
 });

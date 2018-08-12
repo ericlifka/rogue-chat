@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 export default Service.extend({
     history: service(),
+    session: service(),
     store: service(),
     ipc: service(),
 
@@ -113,6 +114,28 @@ export default Service.extend({
         });
 
         return defer.promise;
+    },
+
+    sendMessage(room, message) {
+       return new RSVP.Promise((resolve, reject) => {
+            const tid = setTimeout(() => {
+               reject(new Error('never received carbon response from realtime'));
+            });
+
+            const scopedSendMessage = `send-message:${room.get('id')}`;
+            this.get('ipc').registerOneTimeListener(scopedSendMessage, () => {
+                clearTimeout(tid);
+                resolve();
+            });
+
+            this.get('ipc').sendEvent('send-message', {
+                id: room.get('id'),
+                payload: {
+                    to: room.get('jid'),
+                    body: message
+                }
+            });
+       }) ;
     },
 
     async setInteraction(room) {
