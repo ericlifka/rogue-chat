@@ -1,5 +1,6 @@
 import Markdown from "markdown-it";
 import hljs from "highlight.js";
+import Ember from 'ember';
 
 hljs.configure({
     languages: ['bash', 'clojure', 'coffeescript', 'cpp', 'cs', 'css', 'elm', 'go', 'xml',

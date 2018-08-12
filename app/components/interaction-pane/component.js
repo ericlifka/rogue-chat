@@ -1,5 +1,5 @@
-import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
+import { run, scheduleOnce } from '@ember/runloop';
 import Ember from 'ember';
 
 export default Component.extend({
@@ -9,7 +9,7 @@ export default Component.extend({
 
     actions: {
         safeScroll() {
-            Ember.run(() => Ember.run.scheduleOnce('afterRender', this, this.scrollToBottom));
+            run(() => scheduleOnce('afterRender', this, this.scrollToBottom));
         }
     },
 

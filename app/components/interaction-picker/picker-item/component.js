@@ -1,4 +1,4 @@
-import { reads, equal } from '@ember/object/computed';
+import { equal } from '@ember/object/computed';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 
