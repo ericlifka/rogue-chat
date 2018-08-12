@@ -14,6 +14,11 @@ export default Component.extend({
 
     message: null,
 
+    didRender() {
+        this._super(...arguments);
+        this.safeScroll();
+    },
+
     user: reads('message.user'),
 
     time: computed('message.time', function () {

@@ -120,7 +120,7 @@ export default Service.extend({
        return new RSVP.Promise((resolve, reject) => {
             const tid = setTimeout(() => {
                reject(new Error('never received carbon response from realtime'));
-            });
+            }, 5000);
 
             const scopedSendMessage = `send-message:${room.get('id')}`;
             this.get('ipc').registerOneTimeListener(scopedSendMessage, () => {

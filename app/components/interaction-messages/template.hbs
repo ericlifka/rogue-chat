@@ -1,3 +1,6 @@
 {{#each messages as |message|}}
-    {{interaction-messages/message message=message}}
+    {{interaction-messages/message
+        message=message
+        safeScroll=safeScroll
+    }}
 {{/each}}

@@ -1,6 +1,6 @@
 import { inject as service } from '@ember/service';
 import { reads } from '@ember/object/computed';
-import Controller from '@ember/controller'
+import Controller from '@ember/controller';
 
 export default Controller.extend({
     chat: service(),
@@ -13,6 +13,7 @@ export default Controller.extend({
             const room = this.get('activeInteraction');
             this.get('chat').sendMessage(room, message);
         },
+
         switchInteraction(room) {
             this.get('chat').setInteraction(room);
         }
