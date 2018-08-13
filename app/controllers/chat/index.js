@@ -9,11 +9,6 @@ export default Controller.extend({
     interactions: reads('chat.rooms'),
 
     actions: {
-        sendMessage(message) {
-            const room = this.get('activeInteraction');
-            this.get('chat').sendMessage(room, message);
-        },
-
         switchInteraction(room) {
             this.get('chat').setInteraction(room);
         }

@@ -10,6 +10,7 @@ import _ from 'lodash';
 export default Service.extend({
     history: service(),
     session: service(),
+    router: service(),
     store: service(),
     ipc: service(),
 
@@ -40,6 +41,7 @@ export default Service.extend({
         this.get('ipc').registerListener('open-room', this.openRoomHandler);
     },
 
+    //TODO: Maybe move this to the router and let it handle navigation changes
     async openRoomEvent(event, message) {
         const { jid, rawSubject } = message;
         const room = await this.getChatRoom(jid);
@@ -47,6 +49,8 @@ export default Service.extend({
         room.set('rawSubject', rawSubject);
         this.get('rooms').addObject(room);
         this.setInteraction(room);
+        //TODO: This will not stay here, just temporary to test logic.
+        this.get('router').transitionTo('chat', room.get('jid'))
     },
 
     async getChatRoom(jid) {
