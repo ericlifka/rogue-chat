@@ -8,7 +8,9 @@ import _ from 'lodash';
 export default Component.extend({
     classNames: ['message'],
     classNameBindings: [
-        'sentByMe'
+        'sentByMe',
+        'startOfBlock',
+        'endOfBlock'
     ],
     session: service(),
 
@@ -20,6 +22,8 @@ export default Component.extend({
     },
 
     user: reads('message.user'),
+    startOfBlock: reads('message.startOfBlock'),
+    endOfBlock: reads('message.endOfBlock'),
 
     time: computed('message.time', function () {
         return this.get('message.time').format('D MMM hh:mma');

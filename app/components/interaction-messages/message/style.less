@@ -1,9 +1,32 @@
 & {
     display: flex;
     flex-direction: row;
-    min-height: 60px;
-    margin: 7px 10px;
+    margin: 0 10px;
     flex: 1 0 auto;
+
+    &.start-of-block {
+        margin-top: 7px;
+
+        .triangle-right, .triangle-left, .profile-image, .timestamp {
+            visibility: visible;
+        }
+
+        .message {
+            padding-top: 5px;
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+        }
+    }
+
+    &.end-of-block {
+        margin-bottom: 7px;
+
+        .message {
+            padding-bottom: 5px;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+        }
+    }
 
     &.sent-by-me {
         flex-direction: row-reverse;
@@ -11,7 +34,6 @@
         .message {
             color: white;
             background-color: @rogue-light-grey;
-            filter: drop-shadow(0 2px 8px rgba(191, 191, 191, .3));
 
             a {
                 color: @rogue-light-grey;
@@ -27,11 +49,13 @@
     .profile-image {
         border-radius: 50%;
         margin-right: 15px;
+        visibility: hidden;
     }
 
     .triangle-left {
         width: 0;
         height: 0;
+        visibility: hidden;
         border-top: 15px solid @rogue-grey;
         border-left: 15px solid transparent;
         position: relative;
@@ -42,6 +66,7 @@
     .triangle-right {
         width: 0;
         height: 0;
+        visibility: hidden;
         border-top: 15px solid @rogue-grey;
         border-right: 15px solid transparent;
         position: relative;
@@ -51,14 +76,11 @@
 
     .message {
         background-color: @rogue-grey;
-        border-radius: 2px;
-        padding: 5px 10px;
+        padding: 0 10px;
         width: 75%;
 
         word-break: break-all;
         color: @rogue-off-white;
-
-        filter: drop-shadow(0 2px 8px rgba(119, 119, 119, .3));
 
         > * {
             word-break: break-all;
@@ -74,5 +96,6 @@
         margin: 9px 15px;
         font-size: 14px;
         color: @rogue-light-grey;
+        visibility: hidden;
     }
 }

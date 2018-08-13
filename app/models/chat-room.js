@@ -33,10 +33,36 @@ export default EmberObject.extend({
     }),
 
     historyHandler(messages) {
+        messages.forEach((message, index) => {
+            const lastMessage = messages[index - 1];
+            if (lastMessage && this.shouldGroupMessage(lastMessage, message)) {
+                lastMessage.set('endOfBlock', false);
+                message.set('startOfBlock', false);
+            }
+        });
+
         this.get('messages').pushObjects(messages);
     },
 
     messageHandler(message) {
+        const messageId = message.id || message.oid;
+        if (this.get(`messageCache.${messageId}`)) {
+            return;
+        }
+
+        const lastMessage = this.get('messages.lastObject');
+        if (lastMessage && this.shouldGroupMessage(lastMessage, message)) {
+            lastMessage.set('endOfBlock', false);
+            message.set('startOfBlock', false);
+        }
+
         this.get('messages').pushObject(message);
+    },
+
+    shouldGroupMessage(lastMessage, message) {
+        const difference = lastMessage.get('time').diff(message.get('time'), 'minutes');
+
+        return lastMessage.from === message.from &&
+            Math.abs(difference) <= 2;
     }
 });

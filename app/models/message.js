@@ -17,5 +17,9 @@ export default EmberObject.extend({
     user: null,
 
     //set by history service when message is received
-    history: false
+    history: false,
+
+    //overridden by chat model when processing messages
+    startOfBlock: true,
+    endOfBlock: true
 });
