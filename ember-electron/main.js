@@ -58,6 +58,11 @@ app.on('ready', () => {
             realtime.connect();
         });
 
+        ipcMain.on('request-token', function () {
+            rosterWindow.sendEvent('auth-token', accessToken);
+            chatWindow.sendEvent('auth-token', accessToken);
+        });
+
         ipcMain.on('open-room', function (event, args) {
             chatWindow.sendEvent('open-room', args);
         });

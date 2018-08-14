@@ -1,16 +1,18 @@
 import { inject as service } from '@ember/service';
 import Service from '@ember/service';
+import RSVP from 'rsvp';
 
 export default Service.extend({
     ajax: service(),
     store: service(),
+    ipc: service(),
 
     accessToken: null,
     user: null,
     org: null,
 
     async authenticate() {
-        const sessionToken = this.getAuthToken();
+        const sessionToken = await this.getAuthToken();
         this.set('accessToken', sessionToken);
         const user = await this.getUser();
         this.set('user', user);
@@ -21,16 +23,18 @@ export default Service.extend({
     },
 
     getAuthToken() {
-        const token = (
-            /token=([^&]*)/.exec(window.location.href)
-            || []
-        )[1];
+        return new RSVP.Promise((resolve, reject) => {
+            const tid = setTimeout(() => {
+                reject(new Error('never received an auth token from node'));
+            }, 1000);
 
-        if (!token) {
-            throw new Error('NO VALID TOKEN FOUND APP CANNOT BOOTSTRAP');
-        }
+            this.get('ipc').registerOneTimeListener('auth-token', (event, token) => {
+               clearTimeout(tid);
+               resolve(token);
+            });
 
-        return token;
+            this.get('ipc').sendEvent('request-token');
+        });
     },
 
     async getUser() {

@@ -54,8 +54,7 @@ module.exports = class ChatWindow extends EventEmitter {
     }
 
     show() {
-        const { accessToken } = this.opts;
-        this.window.loadURL(`serve://dist/chat?token=${accessToken}`);
+        this.window.loadURL(`serve://dist/chat`);
         this.window.show();
     }
 

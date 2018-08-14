@@ -31,9 +31,12 @@ module.exports = class RosterWindow extends EventEmitter {
         });
     }
 
+    sendEvent(event, message) {
+        this.window.webContents.send(event, message);
+    }
+
     show() {
-        const { accessToken } = this.opts;
-        this.window.loadURL(`serve://dist?token=${accessToken}`);
+        this.window.loadURL(`serve://dist`);
         this.window.show();
     }
 
