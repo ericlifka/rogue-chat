@@ -3,14 +3,18 @@ import { reads } from '@ember/object/computed';
 import Controller from '@ember/controller';
 
 export default Controller.extend({
+    router: service(),
     chat: service(),
 
-    activeInteraction: reads('chat.activeInteraction'),
     interactions: reads('chat.rooms'),
 
     actions: {
         switchInteraction(room) {
-            this.get('chat').setInteraction(room);
+            this.get('router').transitionTo('chat.room', room.get('jid'), {
+                queryParams: {
+                    rawSubject: room.get('rawSubject')
+                }
+            });
         }
     }
 });

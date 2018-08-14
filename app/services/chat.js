@@ -41,16 +41,12 @@ export default Service.extend({
         this.get('ipc').registerListener('open-room', this.openRoomHandler);
     },
 
-    //TODO: Maybe move this to the router and let it handle navigation changes
     async openRoomEvent(event, message) {
-        const { jid, rawSubject } = message;
-        const room = await this.getChatRoom(jid);
-        // Update the raw subject received from active chat
-        room.set('rawSubject', rawSubject);
-        this.get('rooms').addObject(room);
-        this.setInteraction(room);
-        //TODO: This will not stay here, just temporary to test logic.
-        this.get('router').transitionTo('chat', room.get('jid'))
+        this.get('router').transitionTo('chat.room', message.jid, {
+            queryParams: {
+                rawSubject: message.rawSubject
+            }
+        });
     },
 
     async getChatRoom(jid) {
@@ -66,6 +62,7 @@ export default Service.extend({
 
     async setupRoom(room) {
         await this.loadEntityData(room);
+        await this.activateRoom(room);
         this.setupRoomBindings(room);
     },
 
@@ -142,7 +139,7 @@ export default Service.extend({
        }) ;
     },
 
-    async setInteraction(room) {
+    async activateRoom(room) {
         if (!room.get('activated')) {
             if (room.get('type')!== 'person') {
                 await this.joinRoom(room);
@@ -150,6 +147,5 @@ export default Service.extend({
             await this.get('history').loadHistoryBefore(room);
             room.set('activated', true);
         }
-        this.set('activeInteraction', room);
     }
 });

@@ -1,12 +1,15 @@
-//import { inject as service } from '@ember/service';
-//import { reads } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 
 export default Controller.extend({
+    queryParams: ['rawSubject'],
+
+    chat: service(),
+
     actions: {
         sendMessage(message) {
-            const room = this.get('activeInteraction');
-            this.get('chat').sendMessage(room, message);
+            const model = this.get('model');
+            this.get('chat').sendMessage(model, message);
         }
     }
 });
