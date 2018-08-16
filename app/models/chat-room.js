@@ -101,7 +101,7 @@ export default EmberObject.extend({
         const difference = lastMessage.get('time').diff(message.get('time'), 'minutes');
 
         return lastMessage.from === message.from &&
-            message.get('correction') &&
+            !message.get('corrected') &&
             Math.abs(difference) <= 2;
     },
 
