@@ -24,6 +24,7 @@ export default Component.extend({
     user: reads('message.user'),
     startOfBlock: reads('message.startOfBlock'),
     endOfBlock: reads('message.endOfBlock'),
+    markdown: reads('message.markdown'),
 
     time: computed('message.time', function () {
         return this.get('message.time').format('D MMM hh:mma');
@@ -31,10 +32,6 @@ export default Component.extend({
 
     sentByMe: computed('message.from', 'session.user.chat.jabberId', function () {
         return this.get('message.from') === this.get('session.user.chat.jabberId');
-    }),
-
-    markdown: computed('message.raw', function () {
-        return markdownToHTML(this.get('message.raw'));
     }),
 
     profileImageUrl: computed('user.images.[]', function () {

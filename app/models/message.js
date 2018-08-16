@@ -1,3 +1,5 @@
+import { markdownToHTML } from './../utils/markdown'
+import { computed } from '@ember/object';
 import EmberObject from '@ember/object';
 
 export default EmberObject.extend({
@@ -20,6 +22,18 @@ export default EmberObject.extend({
     history: false,
 
     //overridden by chat model when processing messages
+    correctionRaw: null,
     startOfBlock: true,
-    endOfBlock: true
+    endOfBlock: true,
+
+    markdown: computed('raw', 'correctionRaw', function () {
+        if (this.get('correctionRaw')) {
+            return markdownToHTML(this.get('correctionRaw'));
+        }
+        return markdownToHTML(this.get('raw'));
+    }),
+
+    corrected: computed('correctionRaw', 'corrects', function () {
+       return !!(this.get('correctionRaw') || this.get('corrects'));
+    })
 });
