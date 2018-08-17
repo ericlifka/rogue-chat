@@ -1,7 +1,22 @@
-{{interaction-header}}
-{{interaction-pane
-    activeInteraction=model
+{{interaction-header
+    activePanel=activePanel
+    togglePanel=(action "togglePanel")
 }}
-{{interaction-textarea
-    sendMessage=(action "sendMessage")
-}}
+<div class="room-container">
+    <div class="conversation">
+        {{interaction-pane
+            activeInteraction=model
+        }}
+        {{interaction-textarea
+            sendMessage=(action "sendMessage")
+        }}
+    </div>
+    <div class="panel-outlet">
+        {{#if showSearchPanel}}
+            BOO
+        {{/if}}
+        {{#if showInvitePanel}}
+            HOO
+        {{/if}}
+    </div>
+</div>

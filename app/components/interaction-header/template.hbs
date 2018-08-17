@@ -2,10 +2,10 @@
     <!-- Will eventually hold icons for phone, video and screenshare -->
 </div>
 <div class="header-right">
-    <button class="header-icon">
+    <button class="header-icon {{if (eq activePanel "invite") "active"}}" {{action togglePanel "invite"}}>
         {{material-icon "person_add"}}
     </button>
-    <button class="header-icon">
+    <button class="header-icon {{if (eq activePanel "search") "active"}}" {{action togglePanel "search"}}>
         {{material-icon "search"}}
     </button>
     <button class="header-icon">
