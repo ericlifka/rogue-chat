@@ -12,11 +12,16 @@ export default EmberObject.extend({
     url: null,
 
     initialRequest: true,
+    inflightRequest: false,
     nextPageUrl: null,
-    previousPageUrl: null,
     numberOfPages: null,
     totalPages: null,
     currentPage: 0,
+
+    init() {
+        this._super(...arguments);
+        this.set('results', []);
+    },
 
     async startSearch() {
         if (!this.get('initialRequest')) {
@@ -36,15 +41,17 @@ export default EmberObject.extend({
         };
 
         const url = this.get('url');
+        this.set('inflightRequest', true);
         return this.get('ajax').post(url, data)
             .then((response) => {
                 this.set('nextPageUrl', response.nextPage);
-                this.set('previousPageUrl', response.previousPage);
                 this.set('currentPage', response.pageNumber);
 
                 const store = this.get('store');
-                return normalizeSuggestResponse(store, response.results);
-            });
+                const entities = normalizeSuggestResponse(store, response.results);
+                this.get('results').pushObjects(entities);
+            })
+            .finally(() => this.set('inflightRequest', false));
     },
 
     async next() {
@@ -53,32 +60,17 @@ export default EmberObject.extend({
             throw new Error('No valid next page to iterate to');
         }
 
+        this.set('inflightRequest', true);
         return this.get('ajax').request(nextPageUrl)
             .then((response) => {
                 this.set('nextPageUrl', response.nextPage);
-                this.set('previousPageUrl', response.previousPage);
                 this.set('currentPage', response.pageNumber);
 
                 const store = this.get('store');
-                return normalizeSuggestResponse(store, response.results);
-            });
-    },
-
-    async previous() {
-        const previousPageUrl = this.get('previousPageUrl');
-        if (!previousPageUrl) {
-            throw new Error('No valid previous page to iterate to');
-        }
-
-        return this.get('ajax').request(previousPageUrl)
-            .then((response) => {
-                this.set('nextPageUrl', response.nextPage);
-                this.set('previousPageUrl', response.previousPage);
-                this.set('currentPage', response.pageNumber);
-
-                const store = this.get('store');
-                return normalizeSuggestResponse(store, response.results);
+                const entities = normalizeSuggestResponse(store, response.results);
+                this.get('results').pushObjects(entities);
             })
+            .finally(() => this.set('inflightRequest', false));
     }
 });
 

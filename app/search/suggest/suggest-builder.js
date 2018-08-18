@@ -44,8 +44,8 @@ export default EmberObject.extend({
             throw new Error('must supply a search value');
         }
 
-        if (searchValue.trim().length === 0) {
-            throw new Error('cannot supply empty string to search');
+        if (searchValue.trim().length <= 1) {
+            throw new Error('suggest request must be at least two characters');
         }
 
         this.set('searchValue', searchValue);
