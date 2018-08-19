@@ -13,7 +13,10 @@ export default Component.extend({
     }),
 
     presenceClass: computed('entity.presence.systemPresence', function () {
-        //return this.get('entity.presence.systemPresence').toLowerCase().replace(' ', '-');
-        return 'available';
+        const presence = this.get('entity.presence.presenceDefinition.systemPresence');
+        if (presence) {
+            return presence.toLowerCase().replace(' ', '-');
+        }
+        return 'offline';
     }),
 });

@@ -40,8 +40,6 @@ export default Service.extend({
     async getUser() {
         //TODO: Don't hard code path for user me endpoint
         const user = await this.get('ajax').request('https://api.inindca.com/api/v2/users/me?expand=presence');
-        //TODO: After switching all user request to public api, create a transform for presences
-        user.presence = user.presence.presenceDefinition;
         return this.get('store').createRecord('user', user);
     },
 

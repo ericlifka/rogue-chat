@@ -36,6 +36,9 @@ export default EmberObject.extend({
                 types: this.get('types'),
                 query: [
                     { value: this.get('value') }
+                ],
+                expand: [
+                    'presence'
                 ]
             }
         };

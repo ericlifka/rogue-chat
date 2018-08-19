@@ -20,7 +20,7 @@ export default Component.extend({
     showPresencePicker: false,
 
     user: reads('session.user'),
-    presenceLabel: reads('user.presence.systemPresence'),
+    presenceLabel: reads('user.presence.presenceDefinition.systemPresence'),
 
     presences: computed('presence.presences', function () {
         const presences = this.get('presence.presences') || [];
@@ -33,7 +33,7 @@ export default Component.extend({
     }),
 
     presenceClass: computed('user.presence.systemPresence', function () {
-        return this.get('session.user.presence.systemPresence').toLowerCase().replace(' ', '-');
+        return this.get('session.user.presence.presenceDefinition.systemPresence').toLowerCase().replace(' ', '-');
     }),
 
     actions: {

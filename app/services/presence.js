@@ -70,6 +70,6 @@ export default Service.extend({
                 }
             }
         });
-        user.set('presence', setPresence.presenceDefinition);
+        user.set('presence', setPresence);
     }
 });
