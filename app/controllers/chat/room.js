@@ -23,6 +23,10 @@ export default Controller.extend({
                 return this.set('activePanel', null);
             }
             this.set('activePanel', panel);
+        },
+
+        onSelection(entity) {
+            console.log('Entity: ', entity);
         }
     }
 });

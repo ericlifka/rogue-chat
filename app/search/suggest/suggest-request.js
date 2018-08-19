@@ -46,6 +46,7 @@ export default EmberObject.extend({
             .then((response) => {
                 this.set('nextPageUrl', response.nextPage);
                 this.set('currentPage', response.pageNumber);
+                this.set('totalPages', response.pageCount);
 
                 const store = this.get('store');
                 const entities = normalizeSuggestResponse(store, response.results);
@@ -59,9 +60,10 @@ export default EmberObject.extend({
         if (!this.get('nextPageUrl')) {
             throw new Error('No valid next page to iterate to');
         }
-
         this.set('inflightRequest', true);
-        return this.get('ajax').request(nextPageUrl)
+
+        const url = `https://api.inindca.com${nextPageUrl}`;
+        return this.get('ajax').request(url)
             .then((response) => {
                 this.set('nextPageUrl', response.nextPage);
                 this.set('currentPage', response.pageNumber);

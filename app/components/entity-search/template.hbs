@@ -1,0 +1,19 @@
+<div class="input-wrapper">
+    {{input class="search-input" placeholder="find people to add" value=searchInput input=(action "onInput")}}
+    {{material-icon "search"}}
+</div>
+<div class="search-results">
+    {{#each searchResults as |result|}}
+        {{search-result entity=result onSelection=onSelection}}
+    {{/each}}
+    {{#if hasResults}}
+        <div class="bottom-bar">
+            {{#if moreResults}}
+                <button class="results-button" {{action "loadMoreResults"}}>Load More Results</button>
+            {{else}}
+                <span>No More Results</span>
+            {{/if}}
+        </div>
+    {{/if}}
+</div>
+

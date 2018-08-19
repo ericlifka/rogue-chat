@@ -16,7 +16,9 @@
             BOO
         {{/if}}
         {{#if showInvitePanel}}
-            HOO
+            <div class="panel invite-panel">
+                {{entity-search onSelection=(action "onSelection")}}
+            </div>
         {{/if}}
     </div>
 </div>
