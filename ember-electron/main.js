@@ -44,39 +44,24 @@ app.on('ready', () => {
         });
 
         const rosterWindow = WindowFactory.createWindow('RosterWindow', {
-            accessToken,
             realtime
         });
 
         const chatWindow = WindowFactory.createWindow('ChatWindow', {
-            accessToken,
             realtime
         });
 
-        ipcMain.on('main-window-ready', function () {
+        ipcMain.on('main-window-ready', function (event) {
             realtime.disconnect();
             realtime.connect();
         });
 
-        ipcMain.on('request-token', function () {
-            rosterWindow.sendEvent('auth-token', accessToken);
-            chatWindow.sendEvent('auth-token', accessToken);
+        ipcMain.on('request-token', function (event) {
+            event.sender.send('auth-token', accessToken);
         });
 
         ipcMain.on('open-room', function (event, args) {
             chatWindow.sendEvent('open-room', args);
-        });
-
-        ipcMain.on('join-room', function (event, args) {
-            chatWindow.handleEvent('join-room', args);
-        });
-
-        ipcMain.on('request-history', function (event, args) {
-            chatWindow.handleEvent('request-history', args);
-        });
-
-        ipcMain.on('send-message', function (event, args) {
-           chatWindow.handleEvent('send-message', args);
         });
 
         rosterWindow.show();

@@ -1,5 +1,6 @@
 const { BrowserWindow } = require('electron');
 const { EventEmitter } = require('events');
+const { ipcMain } = require('electron');
 const _ = require('lodash');
 
 module.exports = class ChatWindow extends EventEmitter {
@@ -13,6 +14,7 @@ module.exports = class ChatWindow extends EventEmitter {
                 webSecurity: false
             }
         });
+        this.id = this.window.id;
         this.registerListeners();
     }
 
@@ -25,16 +27,29 @@ module.exports = class ChatWindow extends EventEmitter {
             const id = _.first(messageEvent.to.split('@'));
             webContents.send(`message:${id}`, messageEvent);
         });
+
+        realtime.bindToEvent('occupantChange', '*', (occupantEvent) => {
+            const id = _.first(occupantEvent.room.split('@'));
+            webContents.send(`occupant:${id}`, occupantEvent);
+        });
+
+        ipcMain.on('join-room', (event, payload) => this.handleEvent('join-room', event, payload));
+        ipcMain.on('request-history', (event, payload) => this.handleEvent('request-history', event, payload));
+        ipcMain.on('send-message', (event, payload) => this.handleEvent('send-message', event, payload));
     }
 
     sendEvent(event, message) {
         this.window.webContents.send(event, message);
     }
 
-    handleEvent(event, args) {
-        //TODO: Make a better way of handling these events, also probably should start handling errors
+    handleEvent(name, event, args) {
+        const browserWindow = event.sender.getOwnerBrowserWindow();
+        if (browserWindow.id !== this.id) {
+            return;
+        }
+
         const { id, payload } = args;
-        switch(event) {
+        switch(name) {
             case 'join-room':
                 this.opts.realtime.joinRoom(payload, (error) => {
                     this.window.webContents.send(`join:${id}`, null);
