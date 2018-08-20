@@ -4,6 +4,7 @@
 <div class="header-right">
     <button class="header-icon {{if (eq activePanel "participant") "active"}}" {{action togglePanel "participant"}}>
         {{material-icon "person_add"}}
+        <span class="participant-count">{{participantCount}}</span>
     </button>
     <button class="header-icon {{if (eq activePanel "search") "active"}}" {{action togglePanel "search"}}>
         {{material-icon "search"}}

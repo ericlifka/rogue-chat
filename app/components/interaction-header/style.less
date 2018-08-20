@@ -11,6 +11,7 @@
 
     .header-icon {
         border: none;
+        position: relative;
         background: transparent;
         color: @rogue-light-grey;
         border-left: 1px solid grey;
@@ -27,5 +28,12 @@
         &.active {
             color: @rogue-white;
         }
+    }
+
+    .participant-count {
+        position: absolute;
+        font-size: 10px;
+        top: 6px;
+        right: 8px;
     }
 }
