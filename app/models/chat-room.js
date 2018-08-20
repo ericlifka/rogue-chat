@@ -9,6 +9,8 @@ export default EmberObject.extend({
     rawSubject: null,
     entity: null,
 
+    occupants: null,
+
     messageCache: null,
     messages: null,
 
@@ -23,6 +25,7 @@ export default EmberObject.extend({
         //TODO: Switch out for an lru to auto prune old data otherwise this can grow unbounded
         this.set('messageCache', {});
         this.set('messages', []);
+        this.set('occupants', []);
     },
 
     type: computed('jid', function () {
@@ -95,6 +98,14 @@ export default EmberObject.extend({
 
         this.set(`messageCache.${messageId}`, message);
         this.get('messages').pushObject(message);
+    },
+
+    occupantHandler(type, occupant) {
+        if (type === 'join') {
+            this.get('occupants').addObject(occupant);
+        } else if (type === 'leave') {
+            this.get('occupants').removeObject(occupant);
+        }
     },
 
     shouldGroupMessage(lastMessage, message) {

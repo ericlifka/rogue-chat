@@ -61,9 +61,9 @@ export default Service.extend({
     },
 
     async setupRoom(room) {
+        this.setupRoomBindings(room);
         await this.loadEntityData(room);
         await this.activateRoom(room);
-        this.setupRoomBindings(room);
     },
 
     async loadEntityData(room) {
@@ -84,6 +84,12 @@ export default Service.extend({
         this.get('ipc').registerListener(scopedMessageTopic, async (event, message) => {
             message = await this.setupMessageModel(message);
             messageHandler(message);
+        });
+
+        const scopedOccupantTopic = `occupant:${room.get('id')}`;
+        this.get('ipc').registerListener(scopedOccupantTopic, async (event, {from, type}) => {
+            const occupant = await this.get('store').findRecord('user', from);
+            room.occupantHandler(type, occupant);
         });
     },
 
@@ -117,8 +123,28 @@ export default Service.extend({
         return defer.promise;
     },
 
+    getRoomInfo(room) {
+        return new RSVP.Promise((resolve, reject) => {
+            const tid = setTimeout(() => {
+                reject(new Error('never received room info from realtime'));
+            }, 5000);
+
+            const scopedRoomInfo = `room-info:${room.get('id')}`;
+            this.get('ipc').registerOneTimeListener(scopedRoomInfo, (event, roomInfo) => {
+                clearTimeout(tid);
+                //TODO: Once realtime fixes room info add occupants to room
+                resolve();
+            });
+
+            this.get('ipc').sendEvent('get-room-info', {
+                id: room.get('id'),
+                payload: room.get('jid')
+            });
+        })
+    },
+
     sendMessage(room, message) {
-       return new RSVP.Promise((resolve, reject) => {
+        return new RSVP.Promise((resolve, reject) => {
             const tid = setTimeout(() => {
                reject(new Error('never received carbon response from realtime'));
             }, 5000);
@@ -137,7 +163,7 @@ export default Service.extend({
                     body: message
                 }
             });
-       }) ;
+        }) ;
     },
 
     async activateRoom(room) {

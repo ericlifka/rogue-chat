@@ -36,6 +36,7 @@ module.exports = class ChatWindow extends EventEmitter {
         ipcMain.on('join-room', (event, payload) => this.handleEvent('join-room', event, payload));
         ipcMain.on('request-history', (event, payload) => this.handleEvent('request-history', event, payload));
         ipcMain.on('send-message', (event, payload) => this.handleEvent('send-message', event, payload));
+        ipcMain.on('get-room-info', (event, payload) => this.handleEvent('get-room-info', event, payload));
     }
 
     sendEvent(event, message) {
@@ -65,6 +66,10 @@ module.exports = class ChatWindow extends EventEmitter {
                     this.window.webContents.send(`send-message:${id}`, message);
                 });
                 break;
+            case 'get-room-info':
+                this.opts.realtime.getRoomInfo(payload, (error, roomInfo) => {
+                    this.window.webContents.send(`room-info:${id}`, roomInfo);
+                });
         }
     }
 

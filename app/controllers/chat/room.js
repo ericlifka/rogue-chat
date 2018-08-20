@@ -7,10 +7,11 @@ export default Controller.extend({
 
     chat: service(),
 
+    model: null,
     activePanel: null,
 
     showSearchPanel: equal('activePanel', 'search'),
-    showInvitePanel: equal('activePanel', 'invite'),
+    showParticipantPanel: equal('activePanel', 'participant'),
 
     actions: {
         sendMessage(message) {

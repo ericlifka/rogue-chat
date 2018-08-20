@@ -15,10 +15,11 @@
         {{#if showSearchPanel}}
             BOO
         {{/if}}
-        {{#if showInvitePanel}}
-            <div class="panel invite-panel">
-                {{entity-search onSelection=(action "onSelection")}}
-            </div>
+        {{#if showParticipantPanel}}
+            {{participant-panel
+                occupants=model.occupants
+                onSelection=(action "onSelection")
+            }}
         {{/if}}
     </div>
 </div>

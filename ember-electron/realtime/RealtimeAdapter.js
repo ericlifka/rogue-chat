@@ -67,6 +67,10 @@ module.exports = class RealtimeAdapter {
         this.realtime.sendMessage(options, callback);
     }
 
+    getRoomInfo(roomJid, callback) {
+        this.realtime.getRoomInfo(roomJid, callback);
+    }
+
     bindToEvent(event, scope, handler) {
         const subscribedEvents = this.subscribedEvents;
         if (!subscribedEvents[event]) {
@@ -95,6 +99,7 @@ module.exports = class RealtimeAdapter {
         const realtime = this.realtime;
         realtime.on('activeChat', this.activeChat.bind(this));
         realtime.on('message', this.message.bind(this));
+        realtime.on('occupantChange', this.occupantChange.bind(this));
     }
 
     notifyListeners(eventList, event) {
@@ -114,5 +119,10 @@ module.exports = class RealtimeAdapter {
     message(messageEvent) {
         const messageEventList = this.subscribedEvents['message'];
         this.notifyListeners(messageEventList, messageEvent);
+    }
+
+    occupantChange(occupantEvent) {
+        const occupantEventList = this.subscribedEvents['occupantChange'];
+        this.notifyListeners(occupantEventList, occupantEvent);
     }
 };
