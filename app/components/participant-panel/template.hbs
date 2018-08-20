@@ -1,0 +1,6 @@
+{{entity-search onSelection=onSelection}}
+<div class="occupants">
+    {{#each occupants as |occupant|}}
+        {{participant-panel/participant occupant=occupant}}
+    {{/each}}
+</div>
