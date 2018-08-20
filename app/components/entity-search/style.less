@@ -16,6 +16,8 @@
         color: @rogue-light-grey;
         text-indent: 10px;
         border: 1px solid @rogue-divider;
+        padding: unset;
+        box-sizing: border-box;
 
         &:focus {
             outline: none;
@@ -32,14 +34,15 @@
     .search-results {
         display: flex;
         flex-direction: column;
-        max-height: ~"calc(100vh - 182px)";
+        max-height: ~"calc(100vh - 178px)";
         position: absolute;
 
         background-color: @rogue-white;
-        top: 79px;
+        top: 75px;
         right: 0;
 
         overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .bottom-bar {
