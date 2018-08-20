@@ -32,17 +32,21 @@
     .search-results {
         display: flex;
         flex-direction: column;
+        max-height: ~"calc(100vh - 182px)";
         position: absolute;
 
         background-color: @rogue-white;
         top: 79px;
         right: 0;
+
+        overflow-y: auto;
     }
 
     .bottom-bar {
         display: flex;
         flex-direction: row;
         justify-content: center;
+        min-height: 20px;
         padding: 5px 0;
         color: @rogue-light-grey;
         border-left: 1px solid @rogue-divider;
