@@ -16,6 +16,7 @@ export default Component.extend({
         this._super(...arguments);
         const requestBuilder = this.get('search')
             .getSuggestBuilder()
+            .setExpansions(['presence'])
             .setTypes(['users']);
         this.set('requestBuilder', requestBuilder);
     },

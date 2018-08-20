@@ -10,6 +10,7 @@ export default EmberObject.extend({
     pageSize: null,
     types: null,
     url: null,
+    expands: null,
 
     initialRequest: true,
     inflightRequest: false,
@@ -37,9 +38,7 @@ export default EmberObject.extend({
                 query: [
                     { value: this.get('value') }
                 ],
-                expand: [
-                    'presence'
-                ]
+                expand: this.get('expands')
             }
         };
 

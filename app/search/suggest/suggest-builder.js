@@ -10,11 +10,25 @@ const SEARCH_TYPES = [
     'chats'
 ];
 
+const EXPANSIONS = [
+    'routingStatus',
+    'presence',
+    'conversationSummary',
+    'outOfOffice',
+    'geolocation',
+    'station',
+    'authorization',
+    'profileSkills',
+    'locations',
+    'groups'
+];
+
 export default EmberObject.extend({
     suggestUrl: null,
     types: null,
     pageSize: null,
     searchValue: null,
+    expansions: null,
 
     setTypes(types) {
         if (!_.isArray(types)) {
@@ -52,16 +66,32 @@ export default EmberObject.extend({
         return this;
     },
 
+    setExpansions(expansions) {
+        if (!_.isArray(expansions)) {
+            throw new Error('expansions must be in the form of an array');
+        }
+
+        const validExpansions = _.intersection(EXPANSIONS, expansions);
+        if (validExpansions.length !== expansions.length) {
+            const invalidExpansions = _.difference(validExpansions, expansions);
+            throw new Error(`the following are not valid search types: ${invalidExpansions}`);
+        }
+
+        this.set('expansions', expansions);
+        return this;
+    },
+
     build() {
         const pageSize = this.get('pageSize') || 25;
         const types = this.get('types') || SEARCH_TYPES;
         const url = this.get('suggestUrl');
         const value = this.get('searchValue');
+        const expands = this.get('expansions') || [];
 
         if (!value) {
             throw new Error('attempted to build a suggest request without supplying a search value');
         }
 
-        return SuggestRequest.create({value, pageSize, types, url}, getOwner(this).ownerInjection());
+        return SuggestRequest.create({value, pageSize, types, url, expands}, getOwner(this).ownerInjection());
     },
 });
