@@ -1,5 +1,4 @@
 import { inject as service } from '@ember/service';
-import { markdownToHTML } from '../../../utils/markdown'
 import { reads } from '@ember/object/computed';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
@@ -9,6 +8,7 @@ export default Component.extend({
     classNames: ['message'],
     classNameBindings: [
         'sentByMe',
+        'sentByThem',
         'startOfBlock',
         'endOfBlock'
     ],
@@ -25,6 +25,11 @@ export default Component.extend({
     startOfBlock: reads('message.startOfBlock'),
     endOfBlock: reads('message.endOfBlock'),
     markdown: reads('message.markdown'),
+    sentByThem: computed.not('sentByMe'),
+
+    name: computed('user.name', function () {
+        return this.get('user.name').toLowerCase();
+    }),
 
     time: computed('message.time', function () {
         return this.get('message.time').format('D MMM hh:mma');
@@ -37,5 +42,9 @@ export default Component.extend({
     profileImageUrl: computed('user.images.[]', function () {
         const imageUrl = _.find(this.get('user.images'), {resolution: 'x96'});
         return _.get(imageUrl, 'imageUri', 'https://apps.inindca.com/static-resources/avatar-x96.png');
+    }),
+
+    showProfilePicture: computed('sentByMe', 'startOfBlock', function () {
+        return !this.get('sentByMe') && this.get('startOfBlock');
     })
 });

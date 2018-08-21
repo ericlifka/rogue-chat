@@ -1,15 +1,19 @@
-{{#unless sentByMe}}
-    <img class="profile-image" src="{{profileImageUrl}}" height="30" width="30">
-{{/unless}}
-
-{{#if sentByMe}}
-    <div class="triangle-right"></div>
-{{else}}
-    <div class="triangle-left"></div>
-{{/if}}
-
-<div class="message">
-    {{{markdown}}}
+<div class="details-container">
+    <div class="name">{{name}}</div>
+    <div class="timestamp">{{time}}</div>
 </div>
+<div class="message-container">
+    {{#unless sentByMe}}
+        <img class="profile-image" src="{{profileImageUrl}}" height="30" width="30">
+    {{/unless}}
 
-<div class="timestamp">{{time}}</div>
+    {{#if sentByMe}}
+        <div class="triangle-right"></div>
+    {{else}}
+        <div class="triangle-left"></div>
+    {{/if}}
+
+    <div class="message">
+        {{{markdown}}}
+    </div>
+</div>

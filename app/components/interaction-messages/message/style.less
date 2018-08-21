@@ -1,14 +1,18 @@
 & {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin: 0 10px;
     flex: 1 0 auto;
 
     &.start-of-block {
         margin-top: 7px;
 
-        .triangle-right, .triangle-left, .profile-image, .timestamp {
+        .triangle-right, .triangle-left, .profile-image {
             visibility: visible;
+        }
+
+        .timestamp, .name {
+            display: initial;
         }
 
         .message {
@@ -29,7 +33,13 @@
     }
 
     &.sent-by-me {
-        flex-direction: row-reverse;
+        .message-container {
+            flex-direction: row-reverse;
+        }
+
+        .details-container {
+            justify-content: flex-end;
+        }
 
         .message {
             color: white;
@@ -40,9 +50,12 @@
             }
         }
 
-        .triangle-right {
-            border-top: 15px solid @rogue-light-grey;
-            filter: drop-shadow(0 2px 8px rgba(191, 191, 191, .3));
+        .timestamp {
+            margin-right: 30px;
+        }
+
+        .name {
+            display: none;
         }
     }
 
@@ -67,11 +80,22 @@
         width: 0;
         height: 0;
         visibility: hidden;
-        border-top: 15px solid @rogue-grey;
+        border-top: 15px solid @rogue-light-grey;
         border-right: 15px solid transparent;
         position: relative;
         right: 1px;
-        filter: drop-shadow(0 2px 8px rgba(119, 119, 119, .3));
+        filter: drop-shadow(0 2px 8px rgba(191, 191, 191, .3));
+    }
+
+    .details-container {
+        display:flex;
+        flex-direction: row;
+        color: @rogue-light-grey;
+    }
+
+    .message-container {
+        display: flex;
+        flex-direction: row;
     }
 
     .message {
@@ -93,9 +117,15 @@
     }
 
     .timestamp {
-        margin: 9px 15px;
-        font-size: 14px;
-        color: @rogue-light-grey;
-        visibility: hidden;
+        font-size: 12px;
+        display: none;
+    }
+
+    .name {
+        font-size: 12px;
+        display: none;
+        font-weight: bold;
+        margin-left: 60px;
+        margin-right: 5px;
     }
 }
