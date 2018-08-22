@@ -7,7 +7,6 @@ export default EmberObject.extend({
     ajax: service(),
 
     value: null,
-    pageSize: null,
     types: null,
     url: null,
     expands: null,
@@ -32,7 +31,6 @@ export default EmberObject.extend({
 
         const data = {
             data: {
-                pageSize: this.get('pageSize'),
                 pageNumber: 1,
                 types: this.get('types'),
                 query: [
