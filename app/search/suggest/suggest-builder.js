@@ -6,8 +6,7 @@ import _ from 'lodash';
 const SEARCH_TYPES = [
     'users',
     'groups' ,
-    'locations',
-    'chats'
+    'locations'
 ];
 
 const EXPANSIONS = [
