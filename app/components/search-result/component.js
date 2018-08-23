@@ -2,7 +2,7 @@ import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
 
 export default Component.extend({
-    classNames: ['searchResult'],
+    classNames: ['search-result'],
 
     entity: null,
 

@@ -40,13 +40,14 @@ const assertArray = function (valid, input, errorMessage) {
     }
 
     const validTypes = _.intersection(valid, input);
-    if (validTypes.length !== types.length) {
+    if (validTypes.length !== input.length) {
         const invalidTypes = _.difference(validTypes, types);
         throw new Error(`${errorMessage}: ${invalidTypes}`);
     }
 };
 
 export default EmberObject.extend({
+    diamondUrl: null,
     sortOrder: null,
     sortBy: null,
     pageSize: null,
@@ -60,7 +61,9 @@ export default EmberObject.extend({
     },
 
     setSortOrder(order) {
-        assertArray(SORT_ORDER, order, 'You supplied the following invalid sort orders');
+        if (!SORT_ORDER.includes(order)) {
+            throw new Error(`You supplied an incorrect sort order: ${order}`);
+        }
 
         this.set('sortOrder', order);
         return this;
@@ -100,26 +103,13 @@ export default EmberObject.extend({
         return this;
     },
 
-    addQuery(type, fields, value) {
-        assertArray(QUERY_TYPES, type, 'You supplied the following invalid query type');
-        if (!_.isArray(fields)) {
-            throw new Error('fields must be in the form of an array');
+    setQuery(query) {
+        if (!_.isArray(query)) {
+            throw new Error('Queries must be in the form on an array');
         }
 
-        if (!value) {
-            throw new Error('must supply a value');
-        }
-
-        if (value.trim().length <= 1) {
-            throw new Error('value must be at least two characters');
-        }
-
-        this.get('query').pushObject({
-            type,
-            fields,
-            value
-        });
-
+        //TODO: Try and validate the query in the future
+        this.set('query', query);
         return this;
     },
 
@@ -130,11 +120,12 @@ export default EmberObject.extend({
         const expand = this.get('expand');
         const types = this.get('types') || SEARCH_TYPES;
         const query = this.get('query');
+        const url = this.get('diamondUrl');
 
         if (this.get('query.length') === 0){
             throw new Error('Attempted to build diamond request without a query');
         }
 
-        return DiamondRequest.create({ sortOrder, sortBy, pageSize, expand, types, query }, getOwner(this).ownerInjection());
+        return DiamondRequest.create({ sortOrder, sortBy, pageSize, expand, types, query, url }, getOwner(this).ownerInjection());
     }
 });

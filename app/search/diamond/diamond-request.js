@@ -39,7 +39,7 @@ export default EmberObject.extend(BaseRequestMixin, {
         const resultPromises = results.map(async (result) => {
             const type = singularize(result._type);
             if (type === 'message') {
-                return this.normalizeMessage(result);
+                return this.normalizeMessage(store, result);
             }
             const normalizedRecord = store.normalize(type, result);
             return store.push(normalizedRecord);
