@@ -1,3 +1,4 @@
+import DiamondBuilder from './diamond/diamond-builder';
 import SuggestBuilder from './suggest/suggest-builder';
 import { getOwner } from '@ember/application';
 import { computed } from '@ember/object';
@@ -14,5 +15,9 @@ export default Service.extend({
 
     getSuggestBuilder() {
         return SuggestBuilder.create({suggestUrl: this.get('suggestUrl')}, getOwner(this).ownerInjection());
+    },
+
+    getDiamondBuilder() {
+        return DiamondBuilder.create({diamondUrl: this.get('baseUrl')}, getOwner(this).ownerInjection());
     }
 });

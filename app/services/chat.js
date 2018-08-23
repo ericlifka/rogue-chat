@@ -95,8 +95,12 @@ export default Service.extend({
 
     async setupMessageModel(realtimeMessage) {
         const message = MessageModel.create(realtimeMessage, getOwner(this).ownerInjection());
-        const user = await this.get('store').findRecord('user', realtimeMessage.from);
-        message.set('user', user);
+
+        //search message come with the user pre-fetched, no need to fetch it again
+        if (realtimeMessage.from) {
+            const user = await this.get('store').findRecord('user', realtimeMessage.from);
+            message.set('user', user);
+        }
         message.set('time', moment(realtimeMessage.time));
 
         return message;

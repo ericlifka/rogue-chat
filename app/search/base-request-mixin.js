@@ -21,11 +21,11 @@ export default Mixin.create({
        throw new Error('all requests must implement build payload');
     },
 
-    normalizeResponse() {
+    async normalizeResponse() {
         throw new Error('all request must have response normalizer');
     },
 
-    async startSearch() {
+    startSearch() {
         if (!this.get('initialRequest')) {
             return new Error('Cannot send initial request again');
         }
@@ -35,20 +35,20 @@ export default Mixin.create({
 
         const url = this.get('url');
         this.set('inflightRequest', true);
-        return this.get('ajax').post(url, data)
-            .then((response) => {
+        this.get('ajax').post(url, data)
+            .then(async (response) => {
                 this.set('nextPageUrl', response.nextPage);
                 this.set('currentPage', response.pageNumber);
                 this.set('totalPages', response.pageCount);
 
                 const store = this.get('store');
-                const entities = this.normalizeResponse(store, response.results);
+                const entities = await this.normalizeResponse(store, response.results);
                 this.get('results').pushObjects(entities);
             })
             .finally(() => this.set('inflightRequest', false));
     },
 
-    async next() {
+    next() {
         const nextPageUrl = this.get('nextPageUrl');
         if (!this.get('nextPageUrl')) {
             throw new Error('No valid next page to iterate to');
@@ -56,13 +56,13 @@ export default Mixin.create({
         this.set('inflightRequest', true);
 
         const url = `https://api.inindca.com${nextPageUrl}`;
-        return this.get('ajax').request(url)
-            .then((response) => {
+        this.get('ajax').request(url)
+            .then(async (response) => {
                 this.set('nextPageUrl', response.nextPage);
                 this.set('currentPage', response.pageNumber);
 
                 const store = this.get('store');
-                const entities = this.normalizeResponse(store, response.results);
+                const entities = await this.normalizeResponse(store, response.results);
                 this.get('results').pushObjects(entities);
             })
             .finally(() => this.set('inflightRequest', false));

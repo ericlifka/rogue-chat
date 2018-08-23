@@ -21,7 +21,7 @@ export default EmberObject.extend(BaseRequestMixin, {
         };
     },
 
-    normalizeResponse(store, results) {
+    async normalizeResponse(store, results) {
         const entities = results.map((result) => {
             let type = singularize(result._type);
             return store.normalize(type, result).data;
