@@ -1,0 +1,33 @@
+& {
+    display:flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+
+    .input-wrapper {
+        position: relative;
+        width:100%;
+    }
+
+    .search-input {
+        width: 100%;
+        height: 75px;
+        font-size: 14px;
+        color: @rogue-light-grey;
+        text-indent: 10px;
+        border: 1px solid @rogue-divider;
+        padding: unset;
+        box-sizing: border-box;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .material-icons {
+        position: absolute;
+        top: 28px;
+        right: 5px;
+        color: @rogue-light-grey;
+    }
+}

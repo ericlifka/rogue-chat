@@ -1,0 +1,9 @@
+<div class="input-wrapper">
+    {{input class="search-input" placeholder="search this chat" value=searchInput input=(action "onInput")}}
+    {{material-icon "search"}}
+</div>
+<div class="results">
+    {{#each results as |message| }}
+        {{{message.markdown}}}
+    {{/each}}
+</div>

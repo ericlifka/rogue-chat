@@ -1,6 +1,6 @@
-import EmberObject, { computed } from '@ember/object';
 import DiamondRequest from './diamond-request';
 import { getOwner } from '@ember/application';
+import EmberObject from '@ember/object';
 import _ from 'lodash';
 
 const SEARCH_TYPES = [
@@ -16,6 +16,7 @@ const SORT_ORDER = [
     'SCORE'
 ];
 
+/**
 const QUERY_TYPES = [
     'CONTAINS',
     'DATE_RANGE',
@@ -33,6 +34,7 @@ const QUERY_TYPES = [
     'TERM',
     'TERMS'
 ];
+ **/
 
 const assertArray = function (valid, input, errorMessage) {
     if (!_.isArray(input)) {
@@ -41,7 +43,7 @@ const assertArray = function (valid, input, errorMessage) {
 
     const validTypes = _.intersection(valid, input);
     if (validTypes.length !== input.length) {
-        const invalidTypes = _.difference(validTypes, types);
+        const invalidTypes = _.difference(validTypes, input);
         throw new Error(`${errorMessage}: ${invalidTypes}`);
     }
 };

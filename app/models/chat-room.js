@@ -1,7 +1,6 @@
 import {isGroupJid, isPersonJid} from "../utils/jid-helpers";
 import { computed } from '@ember/object';
 import EmberObject from '@ember/object';
-import _ from 'lodash';
 
 export default EmberObject.extend({
     id: null,

@@ -1,8 +1,8 @@
-import { reads, lt, gt } from '@ember/object/computed';
+import { reads, gt } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
+import { throttle } from '@ember/runloop';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
-import Ember from 'ember';
 
 export default Component.extend({
     classNames: ['entity-search'],
@@ -32,7 +32,7 @@ export default Component.extend({
         onInput() {
             const searchInput = this.get('searchInput');
             if (searchInput && searchInput.length > 2) {
-                Ember.run.throttle(this, this.sendSearchRequest, searchInput, 200, false);
+                throttle(this, this.sendSearchRequest, searchInput, 200, false);
             } else {
                 this.set('suggestRequest', null);
             }
