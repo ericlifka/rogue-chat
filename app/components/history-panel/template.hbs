@@ -4,6 +4,8 @@
 </div>
 <div class="results">
     {{#each results as |message| }}
-        {{{message.markdown}}}
+        {{history-panel/history-message
+            message=message
+        }}
     {{/each}}
 </div>

@@ -14,7 +14,9 @@
     </div>
     <div class="panel-outlet">
         {{#if showSearchPanel}}
-            BOO
+            {{history-panel
+                roomJid=model.jid
+            }}
         {{/if}}
         {{#if showParticipantPanel}}
             {{participant-panel
