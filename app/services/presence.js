@@ -3,10 +3,10 @@ import PresenceModel from '../models/presence';
 import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 
-//TODO: Don't hard code path for requests, seriously stop doing this...
 export default Service.extend({
     ajax: service(),
     session: service(),
+    application: service(),
 
     presences: null,
 
@@ -23,10 +23,12 @@ export default Service.extend({
     },
 
     async loadPrimaryPresences() {
-        const systemPresences = await this.get('ajax').request('https://api.inindca.com/api/v2/systempresences');
+        const url = this.get('application').buildApiUri('api/v2/systempresences');
+        const systemPresences = await this.get('ajax').request(url);
 
         const primaryPromises = systemPresences.map((presence) => {
-            return this.get('ajax').request(`https://api.inindca.com/api/v2/presencedefinitions/${presence.id}`);
+            const url = this.get('application').buildApiUri(`api/v2/presencedefinitions/${presence.id}`);
+            return this.get('ajax').request(url);
         });
         const primaryPresences = await Promise.all(primaryPromises);
         return primaryPresences.map(presence => {
@@ -39,7 +41,8 @@ export default Service.extend({
 
     async loadSecondaryPresences() {
         //TODO: Secondary Presences are a paged api, were only fetching the first page for now
-        let secondaryPresences = await this.get('ajax').request('https://api.inindca.com/api/v2/presencedefinitions');
+        const url = this.get('application').buildApiUri('api/v2/presencedefinitions');
+        let secondaryPresences = await this.get('ajax').request(url);
         secondaryPresences = secondaryPresences.entities || [];
         return secondaryPresences
             .filter(({primary}) => !primary)
@@ -62,8 +65,8 @@ export default Service.extend({
 
     async setUserPresence(presence) {
         const user = this.get('session.user');
-        const uri = `https://api.inindca.com/api/v2/users/${user.get('id')}/presences/PURECLOUD`;
-        const setPresence = await this.get('ajax').patch(uri, {
+        const url = this.get('application').buildApiUri(`api/v2/users/${user.get('id')}/presences/PURECLOUD`);
+        const setPresence = await this.get('ajax').patch(url, {
             data: {
                 presenceDefinition: {
                     id: presence.get('id')

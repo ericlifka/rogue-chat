@@ -13,6 +13,7 @@ export default Component.extend({
         'endOfBlock'
     ],
     session: service(),
+    application: service(),
 
     message: null,
 
@@ -41,7 +42,8 @@ export default Component.extend({
 
     profileImageUrl: computed('user.images.[]', function () {
         const imageUrl = _.find(this.get('user.images'), {resolution: 'x96'});
-        return _.get(imageUrl, 'imageUri', 'https://apps.inindca.com/static-resources/avatar-x96.png');
+        const fallbackUrl = this.get('application').buildBaseUrl('static-resources/avatar-x96.png');
+        return _.get(imageUrl, 'imageUri', fallbackUrl);
     }),
 
     showProfilePicture: computed('sentByMe', 'startOfBlock', function () {

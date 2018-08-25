@@ -4,6 +4,7 @@ import RSVP from 'rsvp';
 
 export default Service.extend({
     ajax: service(),
+    application: service(),
     store: service(),
     ipc: service(),
 
@@ -38,14 +39,14 @@ export default Service.extend({
     },
 
     async getUser() {
-        //TODO: Don't hard code path for user me endpoint
-        const user = await this.get('ajax').request('https://api.inindca.com/api/v2/users/me?expand=presence');
+        const url = this.get('application').buildApiUri('api/v2/users/me?expand=presence');
+        const user = await this.get('ajax').request(url);
         return this.get('store').createRecord('user', user);
     },
 
     async getOrg() {
-        //TODO: Don't hard code path for org me endpoint
-       return this.get('ajax').request('https://api.inindca.com/api/v2/organizations/me');
+        const url = this.get('application').buildApiUri('api/v2/organizations/me');
+        return this.get('ajax').request(url);
     }
 
 });

@@ -2,6 +2,7 @@ import { inject as service } from '@ember/service';
 import Mixin from '@ember/object/mixin';
 
 export default Mixin.create({
+    application: service(),
     store: service(),
     ajax: service(),
 
@@ -55,7 +56,7 @@ export default Mixin.create({
         }
         this.set('inflightRequest', true);
 
-        const url = `https://api.inindca.com${nextPageUrl}`;
+        const url = this.get('application').buildApiUri(nextPageUrl);
         this.get('ajax').request(url)
             .then(async (response) => {
                 this.set('nextPageUrl', response.nextPage);

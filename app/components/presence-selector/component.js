@@ -16,6 +16,7 @@ export default Component.extend({
 
     presence: service(),
     session: service(),
+    application: service(),
 
     showPresencePicker: false,
 
@@ -29,7 +30,8 @@ export default Component.extend({
 
     profileImageUrl: computed('user.images.[]', function () {
         const imageUrl = _.find(this.get('user.images'), {resolution: 'x96'});
-        return _.get(imageUrl, 'imageUri', 'https://apps.inindca.com/static-resources/avatar-x96.png');
+        const fallbackUrl = this.get('application').buildBaseUrl('static-resources/avatar-x96.png');
+        return _.get(imageUrl, 'imageUri', fallbackUrl);
     }),
 
     presenceClass: computed('user.presence.systemPresence', function () {

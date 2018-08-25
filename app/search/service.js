@@ -1,12 +1,15 @@
 import DiamondBuilder from './diamond/diamond-builder';
 import SuggestBuilder from './suggest/suggest-builder';
+import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import { computed } from '@ember/object';
 import Service from '@ember/service';
 
 export default Service.extend({
+    application: service(),
+
     baseUrl: computed(function () {
-        return 'https://api.inindca.com/api/v2/search';
+        return this.get('application').buildApiUri('api/v2/search');
     }),
 
     suggestUrl: computed(function () {
