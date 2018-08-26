@@ -11,6 +11,7 @@ export default Mixin.create({
     nextPageUrl: null,
     numberOfPages: null,
     totalPages: null,
+    totalResults: null,
     currentPage: 0,
 
     init() {
@@ -41,6 +42,7 @@ export default Mixin.create({
                 this.set('nextPageUrl', response.nextPage);
                 this.set('currentPage', response.pageNumber);
                 this.set('totalPages', response.pageCount);
+                this.set('totalResults', response.total);
 
                 const store = this.get('store');
                 const entities = await this.normalizeResponse(store, response.results);
@@ -56,7 +58,7 @@ export default Mixin.create({
         }
         this.set('inflightRequest', true);
 
-        const url = this.get('application').buildApiUri(nextPageUrl);
+        const url = this.get('application').buildApiUri(nextPageUrl.substring(1));
         this.get('ajax').request(url)
             .then(async (response) => {
                 this.set('nextPageUrl', response.nextPage);

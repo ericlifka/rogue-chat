@@ -1,5 +1,5 @@
+import { reads, gt, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import { reads, gt } from '@ember/object/computed';
 import { throttle } from '@ember/runloop';
 import Component from '@ember/component';
 
@@ -26,8 +26,10 @@ export default Component.extend({
     },
 
     results: reads('diamondRequest.results'),
-    searching: reads('suggestRequest.inflightRequest'),
-    hasResults: gt('searchResults.length', 0),
+    totalResults: reads('diamondRequest.totalResults'),
+    hasData: notEmpty('diamondRequest.totalResults'),
+    searching: reads('diamondRequest.inflightRequest'),
+    moreResults: notEmpty('diamondRequest.nextPageUrl'),
 
     actions: {
         onInput() {
