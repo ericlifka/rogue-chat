@@ -40,6 +40,12 @@ export default Component.extend({
 
         loadMoreResults() {
             this.get('suggestRequest').next();
+        },
+
+        onSelection(entity) {
+            this.onSelection(entity);
+            this.set('searchInput', null);
+            this.set('suggestRequest', null);
         }
     },
 
