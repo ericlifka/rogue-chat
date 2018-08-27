@@ -77,4 +77,37 @@
         color: blue;
         background-color: white;
     }
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 30px;
+        background-color: @rogue-light-grey;
+        color: @rogue-white;
+
+        .title{
+            margin-left: 5px;
+        }
+
+        .material-icons {
+            position: unset;
+        }
+
+        .clear-button {
+            background-color: inherit;
+            border: none;
+
+            > * {
+                color: red;
+            }
+
+            &:focus {
+                outline: none;
+            }
+
+        }
+    }
+
 }

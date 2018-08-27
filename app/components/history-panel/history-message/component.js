@@ -7,6 +7,12 @@ export default Component.extend({
 
     message: null,
 
+    click() {
+        if (this.get('selectHistoryMessage')) {
+            this.selectHistoryMessage(this.get('message'));
+        }
+    },
+
     user: reads('message.user'),
     markdown: reads('message.markdown'),
 

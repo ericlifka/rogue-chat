@@ -2,16 +2,20 @@ import { reads, gt, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { throttle } from '@ember/runloop';
 import Component from '@ember/component';
+import RSVP from 'rsvp';
 
 export default Component.extend({
     classNames: ['history-panel', 'panel'],
 
     search: service(),
+    history: service(),
 
     roomJid: null,
     searchInput: null,
     requestBuilder: null,
     diamondRequest: null,
+    selectedMessage: null,
+    historyResults: null,
 
     init() {
         this._super(...arguments);
@@ -23,6 +27,7 @@ export default Component.extend({
             .setTypes(['messages'])
             .setExpansions(['from']);
         this.set('requestBuilder', requestBuilder);
+        this.set('historyResults', []);
     },
 
     results: reads('diamondRequest.results'),
@@ -43,6 +48,15 @@ export default Component.extend({
 
         loadMoreResults() {
             this.get('diamondRequest').next();
+        },
+
+        selectHistoryMessage(message) {
+            this.set('selectedMessage', message);
+            this.loadHistoryForMessage(message);
+        },
+
+        closeHistory() {
+            this.set('selectedMessage', null);
         }
     },
 
@@ -74,5 +88,49 @@ export default Component.extend({
                 ]
             }
         ];
+    },
+
+    async loadHistoryForMessage(message) {
+        const timestamp = message.get('time').valueOf();
+        const jid = this.get('roomJid');
+
+        const beforeOptions = {
+            jid,
+            before: timestamp,
+            limit: 2
+        };
+        const beforePromise = this.get('history').loadHistoryWithoutRoom(beforeOptions);
+
+        const afterOptions = {
+            jid,
+            after: timestamp,
+            limit: 30
+        };
+        const afterPromise = this.get('history').loadHistoryWithoutRoom(afterOptions);
+        const [before, after] = await RSVP.all([beforePromise, afterPromise]);
+
+        before.push(message);
+        const messages = before.concat(after);
+        const correctedMessages = this.processCorrections(messages);
+        this.set('historyResults', correctedMessages);
+    },
+
+    processCorrections(messages) {
+        // since we don't have a chat room we have to handle corrections manually, this will change as realtime migrates to dynamo
+        const messageCache = {};
+        return messages.filter(message => {
+            const messageId = message.get('id');
+            messageCache[messageId] = message;
+
+            const correctionId = message.get('corrects');
+            if (correctionId) {
+                const originalMessage = messageCache[correctionId];
+                if (originalMessage) {
+                    originalMessage.set('correctionRaw', message.get('raw'));
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 });

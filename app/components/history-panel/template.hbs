@@ -1,24 +1,41 @@
-<div class="input-wrapper">
-    {{input class="search-input" placeholder="search this chat" value=searchInput input=(action "onInput")}}
-    {{material-icon "search"}}
-</div>
-{{#if hasData}}
-    <div class="results-banner">
-        <span class="total">{{totalResults}}</span> results for <span class="query">{{searchInput}}</span>
+{{#if selectedMessage}}
+    <div class="header">
+        <span class="title">chat history</span>
+        <button class="clear-button" {{action "closeHistory"}}>
+            {{material-icon "clear"}}
+        </button>
     </div>
     <div class="results">
-        {{#each results as |message| }}
+        {{#each historyResults as |message|}}
             {{history-panel/history-message
                 message=message
             }}
         {{/each}}
-
-        <div class="bottom-bar">
-            {{#if moreResults}}
-                <button class="results-button" {{action "loadMoreResults"}}>Load More Results</button>
-            {{else}}
-                <span>No More Results</span>
-            {{/if}}
-        </div>
     </div>
+{{else}}
+    <div class="input-wrapper">
+        {{input class="search-input" placeholder="search this chat" value=searchInput input=(action "onInput")}}
+        {{material-icon "search"}}
+    </div>
+    {{#if hasData}}
+        <div class="results-banner">
+            <span class="total">{{totalResults}}</span> results for <span class="query">{{searchInput}}</span>
+        </div>
+        <div class="results">
+            {{#each results as |message| }}
+                {{history-panel/history-message
+                    message=message
+                    selectHistoryMessage=(action "selectHistoryMessage")
+                }}
+            {{/each}}
+
+            <div class="bottom-bar">
+                {{#if moreResults}}
+                    <button class="results-button" {{action "loadMoreResults"}}>Load More Results</button>
+                {{else}}
+                    <span>No More Results</span>
+                {{/if}}
+            </div>
+        </div>
+    {{/if}}
 {{/if}}
