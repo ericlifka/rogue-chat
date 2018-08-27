@@ -57,6 +57,7 @@ export default Component.extend({
 
         closeHistory() {
             this.set('selectedMessage', null);
+            this.get('historyResults').clear();
         }
     },
 
