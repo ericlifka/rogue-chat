@@ -4,7 +4,7 @@
 </div>
 <div class="search-results">
     {{#each searchResults as |result|}}
-        {{search-result entity=result onSelection=onSelection}}
+        {{search-result entity=result onSelection=(action "onSelection")}}
     {{/each}}
     {{#if hasResults}}
         <div class="bottom-bar">

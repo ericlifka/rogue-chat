@@ -127,6 +127,17 @@ export default Service.extend({
         return defer.promise;
     },
 
+    inviteToRoom(room, inviteeJid) {
+        // realtime doesn't provide a callback for invites
+        this.get('ipc').sendEvent('invite-to-room', {
+            id: room.get('id'),
+            payload: {
+                roomJid: room.get('jid'),
+                userJid: inviteeJid
+            }
+        });
+    },
+
     getRoomInfo(room) {
         return new RSVP.Promise((resolve, reject) => {
             const tid = setTimeout(() => {
@@ -136,7 +147,7 @@ export default Service.extend({
             const scopedRoomInfo = `room-info:${room.get('id')}`;
             this.get('ipc').registerOneTimeListener(scopedRoomInfo, (event, roomInfo) => {
                 clearTimeout(tid);
-                //TODO: Once realtime fixes room info add occupants to room
+                //TODO: Once realtime fixes room info use this to fetch offline occupants
                 resolve();
             });
 

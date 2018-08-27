@@ -27,7 +27,7 @@ export default Controller.extend({
         },
 
         onSelection(entity) {
-            console.log('Entity: ', entity);
+            this.get('chat').inviteToRoom(this.get('model'), entity.get('chat.jabberId'));
         }
     }
 });

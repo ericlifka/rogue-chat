@@ -71,6 +71,10 @@ module.exports = class RealtimeAdapter {
         this.realtime.getRoomInfo(roomJid, callback);
     }
 
+    inviteToRoom(roomJid, userJid) {
+        this.realtime.inviteToRoom(roomJid, userJid);
+    }
+
     bindToEvent(event, scope, handler) {
         const subscribedEvents = this.subscribedEvents;
         if (!subscribedEvents[event]) {
