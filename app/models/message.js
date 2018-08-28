@@ -1,3 +1,4 @@
+import { emojiParse } from 'ember-emoji/helpers/emoji-parse';
 import { markdownToHTML } from './../utils/markdown'
 import { computed } from '@ember/object';
 import EmberObject from '@ember/object';
@@ -26,11 +27,16 @@ export default EmberObject.extend({
     startOfBlock: true,
     endOfBlock: true,
 
-    markdown: computed('raw', 'correctionRaw', function () {
+    body: computed('raw', 'correctionRaw', function () {
         if (this.get('correctionRaw')) {
-            return markdownToHTML(this.get('correctionRaw'));
+            return this.get('correctionRaw');
         }
-        return markdownToHTML(this.get('raw'));
+        return this.get('raw');
+    }),
+
+    markdown: computed('body', function () {
+       const markdown =  markdownToHTML(this.get('body'));
+       return emojiParse([markdown]);
     }),
 
     corrected: computed('correctionRaw', 'corrects', function () {
