@@ -15,6 +15,10 @@ export default Controller.extend({
                     rawSubject: room.get('rawSubject')
                 }
             });
+        },
+
+        closeInteraction(room) {
+            this.get('chat').closeInteraction(room);
         }
     }
 });

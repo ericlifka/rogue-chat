@@ -1,4 +1,4 @@
-import { reads, gt, notEmpty } from '@ember/object/computed';
+import { reads, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { throttle } from '@ember/runloop';
 import Component from '@ember/component';

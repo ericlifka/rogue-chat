@@ -1,6 +1,6 @@
-import EmberObject, { computed } from '@ember/object';
 import SuggestRequest from './suggest-request';
 import { getOwner } from '@ember/application';
+import EmberObject from '@ember/object';
 import _ from 'lodash';
 
 const SEARCH_TYPES = [

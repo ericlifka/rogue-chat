@@ -49,6 +49,16 @@ export default Service.extend({
         });
     },
 
+    closeInteraction(room) {
+        this.get('rooms').removeObject(room);
+        const nextInteraction = this.get('rooms.lastObject');
+        if (nextInteraction) {
+            this.get('router').transitionTo('chat.room', nextInteraction.get('jid'));
+        } else {
+            // in the future close the window
+        }
+    },
+
     async getChatRoom(jid) {
         const roomId = _.first(jid.split('@'));
         let room = this.get(`roomCache.${roomId}`);
@@ -148,7 +158,7 @@ export default Service.extend({
             this.get('ipc').registerOneTimeListener(scopedRoomInfo, (event, roomInfo) => {
                 clearTimeout(tid);
                 //TODO: Once realtime fixes room info use this to fetch offline occupants
-                resolve();
+                resolve(roomInfo);
             });
 
             this.get('ipc').sendEvent('get-room-info', {

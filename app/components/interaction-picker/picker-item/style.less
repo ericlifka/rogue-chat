@@ -23,6 +23,7 @@
 
     .subject {
         max-width: 90px;
+        min-width: 65px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -33,5 +34,23 @@
         border-radius: 50%;
         border: 6px solid;
         margin: 0 0 0 3px;
+    }
+
+    .close-button {
+        display: none;
+        border: none;
+        text-align: center;
+        color: @rogue-off-white;
+        background-color: inherit;
+
+        > * {
+            font-size: 14px;
+        }
+    }
+
+    &:hover {
+        .close-button {
+            display: flex;
+        }
     }
 }
