@@ -4,7 +4,9 @@ const assert = require('assert');
 
 // Mock a bunch of client state to get realtime to not crash on load
 const { JSDOM } = require('jsdom');
-const { window } = new JSDOM(``);
+const { window } = new JSDOM(``, {
+    url: 'http://localhost'
+});
 const { document } = window;
 global.window = window;
 global.document = document;
