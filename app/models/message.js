@@ -27,15 +27,12 @@ export default EmberObject.extend({
     startOfBlock: true,
     endOfBlock: true,
 
-    body: computed('raw', 'correctionRaw', function () {
-        if (this.get('correctionRaw')) {
-            return this.get('correctionRaw');
-        }
-        return this.get('raw');
+    message: computed('raw', 'correctionRaw', function () {
+        return this.get('correctionRaw') || this.get('raw');
     }),
 
-    markdown: computed('body', function () {
-       const markdown =  markdownToHTML(this.get('body'));
+    markdown: computed('message', function () {
+       const markdown = markdownToHTML(this.get('message'));
        return emojiParse([markdown]);
     }),
 
