@@ -1,6 +1,7 @@
 & {
     display: flex;
     height: 55px;
+    position: relative;
 
     .textarea {
         flex: 1;
@@ -8,5 +9,54 @@
         border: none;
         border-top: 2px solid grey;
         font-size: 14px;
+        padding-right: 165px;
+    }
+
+    .textarea-button {
+        position: absolute;
+        color: @rogue-light-grey;
+        background-color: transparent;
+        border: none;
+        width: 35px;
+        height: 30px;
+        text-align: center;
+
+        &:focus {
+           outline: none;
+        }
+    }
+
+    .emoji {
+        right: 133px;
+        bottom: 10px;
+    }
+
+    .file {
+        right: 70px;
+        bottom: 10px;
+    }
+
+    .emoji-picker {
+        position: absolute;
+        background-color: @rogue-white;
+        height: 158px;
+        right: 25px;
+        bottom: 70px;
+
+        .emojione-attribution {
+            border-radius: 6px 0 0 0;
+        }
+    }
+
+    .arrow-down {
+        position: absolute;
+        right: 138px;
+        bottom: 59px;
+        width: 0;
+        height: 0;
+        border-left: 11px solid transparent;
+        border-right: 11px solid transparent;
+        border-top: 11px solid @rogue-white;
+        filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
     }
 }
