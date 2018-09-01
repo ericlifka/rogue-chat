@@ -9,7 +9,9 @@
             activeInteraction=model
         }}
         {{interaction-textarea
+            roomJid=model.jid
             sendMessage=(action "sendMessage")
+            sendMessageAfterFileUpload=(action "sendMessageAfterFileUpload")
         }}
     </div>
     <div class="panel-outlet">

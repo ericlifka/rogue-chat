@@ -1,12 +1,18 @@
 import Service from '@ember/service';
 
 export default Service.extend({
+    getEnvironment() {
+        return 'inindca.com';
+    },
+
     getBaseApiUri() {
-        return 'https://api.inindca.com';
+        const environment = this.getEnvironment();
+        return `https://api.${environment}`;
     },
 
     getBaseUri() {
-        return 'https://apps.inindca.com';
+        const environment = this.getEnvironment();
+        return `https://apps.${environment}`;
     },
 
     buildBaseUrl(path) {

@@ -19,6 +19,14 @@ export default Controller.extend({
             this.get('chat').sendMessage(model, message);
         },
 
+        sendMessageAfterFileUpload(message, roomJid) {
+            let model = this.get('model');
+            if (model.get('jid') !== roomJid) {
+                model = this.get('chat').getChatRoom(roomJid);
+            }
+            this.get('chat').sendMessage(model, message);
+        },
+
         togglePanel(panel) {
             if (this.get('activePanel') === panel) {
                 return this.set('activePanel', null);

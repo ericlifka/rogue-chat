@@ -1,4 +1,4 @@
-{{textarea class="textarea" value=message}}
+{{textarea id="textarea" class="textarea" value=message}}
 {{#if showEmojiPicker}}
     {{emoji-picker selectEmoji=(action "selectEmoji")}}
     <div class="arrow-down"></div>
@@ -9,3 +9,4 @@
 <button class="file textarea-button">
     {{material-icon "attachment"}}
 </button>
+<div class="preview-container"></div>
