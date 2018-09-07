@@ -57,6 +57,7 @@ class SocketIoProxy {
         this.on_socketioproxy_res = this.on_socketioproxy_res.bind(this);
         this.on_socketioproxyserver_request = this.on_socketioproxyserver_request.bind(this);
         this.on_socketioproxyserver_upgrade = this.on_socketioproxyserver_upgrade.bind(this);
+        this.on_socketioproxyserver_clienterror = this.on_socketioproxyserver_clienterror.bind(this);
         this._sessionStore = new SessionStore();
         this.proxyPort = proxyPort;
         this.uri = uri;
@@ -164,7 +165,7 @@ class SocketIoProxy {
     }
 
     on_socketioproxyserver_clienterror(exception, socket) {
-        const localContextAttributes = this.create_local_context_attributes(req);
+        const localContextAttributes = this.create_local_context_attributes();
         console.error(exception, localContextAttributes);
     }
 
