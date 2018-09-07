@@ -1,7 +1,7 @@
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
-import { computed } from '@ember/object';
 import { run, scheduleOnce } from '@ember/runloop';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import Dropzone from 'dropzone';
 
 const dropzonePreviewTemplate = `
@@ -39,7 +39,16 @@ export default Component.extend({
 
         togglePicker() {
             scheduleOnce('afterRender', this, this.toggleProperty, 'showEmojiPicker');
+        },
+
+        handleMentionedUser(entity) {
+            this.get('mentionedUsers').pushObject(entity);
         }
+    },
+
+    init() {
+        this._super(...arguments);
+        this.set('mentionedUsers', []);
     },
 
     didInsertElement() {
@@ -55,6 +64,7 @@ export default Component.extend({
     didUpdateAttrs() {
         this._super(...arguments);
         scheduleOnce('afterRender', this, this.updateDropzone);
+        scheduleOnce('afterRender', this, this.updateTextarea);
     },
 
     keyPress(event) {
@@ -137,6 +147,12 @@ export default Component.extend({
             }
             dropzone.options.url = this.get('dropzoneUrl');
         }
+    },
+
+    // TODO: Instead of clearing room state on switch, store it for when the user comes back
+    updateTextarea() {
+        this.set('message', '');
+        this.set('mentionedUsers', []);
     },
 
     removeDropzonePreview() {

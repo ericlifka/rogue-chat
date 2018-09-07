@@ -1,0 +1,32 @@
+& {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    width: 250px;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid @rogue-divider;
+    background-color: inherit;
+
+    &.highlight {
+        background-color: @rogue-off-white;
+    }
+
+    .title {
+        font-size: 12px;
+        max-width: 150px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .name {
+        margin-right: 5px;
+        font-size: 14px;
+        max-width: 100px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}

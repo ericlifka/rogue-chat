@@ -1,0 +1,14 @@
+{{#if hasResults}}
+    <div class="mention-results" style={{flyoutPosition}}>
+        {{#each searchResults as |result index|}}
+            {{chat-mentions/mention-item
+                index=index
+                entity=result
+                selectResult=(action "selectResult")
+                isHighlightedResult=(eq index highlightedIndex)
+                updateHighlightedIndex=(action "updateHighlightedIndex")
+            }}
+        {{/each}}
+    </div>
+{{/if}}
+{{yield}}

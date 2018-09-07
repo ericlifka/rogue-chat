@@ -1,4 +1,6 @@
-{{textarea id="textarea" class="textarea" value=message}}
+{{#chat-mentions handleMentionedUser=(action 'handleMentionedUser')}}
+    {{textarea id="textarea" class="textarea" value=message}}
+{{/chat-mentions}}
 {{#if showEmojiPicker}}
     {{emoji-picker selectEmoji=(action "selectEmoji")}}
     <div class="arrow-down"></div>
