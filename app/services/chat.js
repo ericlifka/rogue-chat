@@ -111,7 +111,7 @@ export default Service.extend({
             const user = await this.get('store').findRecord('user', realtimeMessage.from);
             message.set('user', user);
         }
-        message.set('time', moment(realtimeMessage.time));
+        message.set('time', moment(realtimeMessage.time, 'x'));
 
         return message;
     },

@@ -81,9 +81,7 @@ export default Component.extend({
         const hasFiles = dropzone.files.length > 0;
         const hasText = message.length > 0;
 
-        message = message.trim();
-
-        const { parsedMessage, children } = this.parseTextForMentions(message);
+        const { parsedMessage, children } = this.parseTextForMentions(message.trim());
         const options = {
           children
         };

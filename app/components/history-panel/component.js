@@ -95,23 +95,14 @@ export default Component.extend({
         const timestamp = message.get('time').valueOf();
         const jid = this.get('roomJid');
 
-        const beforeOptions = {
-            jid,
-            before: timestamp,
-            limit: 2
-        };
-        const beforePromise = this.get('history').loadHistoryWithoutRoom(beforeOptions);
-
         const afterOptions = {
             jid,
             after: timestamp,
             limit: 30
         };
-        const afterPromise = this.get('history').loadHistoryWithoutRoom(afterOptions);
-        const [before, after] = await RSVP.all([beforePromise, afterPromise]);
+        const after = await this.get('history').loadHistoryWithoutRoom(afterOptions);
 
-        before.push(message);
-        const messages = before.concat(after);
+        const messages = [message].concat(after);
         const correctedMessages = this.processCorrections(messages);
         this.set('historyResults', correctedMessages);
     },
