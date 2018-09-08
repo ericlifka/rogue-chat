@@ -3,6 +3,7 @@ import { run, scheduleOnce } from '@ember/runloop';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import Dropzone from 'dropzone';
+import _ from 'lodash';
 
 const dropzonePreviewTemplate = `
 <div class="dz-preview dz-file-preview">
@@ -81,18 +82,95 @@ export default Component.extend({
         const hasText = message.length > 0;
 
         message = message.trim();
+
+        const { parsedMessage, children } = this.parseTextForMentions(message);
+        const options = {
+          children
+        };
+
         if (hasFiles) {
             if (hasText) {
                 this.set('pendingMessage', {
                     roomJid: this.get('roomJid'),
-                    message
+                    message: parsedMessage,
+                    options
                 });
             }
             dropzone.processQueue();
         } else if (hasText) {
-            this.sendMessage(message);
+            this.sendMessage(parsedMessage, options);
         }
+
         this.set('message', null);
+        this.set('mentionedUsers', []);
+    },
+
+    parseTextForMentions(message) {
+        const mentionedUsers = this.get('mentionedUsers');
+        if (mentionedUsers.length < 1) {
+            return { parsedMessage };
+        }
+
+        const parsedMessage = mentionedUsers.reduce((message, entity) => {
+            const name = entity.get('name');
+            const mention = `[@${name}]`;
+            const safeMention = _.escapeRegExp(mention);
+            const regexp = new RegExp(`${safeMention}(?![(]#)`, 'g');
+
+            let match = regexp.exec(message);
+            while(match) {
+                const preMention = message.substring(0, match.index);
+                const inBlock = this.isMentionInsideBlock(preMention, /`/g) || this.isMentionInsideBlock(preMention, /```/g);
+
+                if (!inBlock) {
+                    // Search results don't provide the external id so we must make it from the jid
+                    const externalId = entity.get('chat.jabberId').split('@')[0];
+                    const replace = `${mention}(#/person/${externalId})`;
+                    message = message.replace(regexp, replace);
+                }
+                match = regexp.exec(message);
+            }
+
+            return message;
+        }, message);
+
+        const children = this.buildXMPPReference(parsedMessage, mentionedUsers);
+
+        return { parsedMessage, children };
+    },
+
+    buildXMPPReference(message, mentionedUsers) {
+        return mentionedUsers.reduce((children, entity) => {
+            const name = entity.get('name');
+            const mention = `[@${name}]`;
+            const safeMention = _.escapeRegExp(mention);
+            const regexp = new RegExp(`${safeMention}\\(#/person/([a-z\\d]{24})\\)`, 'g');
+
+            let result = regexp.exec(message);
+            while (result) {
+                const end = result.index + result[0].length;
+                const jid = entity.get('chat.jabberId');
+                const reference = {
+                    name: 'reference',
+                    attributes: {
+                        xmlns: 'urn:xmpp:reference:0',
+                        type: 'mention',
+                        begin: result.index,
+                        uri: jid,
+                        end,
+                    }
+                };
+                children.push(reference);
+
+                result = regexp.exec(message);
+            }
+
+            return children;
+        }, []);
+    },
+
+    isMentionInsideBlock(message, tick) {
+        return (message.match(tick) || []).length % 2 !== 0;
     },
 
     setupDropzone() {
@@ -126,10 +204,10 @@ export default Component.extend({
         dropzone.on('complete', () => {
             const pendingMessage = this.get('pendingMessage');
             if (pendingMessage) {
-                const { message, roomJid } = pendingMessage;
+                const { message, options, roomJid } = pendingMessage;
 
                 this.set('pendingMessage', null);
-                this.sendMessageAfterFileUpload(message, roomJid);
+                this.sendMessageAfterFileUpload(message, options, roomJid);
             }
             dropzone.removeAllFiles();
         });
@@ -151,7 +229,7 @@ export default Component.extend({
 
     // TODO: Instead of clearing room state on switch, store it for when the user comes back
     updateTextarea() {
-        this.set('message', '');
+        this.set('message', null);
         this.set('mentionedUsers', []);
     },
 

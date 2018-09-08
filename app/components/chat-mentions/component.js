@@ -1,4 +1,4 @@
-import { run, scheduleOnce, throttle, bind } from '@ember/runloop';
+import { run, scheduleOnce, throttle, bind, later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { reads, gt } from '@ember/object/computed';
 import { htmlSafe } from '@ember/template';
@@ -51,8 +51,10 @@ export default Component.extend({
             .click(bind(this, this.handleInputChange))
             .on('input', bind(this, this.handleInputChange))
             .on('focus', bind(this, this.handleInputChange))
-            .on('blur', bind(this, () => {
-                this.set('suggestRequest', null);
+            .on('blur', bind(this, function () {
+                later(this, function () {
+                    this.set('suggestRequest', null)
+                }, 200)
             }));
 
         this.set('$textarea', $textarea);
@@ -69,10 +71,12 @@ export default Component.extend({
                 break;
             case 'Tab':
             case 'Enter':
-                const entity = this.get('searchResults')[currentIndex];
-                this.insertMention(entity);
-                event.preventDefault();
-                event.stopPropagation();
+                const entity = this.get(`searchResults.${currentIndex}`);
+                if (entity) {
+                    this.insertMention(entity);
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
                 break;
             case 'ArrowUp':
                 this.set('highlightedIndex', Math.max(currentIndex - 1, 0));
@@ -97,7 +101,7 @@ export default Component.extend({
         const caretPosition = $textarea.caret('pos');
         const subString = $textarea.val().substring(0, caretPosition);
 
-        const regex = new RegExp('(?:\\s|^)@([a-z,][\\s]?){2,20}(?:[^\\s])$', 'ig');
+        const regex = new RegExp('(?:\\s|^)@([a-z,][\\s]?){2,20}$', 'ig');
         let mention = regex.exec(subString);
 
         if (!mention) {
@@ -120,13 +124,14 @@ export default Component.extend({
             postString = " ";
         }
 
-        const startOfMention = preString.lastIndexOf('@') + 1;
+        const startOfMention = preString.lastIndexOf('@');
         const preMentionString = preString.substring(0, startOfMention);
 
         const name = entity.get('name');
-        const mentionString = preMentionString + name + postString;
+        const mentionString = `${preMentionString}[@${name}]${postString}`;
 
         $textarea.val(mentionString);
+        $textarea.trigger('change');
         this.set('suggestRequest', null);
         this.handleMentionedUser(entity);
     },

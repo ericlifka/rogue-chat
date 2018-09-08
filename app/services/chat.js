@@ -55,7 +55,7 @@ export default Service.extend({
         if (nextInteraction) {
             this.get('router').transitionTo('chat.room', nextInteraction.get('jid'));
         } else {
-            // in the future close the window
+            // TODO: In the future close the window
         }
     },
 
@@ -168,7 +168,7 @@ export default Service.extend({
         })
     },
 
-    sendMessage(room, message) {
+    sendMessage(room, message, options = {}) {
         return new RSVP.Promise((resolve, reject) => {
             const tid = setTimeout(() => {
                reject(new Error('never received carbon response from realtime'));
@@ -177,6 +177,7 @@ export default Service.extend({
             const scopedSendMessage = `send-message:${room.get('id')}`;
             this.get('ipc').registerOneTimeListener(scopedSendMessage, (event, message) => {
                 clearTimeout(tid);
+                console.log('Message: ', message);
                 room.updatePendingMessage(message);
                 resolve();
             });
@@ -185,7 +186,8 @@ export default Service.extend({
                 id: room.get('id'),
                 payload: {
                     to: room.get('jid'),
-                    body: message
+                    body: message,
+                    children: options.children
                 }
             });
         }) ;

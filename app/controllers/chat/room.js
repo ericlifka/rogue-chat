@@ -14,17 +14,17 @@ export default Controller.extend({
     showParticipantPanel: equal('activePanel', 'participant'),
 
     actions: {
-        sendMessage(message) {
+        sendMessage(message, options) {
             const model = this.get('model');
-            this.get('chat').sendMessage(model, message);
+            return this.get('chat').sendMessage(model, message, options);
         },
 
-        sendMessageAfterFileUpload(message, roomJid) {
+        sendMessageAfterFileUpload(message, options, roomJid) {
             let model = this.get('model');
             if (model.get('jid') !== roomJid) {
                 model = this.get('chat').getChatRoom(roomJid);
             }
-            this.get('chat').sendMessage(model, message);
+            return this.get('chat').sendMessage(model, message, options);
         },
 
         togglePanel(panel) {
