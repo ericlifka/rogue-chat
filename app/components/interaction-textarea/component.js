@@ -1,5 +1,5 @@
 import { inject as service } from '@ember/service';
-import { run, scheduleOnce } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import Dropzone from 'dropzone';

@@ -177,7 +177,6 @@ export default Service.extend({
             const scopedSendMessage = `send-message:${room.get('id')}`;
             this.get('ipc').registerOneTimeListener(scopedSendMessage, (event, message) => {
                 clearTimeout(tid);
-                console.log('Message: ', message);
                 room.updatePendingMessage(message);
                 resolve();
             });

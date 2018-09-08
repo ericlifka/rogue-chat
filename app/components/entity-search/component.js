@@ -24,7 +24,7 @@ export default Component.extend({
     searchResults: reads('suggestRequest.results'),
     searching: reads('suggestRequest.inflightRequest'),
     hasResults: gt('searchResults.length', 0),
-    moreResults: computed('suggestRequest.currentPage', 'suggestRequest.totalPages', function () {
+    moreResults: computed('suggestRequest.{currentPage,totalPages}', function () {
         return this.get('suggestRequest.currentPage') < this.get('suggestRequest.totalPages');
     }),
 

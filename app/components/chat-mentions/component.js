@@ -63,6 +63,7 @@ export default Component.extend({
     onKeyUp(event) {
         const currentIndex = this.get('highlightedIndex');
         const maxIndex = this.get('searchResults.length') - 1;
+        const entity = this.get(`searchResults.${currentIndex}`);
         switch(event.key) {
             case 'Backspace':
             case 'ArrowLeft':
@@ -71,7 +72,6 @@ export default Component.extend({
                 break;
             case 'Tab':
             case 'Enter':
-                const entity = this.get(`searchResults.${currentIndex}`);
                 if (entity) {
                     this.insertMention(entity);
                     event.preventDefault();
