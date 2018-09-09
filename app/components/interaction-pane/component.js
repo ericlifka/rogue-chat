@@ -10,6 +10,10 @@ export default Component.extend({
     actions: {
         safeScroll() {
             run(() => scheduleOnce('afterRender', this, this.scrollToBottom));
+        },
+
+        messageVisible() {
+            console.log('Message Visible');
         }
     },
 

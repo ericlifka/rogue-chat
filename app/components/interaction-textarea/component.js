@@ -106,7 +106,7 @@ export default Component.extend({
     parseTextForMentions(message) {
         const mentionedUsers = this.get('mentionedUsers');
         if (mentionedUsers.length < 1) {
-            return { parsedMessage };
+            return { parsedMessage: message };
         }
 
         const parsedMessage = mentionedUsers.reduce((message, entity) => {

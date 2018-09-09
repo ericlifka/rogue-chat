@@ -1,5 +1,5 @@
-import Markdown from "markdown-it";
-import hljs from "highlight.js";
+import Markdown from 'markdown-it';
+import hljs from 'highlight.js';
 import Ember from 'ember';
 
 hljs.configure({
