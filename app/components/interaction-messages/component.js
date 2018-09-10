@@ -1,16 +1,25 @@
-import { throttle, debounce, scheduleOnce } from '@ember/runloop';
-import { reads } from '@ember/object/computed';
+import { scheduleOnce } from '@ember/runloop';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 import $ from 'jquery';
+import _ from 'lodash';
 
 export default Component.extend({
     classNames: ['messages'],
 
+    messages: null,
     windowWidth: null,
     windowHeight: null,
     activeInteraction: null,
 
-    messages: reads('activeInteraction.messages'),
+    message: computed('messages.length', function () {
+        const children = this.$().children();
+        if (!children || children.length < 5) {
+            return null;
+        }
+
+        return children[4];
+    }),
 
     didInsertElement() {
         this._super(...arguments);
@@ -27,8 +36,8 @@ export default Component.extend({
             return;
         }
 
-        this.$().on(`scroll.${this.elementId}`, this.scrollHandler.bind(this));
-        $(window).on(`resize.${this.elementId}`, this.resizeHandler.bind(this));
+        this.$().on(`scroll.${this.elementId}`, _.throttle(this.scrollHandler.bind(this), 200, {trailing: true}));
+        $(window).on(`resize.${this.elementId}`, _.throttle(this.resizeHandler.bind(this), 200, {trailing: true}));
         this.set('windowHeight', window.innerHeight || document.documentElement.clientHeight);
         this.set('windowWidth', window.innerWidth || document.documentElement.clientWidth);
     },
@@ -43,24 +52,15 @@ export default Component.extend({
     },
 
     scrollHandler() {
-        console.log('Pre-throttle firing: ', Date.now());
-        throttle(this, this._scrollHandler, 200, false);
-    },
-
-    _scrollHandler() {
-        console.log('Scroll handler firing', Date.now());
-        const visible = this.determineElementInView();
-        if (visible) {
-            scheduleOnce('afterRender', this, this.messageVisible);
-        }
+        window.requestAnimationFrame(() => {
+            const visible = this.determineElementInView();
+            if (visible) {
+                scheduleOnce('afterRender', this, this.messageVisible);
+            }
+        });
     },
 
     resizeHandler() {
-        console.log('Pre-resize firing');
-        throttle(this, this._resizeHandler, 500, false);
-    },
-
-    _resizeHandler() {
         window.requestAnimationFrame(() => {
             this.updateWindowSize();
             const visible = this.determineElementInView();
@@ -76,12 +76,14 @@ export default Component.extend({
     },
 
     determineElementInView () {
-        const rect = this.getBoundingClientRect();
-        const windowHeight = this.get('windowHeight');
-        const windowWidth =  this.get('windowWidth');
+        const rect = this.get('message').getBoundingClientRect();
+        console.log('Rect: ', rect);
         if (!rect) {
             return false;
         }
+
+        const windowHeight = this.get('windowHeight');
+        const windowWidth =  this.get('windowWidth');
 
         return (
             rect.top >= 0 &&
@@ -90,13 +92,4 @@ export default Component.extend({
             rect.right <= windowWidth
         );
     },
-
-    getBoundingClientRect() {
-        const children = this.$().children();
-        if (!children || children.length < 5) {
-            return null;
-        }
-
-        return children[4].getBoundingClientRect();
-    }
 });

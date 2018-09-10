@@ -1,9 +1,11 @@
-import Component from '@ember/component';
 import { run, scheduleOnce } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import Ember from 'ember';
 
 export default Component.extend({
     classNames: ['interaction-pane'],
+    history: service(),
 
     activeInteraction: null,
 
@@ -13,7 +15,7 @@ export default Component.extend({
         },
 
         messageVisible() {
-            console.log('Message Visible');
+            this.loadHistoryBefore();
         }
     },
 
@@ -25,5 +27,13 @@ export default Component.extend({
 
         const scrollHeight = $messagePane.prop('scrollHeight');
         $messagePane.scrollTop(scrollHeight);
+    },
+
+    loadHistoryBefore() {
+        const activeInteraction = this.get('activeInteraction');
+        if (activeInteraction.get('loadingHistory')) {
+            return Promise.resolve();
+        }
+        return this.get('history').loadHistoryBefore(activeInteraction);
     }
 });

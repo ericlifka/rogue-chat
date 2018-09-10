@@ -40,6 +40,7 @@ export default EmberObject.extend({
         messages = this.addHistoryMessages(messages);
         messages = this.processHistoryCorrections(messages);
         this.groupHistoryMessages(messages);
+        this.set('firstMessageTimestamp', messages.get('firstObject.time').valueOf());
         this.set('messages', messages);
     },
 
@@ -95,6 +96,7 @@ export default EmberObject.extend({
             message.set('startOfBlock', false);
         }
 
+        this.set('lastMessageTimestamp', message.get('time').valueOf());
         this.set(`messageCache.${messageId}`, message);
         this.get('messages').pushObject(message);
     },

@@ -39,7 +39,7 @@ export default Service.extend({
         return this.requestHistory(id, options)
             .then(async messages => {
                 const messagePromises = messages.map(message => {
-                    return this.get('chat').setupMessageModel(message);
+                    return this.get('chat').setupMessageModel(message, '');
                 });
                 return await RSVP.all(messagePromises);
             })
@@ -59,7 +59,7 @@ export default Service.extend({
         return this.requestHistory(room.get('id'), options)
             .then(async messages => {
                 const messagePromises = messages.map(message => {
-                    return this.get('chat').setupMessageModel(message);
+                    return this.get('chat').setupMessageModel(message, 'YYYY-MM-DD HH:mm:ss.SSS');
                 });
                 messages = await RSVP.all(messagePromises);
                 room.historyHandler(messages);

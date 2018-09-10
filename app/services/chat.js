@@ -92,7 +92,7 @@ export default Service.extend({
         const messageHandler = room.messageHandler.bind(room);
         const scopedMessageTopic = `message:${room.get('id')}`;
         this.get('ipc').registerListener(scopedMessageTopic, async (event, message) => {
-            message = await this.setupMessageModel(message);
+            message = await this.setupMessageModel(message, 'x');
             messageHandler(message);
         });
 
@@ -103,7 +103,7 @@ export default Service.extend({
         });
     },
 
-    async setupMessageModel(realtimeMessage) {
+    async setupMessageModel(realtimeMessage, timestampFormat) {
         const message = MessageModel.create(realtimeMessage, getOwner(this).ownerInjection());
 
         //search message come with the user pre-fetched, no need to fetch it again
@@ -111,7 +111,7 @@ export default Service.extend({
             const user = await this.get('store').findRecord('user', realtimeMessage.from);
             message.set('user', user);
         }
-        message.set('time', moment(realtimeMessage.time, 'x'));
+        message.set('time', moment(realtimeMessage.time, timestampFormat));
 
         return message;
     },
