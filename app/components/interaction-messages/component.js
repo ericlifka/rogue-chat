@@ -77,7 +77,6 @@ export default Component.extend({
 
     determineElementInView () {
         const rect = this.get('message').getBoundingClientRect();
-        console.log('Rect: ', rect);
         if (!rect) {
             return false;
         }
