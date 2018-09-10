@@ -7,15 +7,21 @@ export default Component.extend({
     classNames: ['interaction-pane'],
     history: service(),
 
-    activeInteraction: null,
+    isAtBottom: true,
 
     actions: {
         safeScroll() {
-            run(() => scheduleOnce('afterRender', this, this.scrollToBottom));
+            if (this.get('isAtBottom')) {
+                run(() => scheduleOnce('afterRender', this, this.scrollToBottom));
+            }
         },
 
         messageVisible() {
             this.loadHistoryBefore();
+        },
+
+        scrollbarPositionChanged(isAtBottom) {
+            this.set('isAtBottom', isAtBottom);
         }
     },
 

@@ -1,4 +1,4 @@
-import { scheduleOnce } from '@ember/runloop';
+import { run, scheduleOnce } from '@ember/runloop';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import $ from 'jquery';
@@ -10,9 +10,8 @@ export default Component.extend({
     messages: null,
     windowWidth: null,
     windowHeight: null,
-    activeInteraction: null,
 
-    message: computed('messages.length', function () {
+    messageElement: computed('messages.length', function () {
         const children = this.$().children();
         if (!children || children.length < 5) {
             return null;
@@ -55,8 +54,11 @@ export default Component.extend({
         window.requestAnimationFrame(() => {
             const visible = this.determineElementInView();
             if (visible) {
-                scheduleOnce('afterRender', this, this.messageVisible);
+                run(() =>scheduleOnce('afterRender', this, this.messageVisible));
             }
+
+            const isAtBottom = this.determineScrollbarPosition();
+            run(() => scheduleOnce('afterRender', this, this.scrollbarPositionChanged, isAtBottom));
         });
     },
 
@@ -65,8 +67,11 @@ export default Component.extend({
             this.updateWindowSize();
             const visible = this.determineElementInView();
             if (visible) {
-                scheduleOnce('afterRender', this, this.messageVisible);
+                run(() => scheduleOnce('afterRender', this, this.messageVisible));
             }
+
+            const isAtBottom = this.determineScrollbarPosition();
+            run(() => scheduleOnce('afterRender', this, this.scrollbarPositionChanged, isAtBottom));
         });
     },
 
@@ -75,8 +80,14 @@ export default Component.extend({
         this.set('windowWidth', window.innerWidth || document.documentElement.clientWidth);
     },
 
-    determineElementInView () {
-        const rect = this.get('message').getBoundingClientRect();
+    determineScrollbarPosition() {
+        const $messages = this.$();
+        const scrollPosition = $messages.scrollTop() + $messages.outerHeight();
+        return ($messages.prop('scrollHeight') - scrollPosition) === 0;
+    },
+
+    determineElementInView() {
+        const rect = this.get('messageElement').getBoundingClientRect();
         if (!rect) {
             return false;
         }
@@ -90,5 +101,5 @@ export default Component.extend({
             rect.bottom <= windowHeight &&
             rect.right <= windowWidth
         );
-    },
+    }
 });
