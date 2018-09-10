@@ -1,7 +1,5 @@
 /* eslint-env node */
-const fs = require('fs');
-const path = require('path');
-const {app, BrowserWindow, protocol, ipcMain} = require('electron');
+const {app, protocol, ipcMain} = require('electron');
 const {dirname, join, resolve} = require('path');
 const protocolServe = require('electron-protocol-serve');
 const SocketIoProxy = require('./proxy/SocketIoProxy');
@@ -18,7 +16,7 @@ protocolServe({
 
 // Start our proxy server
 const socketIoProxy = new SocketIoProxy(8000, 'https://realtime.inindca.com');
-socketIoProxy.start((err, result) => {
+socketIoProxy.start((err) => {
     if (err) {
         console.error('Failed to start proxy server', err);
         return process.exit(1);
@@ -51,7 +49,7 @@ app.on('ready', () => {
             realtime
         });
 
-        ipcMain.on('main-window-ready', function (event) {
+        ipcMain.on('main-window-ready', function () {
             realtime.disconnect();
             realtime.connect();
         });
