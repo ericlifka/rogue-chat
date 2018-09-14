@@ -10,12 +10,13 @@ export default EmberObject.extend({
 
     occupants: null,
 
-    messageCache: null,
     messages: null,
+    messageCache: null,
 
     loadingHistory: false,
-    firstMessageTimestamp: null,
+    allHistoryLoaded: false,
     lastMessageTimestamp:null,
+    firstMessageTimestamp: null,
 
     init() {
         this._super(...arguments);
@@ -40,7 +41,11 @@ export default EmberObject.extend({
         messages = this.addHistoryMessages(messages);
         messages = this.processHistoryCorrections(messages);
         this.groupHistoryMessages(messages);
-        this.set('firstMessageTimestamp', messages.get('firstObject.time').valueOf());
+
+        const firstTimestamp = messages.get('firstObject.time');
+        if (firstTimestamp) {
+            this.set('firstMessageTimestamp', firstTimestamp.valueOf());
+        }
         this.set('messages', messages);
     },
 

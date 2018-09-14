@@ -2,4 +2,26 @@
     display:flex;
     flex-direction: column;
     overflow-y: auto;
+
+    .history-banner {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        width: 100%;
+
+        &.hasSpinner {
+            min-height: 30px;
+        }
+    }
+
+    .loading-history {
+        font-size: 20px;
+        margin: 5px 0;
+    }
+
+    .no-history {
+        font-size: 15px;
+        margin: 5px 0;
+    }
 }

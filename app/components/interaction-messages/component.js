@@ -10,6 +10,12 @@ export default Component.extend({
     messages: null,
     windowWidth: null,
     windowHeight: null,
+    loadingHistory: null,
+    allHistoryLoaded: null,
+
+    shouldShowSpinner: computed('loadingHistory', 'allHistoryLoaded', function () {
+        return this.get('loadingHistory') && !this.get('allHistoryLoaded');
+    }),
 
     messageElement: computed('messages.length', function () {
         const children = this.$().children();
@@ -54,7 +60,7 @@ export default Component.extend({
         window.requestAnimationFrame(() => {
             const visible = this.determineElementInView();
             if (visible) {
-                run(() =>scheduleOnce('afterRender', this, this.messageVisible));
+                run(() => scheduleOnce('afterRender', this, this.messageVisible));
             }
 
             const isAtBottom = this.determineScrollbarPosition();
@@ -87,7 +93,8 @@ export default Component.extend({
     },
 
     determineElementInView() {
-        const rect = this.get('messageElement').getBoundingClientRect();
+        const $messageElement = this.get('messageElement');
+        const rect = $messageElement ? $messageElement.getBoundingClientRect() : null;
         if (!rect) {
             return false;
         }

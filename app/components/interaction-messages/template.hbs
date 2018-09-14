@@ -1,3 +1,10 @@
+<div class="history-banner {{if shouldShowSpinner "hasSpinner"}}">
+    {{#if shouldShowSpinner}}
+        <i class="fa fa-spinner fa-spin loading-history"></i>
+    {{else if allHistoryLoaded}}
+        <span class="no-history">This is the beginning of your chat room.</span>
+    {{/if}}
+</div>
 {{#each messages as |message|}}
     {{interaction-messages/message
         message=message

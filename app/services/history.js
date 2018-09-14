@@ -57,6 +57,12 @@ export default Service.extend({
         room.set('loadingHistory', true);
 
         return this.requestHistory(room.get('id'), options)
+            .then((messages) => {
+                if (messages.length < options.limit) {
+                    room.set('allHistoryLoaded', true);
+                }
+                return messages;
+            })
             .then(async messages => {
                 const messagePromises = messages.map(message => {
                     return this.get('chat').setupMessageModel(message, 'YYYY-MM-DD HH:mm:ss.SSS');

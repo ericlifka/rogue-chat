@@ -1,5 +1,6 @@
-import { run, scheduleOnce } from '@ember/runloop';
 import { inject as service } from '@ember/service';
+import { reads } from '@ember/object/computed';
+import { scheduleOnce } from '@ember/runloop';
 import Component from '@ember/component';
 import Ember from 'ember';
 
@@ -8,15 +9,22 @@ export default Component.extend({
     history: service(),
 
     isAtBottom: true,
+    activeInteraction: null,
+
+    loadingHistory: reads('activeInteraction.loadingHistory'),
+    allHistoryLoaded: reads('activeInteraction.allHistoryLoaded'),
 
     actions: {
         safeScroll() {
             if (this.get('isAtBottom')) {
-                run(() => scheduleOnce('afterRender', this, this.scrollToBottom));
+                scheduleOnce('afterRender', this, this.scrollToBottom);
             }
         },
 
         messageVisible() {
+            if (this.get('allHistoryLoaded')) {
+                return;
+            }
             this.loadHistoryBefore();
         },
 
@@ -36,10 +44,11 @@ export default Component.extend({
     },
 
     loadHistoryBefore() {
-        const activeInteraction = this.get('activeInteraction');
-        if (activeInteraction.get('loadingHistory')) {
-            return Promise.resolve();
+        if (this.get('loadingHistory')) {
+            return null;
         }
+
+        const activeInteraction = this.get('activeInteraction');
         return this.get('history').loadHistoryBefore(activeInteraction);
     }
 });
