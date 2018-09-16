@@ -60,7 +60,8 @@ export default Component.extend({
         window.requestAnimationFrame(() => {
             const visible = this.determineElementInView();
             if (visible) {
-                run(() => scheduleOnce('afterRender', this, this.messageVisible));
+                const $message = this.get('messageElement');
+                run(() => scheduleOnce('afterRender', this, this.messageVisible, $message));
             }
 
             const isAtBottom = this.determineScrollbarPosition();
@@ -73,7 +74,8 @@ export default Component.extend({
             this.updateWindowSize();
             const visible = this.determineElementInView();
             if (visible) {
-                run(() => scheduleOnce('afterRender', this, this.messageVisible));
+                const $message = this.get('messageElement');
+                run(() => scheduleOnce('afterRender', this, this.messageVisible, $message));
             }
 
             const isAtBottom = this.determineScrollbarPosition();
@@ -89,6 +91,7 @@ export default Component.extend({
     determineScrollbarPosition() {
         const $messages = this.$();
         const scrollPosition = $messages.scrollTop() + $messages.outerHeight();
+
         return ($messages.prop('scrollHeight') - scrollPosition) === 0;
     },
 

@@ -21,11 +21,14 @@ export default Component.extend({
             }
         },
 
-        messageVisible() {
-            if (this.get('allHistoryLoaded')) {
+        messageVisible($message) {
+            if (this.get('allHistoryLoaded') || this.get('loadingHistory')) {
                 return;
             }
-            this.loadHistoryBefore();
+
+            const previousPosition = $message.getBoundingClientRect().top;
+            this.loadHistoryBefore()
+                .then(() => this.updateScrollbarPosition($message, previousPosition));
         },
 
         scrollbarPositionChanged(isAtBottom) {
@@ -34,21 +37,31 @@ export default Component.extend({
     },
 
     scrollToBottom() {
-        const $messagePane = this.$().children('.messages');
-        if (!$messagePane) {
+        const $interactionPane = this.$('.messages');
+        if (!$interactionPane) {
             return Ember.Logger.warn('scrollToBottom called before DOM insertion');
         }
 
-        const scrollHeight = $messagePane.prop('scrollHeight');
-        $messagePane.scrollTop(scrollHeight);
+        const scrollHeight = $interactionPane.prop('scrollHeight');
+        $interactionPane.scrollTop(scrollHeight);
     },
 
     loadHistoryBefore() {
-        if (this.get('loadingHistory')) {
-            return null;
-        }
-
         const activeInteraction = this.get('activeInteraction');
         return this.get('history').loadHistoryBefore(activeInteraction);
+    },
+
+    updateScrollbarPosition($message, previousDistanceToTop) {
+        scheduleOnce('afterRender', this, () => {
+            const $messageContainer = this.$('.messages');
+            const currentDistanceToTop = $message.getBoundingClientRect().top;
+            const distanceDifference = currentDistanceToTop - previousDistanceToTop;
+            const scrollPosition = $messageContainer.scrollTop();
+            const newScrollPosition = Math.abs(scrollPosition - distanceDifference);
+
+            $messageContainer.animate({
+                scrollTop: newScrollPosition
+            }, 0);
+        });
     }
 });
