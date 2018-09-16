@@ -25,7 +25,7 @@ const markdownParser = new Markdown({
             return hljs.highlightAuto(code).value;
         }
     }
-});
+}).disable('image');
 
 function markdownToHTML (markdown) {
     return markdownParser.render(markdown);
