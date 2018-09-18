@@ -33,21 +33,24 @@
     }
 
     &.sent-by-me {
-        .message-container {
+        .container {
             flex-direction: row-reverse;
         }
 
-        .details-container {
+        .details {
             justify-content: flex-end;
         }
 
-        .message {
+        .body {
             color: white;
-            background-color: @rogue-light-grey;
 
             a {
                 color: white;
             }
+        }
+
+        .message {
+            background-color: @rogue-light-grey;
         }
 
         .timestamp {
@@ -87,22 +90,27 @@
         filter: drop-shadow(0 2px 8px rgba(191, 191, 191, .3));
     }
 
-    .details-container {
+    .details {
         display:flex;
         flex-direction: row;
         color: @rogue-light-grey;
     }
 
-    .message-container {
+    .container {
         display: flex;
         flex-direction: row;
     }
 
     .message {
+        display: flex;
+        flex-direction: column;
+
         background-color: @rogue-grey;
         padding: 0 10px;
         width: 75%;
+    }
 
+    .body {
         word-break: break-all;
         color: @rogue-off-white;
 
@@ -113,6 +121,12 @@
 
         a {
             color: @rogue-off-white;
+        }
+
+        .emojione {
+            height: 20px;
+            width: 20px;
+            vertical-align: bottom;
         }
     }
 

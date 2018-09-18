@@ -1,8 +1,8 @@
-<div class="details-container">
+<div class="details">
     <div class="name">{{name}}</div>
     <div class="timestamp">{{time}}</div>
 </div>
-<div class="message-container">
+<div class="container">
     {{#unless sentByMe}}
         <img class="profile-image" src="{{profileImageUrl}}" height="30" width="30">
     {{/unless}}
@@ -14,6 +14,11 @@
     {{/if}}
 
     <div class="message">
-        {{{markdown}}}
+        <div class="body">
+            {{{markdown}}}
+        </div>
+        {{#if hasMediaItems}}
+            {{media-item links=links}}
+        {{/if}}
     </div>
 </div>

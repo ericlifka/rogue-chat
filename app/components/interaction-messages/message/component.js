@@ -23,9 +23,11 @@ export default Component.extend({
     },
 
     user: reads('message.user'),
+    links: reads('message.links'),
     startOfBlock: reads('message.startOfBlock'),
     endOfBlock: reads('message.endOfBlock'),
     markdown: reads('message.markdown'),
+    hasMediaItems: reads('message.hasMediaItems'),
     sentByThem: computed.not('sentByMe'),
 
     name: computed('user.name', function () {
