@@ -64,7 +64,11 @@ export default EmberObject.extend({
             if (correctionId) {
                 const originalMessage = this.get(`messageCache.${correctionId}`);
                 if (originalMessage) {
-                    originalMessage.set('correctionRaw', message.get('raw'));
+                    originalMessage.setProperties({
+                        correctionRaw: message.get('raw'),
+                        links: message.get('links'),
+                        files: message.get('files')
+                    });
                     return false;
                 }
             }
@@ -91,7 +95,11 @@ export default EmberObject.extend({
         const correctionId = message.get('corrects');
         if (correctionId) {
             const originalMessage = this.get(`messageCache.${correctionId}`);
-            originalMessage.set('correctionRaw', message.get('raw'));
+            originalMessage.setProperties({
+                correctionRaw: message.get('raw'),
+                links: message.get('links'),
+                files: message.get('files')
+            });
             return;
         }
 

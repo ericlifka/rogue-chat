@@ -32,11 +32,15 @@ export default EmberObject.extend({
     }),
 
     markdown: computed('message', function () {
-       const markdown = markdownToHTML(this.get('message'));
-       return emojiParse([markdown]);
+        const markdown = markdownToHTML(this.get('message'));
+        return emojiParse([markdown]);
     }),
 
     corrected: computed('correctionRaw', 'corrects', function () {
-       return !!(this.get('correctionRaw') || this.get('corrects'));
+        return !!(this.get('correctionRaw') || this.get('corrects'));
+    }),
+
+    hasMediaItems: computed('links', function () {
+        return this.get('links.length') > 0;
     })
 });
