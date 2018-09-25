@@ -4,6 +4,7 @@
     flex-direction: column;
     background-color: @rogue-dark-grey;
     padding: 0 3px 3px 3px;
+    overflow-x: hidden;
 
     .room-container {
         display: flex;
@@ -25,6 +26,21 @@
 
     .panel {
         min-width: 200px;
+    }
+
+    //drop down attaches itself to the parent container and as such styles are hinged from that point as well
+    &.dz-max-files-reached {
+        .emoji.textarea-button {
+            right: 110px;
+        }
+
+        .file.textarea-button {
+            right: 70px;
+        }
+
+        .arrow-down {
+            right: 116px;
+        }
     }
 
 }
