@@ -45,25 +45,24 @@ app.on('ready', () => {
             realtime
         });
 
-        const chatWindow = WindowFactory.createWindow('ChatWindow', {
-            realtime
-        });
-
-        ipcMain.on('main-window-ready', function () {
-            realtime.disconnect();
-            realtime.connect();
-        });
-
         ipcMain.on('request-token', function (event) {
             event.sender.send('auth-token', accessToken);
         });
 
+        let chatWindow;
         ipcMain.on('open-room', function (event, args) {
-            chatWindow.sendEvent('open-room', args);
+            if (chatWindow) {
+                return chatWindow.sendEvent('open-room', args);
+            }
+            chatWindow = WindowFactory.createWindow('ChatWindow', {
+                realtime
+            });
+            chatWindow.on('closed', function () {
+                chatWindow = null;
+            });
+            chatWindow.show(args);
         });
-
         rosterWindow.show();
-        chatWindow.show();
     });
     authWindow.show();
 });

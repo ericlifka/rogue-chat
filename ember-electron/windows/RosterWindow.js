@@ -1,11 +1,11 @@
 const { BrowserWindow } = require('electron');
 const { EventEmitter } = require('events');
+const { ipcMain } = require('electron');
 
 module.exports = class RosterWindow extends EventEmitter {
     constructor(opts) {
         super(...arguments);
-        this.opts = opts;
-        this.window = new BrowserWindow({
+        const window = new BrowserWindow({
             minWidth: 350,
             width: 350,
             maxWidth: 350,
@@ -14,6 +14,11 @@ module.exports = class RosterWindow extends EventEmitter {
                 webSecurity: false
             },
             resizable: true
+        });
+        Object.assign(this, {
+            id: window.id,
+            window,
+            opts
         });
         this.registerListeners();
     }
@@ -29,6 +34,24 @@ module.exports = class RosterWindow extends EventEmitter {
         realtime.bindToEvent('message', '*', (messageEvent) => {
             webContents.send('message', messageEvent);
         });
+
+        ipcMain.on('window-ready', (event, payload) => this.handleEvent('window-ready', event, payload));
+    }
+
+    handleEvent(name, event) {
+        const browserWindow = event.sender.getOwnerBrowserWindow();
+        if (browserWindow.id !== this.id) {
+            return;
+        }
+
+        const { realtime } = this.opts;
+        switch (name) {
+            case 'window-ready':
+                // TODO: Don't toggle realtime state in the window, instead ask for active chats
+                realtime.disconnect();
+                realtime.connect();
+                break;
+        }
     }
 
     sendEvent(event, message) {

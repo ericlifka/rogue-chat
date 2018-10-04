@@ -2,6 +2,7 @@ import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import MessageModel from '../models/message';
 import ChatRoom from '../models/chat-room';
+import { bind } from '@ember/runloop';
 import Service from '@ember/service';
 import moment from 'moment';
 import RSVP from 'rsvp';
@@ -26,7 +27,6 @@ export default Service.extend({
 
     init() {
         this._super(...arguments);
-        this.registerListeners();
         this.set('roomCache', {});
         this.set('rooms', []);
     },
@@ -36,12 +36,12 @@ export default Service.extend({
         this.openRoomHandler = null;
     },
 
-    registerListeners() {
-        this.openRoomHandler = this.openRoomEvent.bind(this);
+    bindToEvents() {
+        this.openRoomHandler = bind(this, this.openRoomEvent);
         this.get('ipc').registerListener('open-room', this.openRoomHandler);
     },
 
-    async openRoomEvent(event, message) {
+    openRoomEvent(event, message) {
         this.get('router').transitionTo('chat.room', message.jid, {
             queryParams: {
                 rawSubject: message.rawSubject
@@ -55,7 +55,7 @@ export default Service.extend({
         if (nextInteraction) {
             this.get('router').transitionTo('chat.room', nextInteraction.get('jid'));
         } else {
-            // TODO: In the future close the window
+            this.get('ipc').sendEvent('close-window');
         }
     },
 
