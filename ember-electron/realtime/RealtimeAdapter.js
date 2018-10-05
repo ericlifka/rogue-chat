@@ -95,11 +95,10 @@ module.exports = class RealtimeAdapter {
     removeBoundEvent(event, scope, handler) {
         const eventList = this.subscribedEvents[event] || {};
         const scopedEvents = eventList[scope] || [];
-        const filteredEvents = scopedEvents.filter(originalHandler => originalHandler === handler);
+        const filteredEvents = scopedEvents.filter(originalHandler => {
+            return originalHandler !== handler;
+        });
         eventList[scope] = filteredEvents;
-
-        // Return if an event was actually deleted by comparing array lengths
-        return scopedEvents.length !== filteredEvents.length;
     }
 
     bindRealtimeEvents() {
