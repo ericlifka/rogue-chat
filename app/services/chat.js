@@ -117,24 +117,23 @@ export default Service.extend({
     },
 
     joinRoom(room) {
-        const defer = RSVP.defer();
-        // Create a timeout just in case we don't get a response from realtime
-        const tid = setTimeout(() => {
-            defer.reject(new Error('Never received a join room response from realtime'));
-        }, 5000);
+        return new Promise((resolve, reject) => {
+            // Create a timeout just in case we don't get a response from realtime
+            const tid = setTimeout(() => {
+                reject(new Error('Never received a join room response from realtime'));
+            }, 5000);
 
-        const scopedJoinTopic = `join:${room.get('id')}`;
-        this.get('ipc').registerOneTimeListener(scopedJoinTopic, () => {
-            clearTimeout(tid);
-            room.set('activated', true);
-            defer.resolve();
+            const scopedJoinTopic = `join:${room.get('id')}`;
+            this.get('ipc').registerOneTimeListener(scopedJoinTopic, () => {
+                clearTimeout(tid);
+                room.set('activated', true);
+                resolve();
+            });
+            this.get('ipc').sendEvent('join-room', {
+                id: room.get('id'),
+                payload: room.get('jid')
+            });
         });
-        this.get('ipc').sendEvent('join-room', {
-            id: room.get('id'),
-            payload: room.get('jid')
-        });
-
-        return defer.promise;
     },
 
     inviteToRoom(room, inviteeJid) {
