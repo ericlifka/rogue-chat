@@ -1,9 +1,10 @@
 /* eslint-env node */
-const {app, protocol, ipcMain} = require('electron');
-const {dirname, join, resolve} = require('path');
 const protocolServe = require('electron-protocol-serve');
-const SocketIoProxy = require('./proxy/SocketIoProxy');
+const { app, protocol, ipcMain } = require('electron');
+const { dirname, join, resolve } = require('path');
+
 const RealtimeAdapter = require('./realtime/RealtimeAdapter');
+const SocketIoProxy = require('./proxy/SocketIoProxy');
 const WindowFactory = require('./windows');
 
 // Registering a protocol & schema to serve our Ember application
@@ -11,7 +12,7 @@ protocol.registerStandardSchemes(['serve'], {secure: true});
 protocolServe({
     cwd: join(__dirname || resolve(dirname('')), '..', 'ember'),
     app,
-    protocol,
+    protocol
 });
 
 // Start our proxy server
@@ -36,7 +37,7 @@ app.on('ready', () => {
         app.accessToken = accessToken;
         authWindow.close();
 
-        //TODO: This shouldn't all be in the event handler
+        // TODO: This shouldn't all be in the event handler
         const realtime = new RealtimeAdapter({
             authKey: accessToken
         });
@@ -68,7 +69,5 @@ app.on('ready', () => {
 });
 
 process.on('uncaughtException', (err) => {
-    console.log('An exception in the main thread was not handled.');
-    console.log('This is a serious issue that needs to be handled and/or debugged.');
-    console.log(`Exception: `, err);
+    console.log('Exception: ', err);
 });

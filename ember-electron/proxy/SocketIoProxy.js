@@ -1,10 +1,10 @@
-const http = require("http");
-const httpProxy = require("http-proxy");
-const url = require("url");
-const https = require("https");
+const http = require('http');
+const httpProxy = require('http-proxy');
+const url = require('url');
+const https = require('https');
 
 class SessionStore {
-    constructor() {
+    constructor () {
         this.getOrAddSessionById = this.getOrAddSessionById.bind(this);
         this.setSessionById = this.setSessionById.bind(this);
         this.getSessionById = this.getSessionById.bind(this);
@@ -13,7 +13,7 @@ class SessionStore {
         this._sessionsBySessionId = {};
     }
 
-    getOrAddSessionById(sessionId, onSessionCreated) {
+    getOrAddSessionById (sessionId, onSessionCreated) {
         let session = this.getSessionById(sessionId);
         if ((session == null)) {
             session = {};
@@ -28,31 +28,30 @@ class SessionStore {
         return session;
     }
 
-    setSessionById(sessionId, value) {
+    setSessionById (sessionId, value) {
         const session = this.getSessionById(sessionId);
         if ((session == null)) {
-            return debug('session', `Cannot set session value. Session with ID [${sessionId}] does not exist.`);
+            debug('session', `Cannot set session value. Session with ID [${sessionId}] does not exist.`);
         } else {
-            return this._sessionsBySessionId[sessionId] = value;
+            this._sessionsBySessionId[sessionId] = value;
         }
     }
 
-    getSessionById(sessionId) {
+    getSessionById (sessionId) {
         return this._sessionsBySessionId[sessionId];
     }
 
-    getSessionCount() {
+    getSessionCount () {
         return Object.keys(this._sessionsBySessionId).length;
     }
 
-    removeSessionById(sessionId) {
+    removeSessionById (sessionId) {
         return delete this._sessionsBySessionId[sessionId];
     }
 }
 
 class SocketIoProxy {
-
-    constructor(proxyPort, uri) {
+    constructor (proxyPort, uri) {
         this.start = this.start.bind(this);
         this.on_socketioproxy_res = this.on_socketioproxy_res.bind(this);
         this.on_socketioproxyserver_request = this.on_socketioproxyserver_request.bind(this);
@@ -72,7 +71,7 @@ class SocketIoProxy {
         this.socketioProxyServer.on('clientError', this.on_socketioproxyserver_clienterror);
     }
 
-    create_local_context_attributes(req) {
+    create_local_context_attributes (req) {
         const localContextAttributes = {};
 
         if (req != null) {
@@ -92,15 +91,15 @@ class SocketIoProxy {
         return localContextAttributes;
     }
 
-    get_sessionid_from_req(req) {
+    get_sessionid_from_req (req) {
         return url.parse(req.url, true).query.sessionId;
     }
 
-    start(callback) {
+    start (callback) {
         return this.socketioProxyServer.listen(this.proxyPort, callback);
     }
 
-    on_socketioproxy_res(proxyRes, req, res) {
+    on_socketioproxy_res (proxyRes, req, res) {
         const localContextAttributes = this.create_local_context_attributes(req);
 
         const session = this._sessionStore.getSessionById(localContextAttributes.sessionId);
@@ -114,48 +113,48 @@ class SocketIoProxy {
         if (setCookies) {
             setCookies.forEach((cookie) => {
                 // Strip everthing to the right of (and including) the semicolon
-                let cookieNameValue = (cookie.split(";"))[0];
+                let cookieNameValue = (cookie.split(';'))[0];
 
                 // Parse out the name (left of the '=') and the value (right of the '=')
-                cookieNameValue = cookieNameValue.split("=");
+                cookieNameValue = cookieNameValue.split('=');
 
                 const oldCookie = session.authCookies[cookieNameValue[0]];
                 if (oldCookie) {
                     if (oldCookie !== cookieNameValue[1]) {
-                        console.log("cookies", "Cookie", cookieNameValue[0], "changing from", oldCookie, "to", cookieNameValue[1], localContextAttributes);
+                        console.log('cookies', 'Cookie', cookieNameValue[0], 'changing from', oldCookie, 'to', cookieNameValue[1], localContextAttributes);
                     }
                 } else {
-                    console.log("cookies", "Adding cookie", cookieNameValue[0], cookieNameValue[1], localContextAttributes);
+                    console.log('cookies', 'Adding cookie', cookieNameValue[0], cookieNameValue[1], localContextAttributes);
                 }
 
                 // Add the name/value to a new cookie in this sessions authCookies
                 session.authCookies[cookieNameValue[0]] = cookieNameValue[1];
             });
         } else {
-            console.log("cookies", "setCookies empty!", localContextAttributes);
+            console.log('cookies', 'setCookies empty!', localContextAttributes);
         }
 
     }
 
-    on_socketioproxy_error(err, req, res) {
+    on_socketioproxy_error (err, req, res) {
         const localContextAttributes = this.create_local_context_attributes(req);
         console.error('proxy request to the target encountered error:', err, localContextAttributes);
     }
 
-    on_socketioproxy_close(res, socket, head) {
+    on_socketioproxy_close (res, socket, head) {
         console.log('connect', 'proxy websocket closed with statusCode', res.statusCode);
     }
 
-    on_socketioproxyserver_request(req, res) {
+    on_socketioproxyserver_request (req, res) {
         const localContextAttributes = this.create_local_context_attributes(req);
-        console.log("socketio", "proxying socketio request", localContextAttributes);
+        console.log('socketio', 'proxying socketio request', localContextAttributes);
 
         this.add_cookies_to_request(req, localContextAttributes.sessionId);
 
         this.socketioProxy.web(req, res, err => console.error('proxying websocket upgrade request encountered error:', err));
     }
 
-    on_socketioproxyserver_upgrade(req, socket, head) {
+    on_socketioproxyserver_upgrade (req, socket, head) {
         const localContextAttributes = this.create_local_context_attributes(req);
         console.log('connect', 'proxying socket upgrade request', localContextAttributes);
 
@@ -164,19 +163,22 @@ class SocketIoProxy {
         this.socketioProxy.ws(req, socket, head, err => console.error('proxying websocket upgrade request encountered error:', err));
     }
 
-    on_socketioproxyserver_clienterror(exception, socket) {
+    on_socketioproxyserver_clienterror (exception, socket) {
         const localContextAttributes = this.create_local_context_attributes();
         console.error(exception, localContextAttributes);
     }
 
-    add_cookies_to_request(req, sessionId) {
+    add_cookies_to_request (req, sessionId) {
         const session = this._sessionStore.getSessionById(sessionId);
         if (session != null) {
             const { authCookies } = session;
 
-            let cookieString = "";
-            //cookieString += cookieParse.serialize(cookieName, cookieValue, { encode: (str) -> return str }) + ";" for cookieName, cookieValue of authCookies
-            for (let cookieName in authCookies) { const cookieValue = authCookies[cookieName]; cookieString += cookieName + "=" + cookieValue + ";"; }
+            let cookieString = '';
+            // cookieString += cookieParse.serialize(cookieName, cookieValue, { encode: (str) -> return str }) + ';' for cookieName, cookieValue of authCookies
+            for (const cookieName in authCookies) {
+                const cookieValue = authCookies[cookieName];
+                cookieString += cookieName + '=' + cookieValue + ';';
+            }
 
             req.headers['Cookie'] = cookieString;
         }

@@ -1,0 +1,35 @@
+---
+  extends: semistandard
+  plugins:
+    - dependencies
+  rules:
+    indent:
+      - error
+      - 4
+      - SwitchCase: 1
+    dependencies/case-sensitive: error
+    no-var: error
+    quote-props:
+      - error
+      - as-needed
+    prefer-const:
+      - error
+      - destructuring: all
+    curly:
+      - error
+      - all
+    brace-style:
+      - error
+      - 1tbs
+    padding-line-between-statements:
+      - error
+      # Always require a blank line after "use strict";
+      - blankLine: "always"
+        prev: "directive"
+        next: "*"
+  globals:
+    log: false
+    logWarn: false
+    logError: false
+    debug: false
+    CONFIG: false
