@@ -20,10 +20,10 @@ module.exports = class AuthWindow extends EventEmitter {
     registerListeners () {
         const { webContents } = this.window;
         webContents.on('did-get-redirect-request', (event, oldUrl, url) =>{
-            let raw_code = /token=([^&]*)/.exec(url);
-            let raw_error = /\?errorKey=(.+)$/.exec(url);
-            let code = (raw_code || [])[1];
-            let error = (raw_error || [])[1];
+            const rawCode = /token=([^&]*)/.exec(url);
+            const rawError = /\?errorKey=(.+)$/.exec(url);
+            const code = (rawCode || [])[1];
+            const error = (rawError || [])[1];
 
             if (error) {
                 console.error(`Auth Error: ${error}`);
@@ -47,9 +47,9 @@ module.exports = class AuthWindow extends EventEmitter {
         }
 
         this.authDetails = {
-            REDIRECT_URI: "http://localhost:4200",
+            REDIRECT_URI: 'http://localhost:4200',
             CLIENT_ID
-        }
+        };
     }
 
     show () {

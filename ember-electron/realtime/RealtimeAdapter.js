@@ -1,16 +1,18 @@
-"use strict";
+'use strict';
 
+const { EventEmitter } = require('events');
 const assert = require('assert');
+const websocket = require('ws');
 
 // Mock a bunch of client state to get realtime to not crash on load
 const { JSDOM } = require('jsdom');
 const { window } = new JSDOM(``, {
     url: 'http://localhost'
 });
-const { document } = window;
+const {document} = window;
 global.window = window;
 global.document = document;
-global.WebSocket = require('ws');
+global.WebSocket = websocket;
 global.navigator = {};
 global.location = global.window.location;
 global.localStorage = window.localStorage;
@@ -20,7 +22,7 @@ require('./realtime_node.js');
 const Realtime = window.Realtime;
 global.Realtime = window.Realtime;
 
-//Default realtime config for chat, minus auth token
+// Default realtime config for chat, minus auth token
 const defaultConfig = {
     carrierPigeon: true,
     fetchGroupsOnConnect: false,
@@ -36,8 +38,10 @@ const defaultConfig = {
     transports: ['websocket']
 };
 
-module.exports = class RealtimeAdapter {
-    constructor(config = {}) {
+module.exports = class RealtimeAdapter extends EventEmitter {
+    constructor (config = {}) {
+        super(...arguments);
+
         assert(config.authKey, 'An auth token is required when creating an instance of realtime');
         this.config = Object.assign(defaultConfig, config);
         this.realtime = new Realtime(this.config);
@@ -45,90 +49,59 @@ module.exports = class RealtimeAdapter {
         this.bindRealtimeEvents();
     }
 
-    connect() {
+    connect () {
         this.realtime.connect();
     }
 
-    reconnect() {
+    reconnect () {
         this.realtime.disconnect();
         this.realtime.connect();
     }
 
-    disconnect() {
+    disconnect () {
         this.realtime.disconnect();
     }
 
-    getMessages(options, callback) {
+    getMessages (options, callback) {
         this.realtime.getMessages(options, callback);
     }
 
-    joinRoom(jid, callback) {
+    joinRoom (jid, callback) {
         this.realtime.joinRoom(jid, callback);
     }
 
-    sendMessage(options, callback) {
+    sendMessage (options, callback) {
         this.realtime.sendMessage(options, callback);
     }
 
-    getRoomInfo(roomJid, callback) {
+    getRoomInfo (roomJid, callback) {
         this.realtime.getRoomInfo(roomJid, callback);
     }
 
-    inviteToRoom(roomJid, userJid) {
+    inviteToRoom (roomJid, userJid) {
         this.realtime.inviteToRoom(roomJid, userJid);
     }
 
-    bindToEvent(event, scope, handler) {
-        const subscribedEvents = this.subscribedEvents;
-        if (!subscribedEvents[event]) {
-            subscribedEvents[event] = {};
-        }
-        const eventList = subscribedEvents[event];
-
-        if (!eventList[scope]) {
-            eventList[scope] = [];
-        }
-
-        eventList[scope].push(handler);
-    }
-
-    removeBoundEvent(event, scope, handler) {
-        const eventList = this.subscribedEvents[event] || {};
-        const scopedEvents = eventList[scope] || [];
-        const filteredEvents = scopedEvents.filter(originalHandler => {
-            return originalHandler !== handler;
-        });
-        eventList[scope] = filteredEvents;
-    }
-
-    bindRealtimeEvents() {
+    bindRealtimeEvents () {
         const realtime = this.realtime;
         realtime.on('activeChat', this.activeChat.bind(this));
         realtime.on('message', this.message.bind(this));
         realtime.on('occupantChange', this.occupantChange.bind(this));
     }
 
-    notifyListeners(eventList, event) {
-        // Search the wild card and the event id
-        const wildcard = eventList['*'] || [];
-        const scoped = eventList[event.jid] || [];
-
-        wildcard.concat(scoped).forEach(handler => handler(event));
+    // Realtime Events
+    activeChat (activeChatEvent) {
+        this.emit('active-chat:*', activeChatEvent);
+        this.emit(`active-chat:${activeChatEvent.jid}`, activeChatEvent);
     }
 
-    //Realtime Events
-    activeChat(activeChatEvent) {
-        const activeChatEventList = this.subscribedEvents['activeChat'];
-        this.notifyListeners(activeChatEventList, activeChatEvent);
+    message (messageEvent) {
+        this.emit('message:*', messageEvent);
+        this.emit(`message:${messageEvent.jid}`, messageEvent);
     }
 
-    message(messageEvent) {
-        const messageEventList = this.subscribedEvents['message'];
-        this.notifyListeners(messageEventList, messageEvent);
-    }
-
-    occupantChange(occupantEvent) {
-        const occupantEventList = this.subscribedEvents['occupantChange'];
-        this.notifyListeners(occupantEventList, occupantEvent);
+    occupantChange (occupantEvent) {
+        this.emit('occupant-change:*', occupantEvent);
+        this.emit(`occupant-change:${occupantEvent.jid}`, occupantEvent);
     }
 };

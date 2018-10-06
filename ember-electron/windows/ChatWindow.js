@@ -14,7 +14,7 @@ const WINDOW_EVENTS = [
 ];
 
 module.exports = class ChatWindow extends EventEmitter {
-    constructor(opts = {}) {
+    constructor (opts = {}) {
         super(...arguments);
         const window = new BrowserWindow({
             width: 1000,
@@ -33,11 +33,11 @@ module.exports = class ChatWindow extends EventEmitter {
         this.registerListeners();
     }
 
-    registerListeners() {
+    registerListeners () {
         const { realtime } = this.opts;
         const window = this.window;
 
-        //TODO: Should not subscribe to events until browser ask for them
+        // TODO: Should not subscribe to events until browser ask for them
         this.messageHandler = (messageEvent) => {
             const id = _.first(messageEvent.to.split('@'));
             window.webContents.send(`message:${id}`, messageEvent);
@@ -47,8 +47,8 @@ module.exports = class ChatWindow extends EventEmitter {
             window.webContents.send(`occupant:${id}`, occupantEvent);
         };
 
-        realtime.bindToEvent('message', '*', this.messageHandler);
-        realtime.bindToEvent('occupantChange', '*', this.occupantHandler);
+        realtime.on('message:*', this.messageHandler);
+        realtime.on('occupant-change:*', this.occupantHandler);
 
         WINDOW_EVENTS.forEach((eventName) => {
             ipcMain.on(eventName, (event, payload) => this.handleEvent(eventName, event, payload));
@@ -56,11 +56,11 @@ module.exports = class ChatWindow extends EventEmitter {
 
         window.on('closed', () => {
             this.removeListeners();
-            this.emit('closed')
+            this.emit('closed');
         });
     }
 
-    processQueue() {
+    processQueue () {
         this.windowReady = true;
         this.eventQueue.forEach(({event, message}) => {
             this.window.webContents.send(event, message);
@@ -68,21 +68,21 @@ module.exports = class ChatWindow extends EventEmitter {
         this.eventQueue = [];
     }
 
-    sendEvent(event, message) {
+    sendEvent (event, message) {
         if (!this.windowReady) {
             return this.eventQueue.push({event, message});
         }
         this.window.webContents.send(event, message);
     }
 
-    handleEvent(name, event, args) {
+    handleEvent (name, event, args) {
         const browserWindow = event.sender.getOwnerBrowserWindow();
         if (browserWindow.id !== this.id) {
             return;
         }
 
         const { id, payload, roomJid, userJid } = args || {};
-        switch(name) {
+        switch (name) {
             case 'join-room':
                 this.opts.realtime.joinRoom(payload, (error) => {
                     this.window.webContents.send(`join:${id}`, null);
@@ -115,18 +115,18 @@ module.exports = class ChatWindow extends EventEmitter {
         }
     }
 
-    removeListeners() {
+    removeListeners () {
         const { realtime } = this.opts;
-        realtime.removeBoundEvent('message', '*', this.messageHandler);
-        realtime.removeBoundEvent('occupantChange', '*', this.occupantHandler);
+        realtime.on('message:*', this.messageHandler);
+        realtime.on('occupant-change:*', this.occupantHandler);
     }
 
-    show({ jid, rawSubject }) {
+    show ({ jid, rawSubject }) {
         this.window.loadURL(`serve://dist/chat/${jid}?rawSubject=${rawSubject}`);
         this.window.show();
     }
 
-    close() {
+    close () {
         this.removeListeners();
         this.window.destroy();
     }

@@ -3,7 +3,7 @@ const { EventEmitter } = require('events');
 const { ipcMain } = require('electron');
 
 module.exports = class RosterWindow extends EventEmitter {
-    constructor(opts) {
+    constructor (opts) {
         super(...arguments);
         const window = new BrowserWindow({
             minWidth: 350,
@@ -23,22 +23,22 @@ module.exports = class RosterWindow extends EventEmitter {
         this.registerListeners();
     }
 
-    registerListeners() {
+    registerListeners () {
         const { realtime } = this.opts;
         const { webContents } = this.window;
 
-        realtime.bindToEvent('activeChat', '*', (activeChatEvent) => {
+        realtime.on('active-chat:*', (activeChatEvent) => {
             webContents.send('activeChat', activeChatEvent);
         });
 
-        realtime.bindToEvent('message', '*', (messageEvent) => {
+        realtime.on('message:*', (messageEvent) => {
             webContents.send('message', messageEvent);
         });
 
         ipcMain.on('window-ready', (event, payload) => this.handleEvent('window-ready', event, payload));
     }
 
-    handleEvent(name, event) {
+    handleEvent (name, event) {
         const browserWindow = event.sender.getOwnerBrowserWindow();
         if (browserWindow.id !== this.id) {
             return;
@@ -54,16 +54,16 @@ module.exports = class RosterWindow extends EventEmitter {
         }
     }
 
-    sendEvent(event, message) {
+    sendEvent (event, message) {
         this.window.webContents.send(event, message);
     }
 
-    show() {
+    show () {
         this.window.loadURL(`serve://dist`);
         this.window.show();
     }
 
-    close() {
+    close () {
         this.window.destroy();
     }
 };
