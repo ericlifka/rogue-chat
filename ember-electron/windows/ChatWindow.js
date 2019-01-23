@@ -121,8 +121,8 @@ module.exports = class ChatWindow extends EventEmitter {
 
     removeListeners () {
         const { realtime } = this.opts;
-        realtime.on('message:*', this.messageHandler);
-        realtime.on('occupant-change:*', this.occupantHandler);
+        realtime.removeListener('message:*', this.messageHandler);
+        realtime.removeListener('occupant-change:*', this.occupantHandler);
     }
 
     show ({ jid, rawSubject }) {
