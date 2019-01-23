@@ -15,6 +15,7 @@
     {{#each roster.activeChats as |activeChat|}}
         {{conversation-pane/conversation-item
             rosterModel=activeChat
+            popoutRoom=(action "popoutRoom")
             openRoom=(action "openRoom")
         }}
     {{/each}}

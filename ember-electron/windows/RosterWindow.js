@@ -1,69 +1,59 @@
 const { BrowserWindow } = require('electron');
-const { EventEmitter } = require('events');
+const ChatWindow = require('./ChatWindow');
 const { ipcMain } = require('electron');
 
-module.exports = class RosterWindow extends EventEmitter {
+module.exports = class RosterWindow extends ChatWindow {
     constructor (opts) {
         super(...arguments);
-        const window = new BrowserWindow({
-            minWidth: 350,
-            width: 350,
-            maxWidth: 350,
+
+        this.registerRealtimeListener();
+        this.registerWindowReadyListener();
+    }
+
+    createBrowserWindow () {
+        return new BrowserWindow({
+            minWidth: 356,
+            width: 356,
             height: 700,
             webPreferences: {
                 webSecurity: false
             },
             resizable: true
         });
-        Object.assign(this, {
-            id: window.id,
-            window,
-            opts
-        });
-        this.registerListeners();
     }
 
-    registerListeners () {
+    registerWindowReadyListener () {
+        // TODO: Ask for active chat instead of connecting and disconnecting realtime
+        ipcMain.on('window-ready', (event) => {
+            const browserWindow = event.sender.getOwnerBrowserWindow();
+            if (browserWindow.id !== this.id) {
+                return;
+            }
+
+            this.opts.realtime.reconnect();
+        });
+
+        ipcMain.on('resize-window', (event, size) => {
+            const browserWindow = event.sender.getOwnerBrowserWindow();
+            if (browserWindow.id !== this.id) {
+                return;
+            }
+
+            this.window.setSize(size.width, size.height);
+        });
+    }
+
+    registerRealtimeListener () {
         const { realtime } = this.opts;
         const { webContents } = this.window;
 
         realtime.on('active-chat:*', (activeChatEvent) => {
             webContents.send('activeChat', activeChatEvent);
         });
-
-        realtime.on('message:*', (messageEvent) => {
-            webContents.send('message', messageEvent);
-        });
-
-        ipcMain.on('window-ready', (event, payload) => this.handleEvent('window-ready', event, payload));
-    }
-
-    handleEvent (name, event) {
-        const browserWindow = event.sender.getOwnerBrowserWindow();
-        if (browserWindow.id !== this.id) {
-            return;
-        }
-
-        const { realtime } = this.opts;
-        switch (name) {
-            case 'window-ready':
-                // TODO: Don't toggle realtime state in the window, instead ask for active chats
-                realtime.disconnect();
-                realtime.connect();
-                break;
-        }
-    }
-
-    sendEvent (event, message) {
-        this.window.webContents.send(event, message);
     }
 
     show () {
         this.window.loadURL(`serve://dist`);
         this.window.show();
-    }
-
-    close () {
-        this.window.destroy();
     }
 };

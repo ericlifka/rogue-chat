@@ -7,7 +7,9 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-    this.route('navigation-portal', { path: '/' });
+    this.route('roster', { path: '/' }, function () {
+        this.route('room', { path: ':jid' });
+    });
     this.route('chat', function () {
         this.route('room', { path: ':jid' });
     });

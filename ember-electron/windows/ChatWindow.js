@@ -16,13 +16,7 @@ const WINDOW_EVENTS = [
 module.exports = class ChatWindow extends EventEmitter {
     constructor (opts = {}) {
         super(...arguments);
-        const window = new BrowserWindow({
-            width: 1000,
-            height: 500,
-            webPreferences: {
-                webSecurity: false
-            }
-        });
+        const window = this.createBrowserWindow();
         Object.assign(this, {
             windowReady: false,
             eventQueue: [],
@@ -31,6 +25,16 @@ module.exports = class ChatWindow extends EventEmitter {
             opts
         });
         this.registerListeners();
+    }
+
+    createBrowserWindow () {
+        return new BrowserWindow({
+            width: 1000,
+            height: 500,
+            webPreferences: {
+                webSecurity: false
+            }
+        });
     }
 
     registerListeners () {

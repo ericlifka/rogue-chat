@@ -9,7 +9,7 @@ const { JSDOM } = require('jsdom');
 const { window } = new JSDOM(``, {
     url: 'http://localhost'
 });
-const {document} = window;
+const { document } = window;
 global.window = window;
 global.document = document;
 global.WebSocket = websocket;

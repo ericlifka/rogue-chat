@@ -156,7 +156,6 @@ export default Service.extend({
             const scopedRoomInfo = `room-info:${room.get('id')}`;
             this.get('ipc').registerOneTimeListener(scopedRoomInfo, (event, roomInfo) => {
                 clearTimeout(tid);
-                //TODO: Once realtime fixes room info use this to fetch offline occupants
                 resolve(roomInfo);
             });
 
@@ -193,8 +192,11 @@ export default Service.extend({
 
     async activateRoom(room) {
         if (!room.get('activated')) {
-            if (room.get('type')!== 'person') {
+            if (room.get('type') !== 'person') {
                 await this.joinRoom(room);
+
+                const roomInfo = await this.getRoomInfo(room);
+                room.set('rawSubject', roomInfo.subject);
             }
             await this.get('history').loadHistoryBefore(room);
             room.set('activated', true);

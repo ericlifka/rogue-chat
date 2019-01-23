@@ -3,8 +3,6 @@ import { equal } from '@ember/object/computed';
 import Controller from '@ember/controller';
 
 export default Controller.extend({
-    queryParams: ['rawSubject'],
-
     chat: service(),
 
     model: null,
