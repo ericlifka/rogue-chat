@@ -81,6 +81,7 @@
     "lodash": "^4.17.10",
     "markdown-it": "^8.4.2",
     "moment": "^2.22.2",
+    "purecloud-streaming-client": "^8.0.7",
     "uuid": "^3.3.2"
   },
   "config": {

@@ -3,7 +3,7 @@ const protocolServe = require('electron-protocol-serve');
 const { app, protocol, ipcMain } = require('electron');
 const { dirname, join, resolve } = require('path');
 
-const RealtimeAdapter = require('./realtime/RealtimeAdapter');
+const RealtimeAdapter = require('./sockets/RealtimeAdapter');
 const SocketIoProxy = require('./proxy/SocketIoProxy');
 const WindowFactory = require('./windows');
 
