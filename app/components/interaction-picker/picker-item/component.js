@@ -1,6 +1,5 @@
-import { equal } from '@ember/object/computed';
+import { equal, reads } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 
 export default Component.extend({
     classNames: ['picker-item'],
@@ -8,9 +7,7 @@ export default Component.extend({
     room: null,
 
     isPerson: equal('room.type', 'person'),
-    presenceClass: computed(function () {
-        return 'available';
-    }),
+    presenceClass: reads('room.entity.presenceClass'),
 
     click() {
         this.get('switchInteraction')(this.get('room'));

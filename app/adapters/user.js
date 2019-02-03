@@ -26,16 +26,16 @@ export default RESTAdapter.extend({
 
     urlForFindRecord(id) {
         if (isPersonJid(id)) {
-            return `${this.baseUrl()}?jid=${id}`;
+            return `${this.baseUrl()}?jid=${id}&expand=presence`;
         }
-        return `${this.baseUrl()}/${id}`;
+        return `${this.baseUrl()}/${id}?expand=presence`;
     },
 
     async findRecord(store, type, id, snapshot) {
         const url = this.buildURL(type.modelName, id, snapshot, 'findRecord');
         const query = this.buildQuery(snapshot);
 
-        let response = await this.ajax(url, 'GET', { data: query });
+        let response = await this.ajax(url, 'GET', { data: query});
         response = _.get(response, 'entities.0');
 
         return {
