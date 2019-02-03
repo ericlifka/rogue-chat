@@ -1,5 +1,6 @@
 import {inject as service} from '@ember/service';
 import {isPersonJid} from '../utils/jid-helpers';
+import {computed} from '@ember/object';
 import DS from 'ember-data';
 import _ from 'lodash';
 
@@ -8,14 +9,24 @@ const { RESTAdapter } = DS;
 export default RESTAdapter.extend({
     session: service(),
 
+    headers: computed('session.accessToken', function () {
+        let headers = {};
+
+        const token = this.get('session.accessToken');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        return headers;
+    }),
+
     baseUrl() {
-        const orgGuid = this.get('session.org.id');
-        return `https://directory.us-east-1.inindca.com/directory/v1/organizations/${orgGuid}/users`;
+        return `https://api.inindca.com/api/v2/users`;
     },
 
     urlForFindRecord(id) {
         if (isPersonJid(id)) {
-            return `${this.baseUrl()}/bulk/jid/${id}`;
+            return `${this.baseUrl()}?jid=${id}`;
         }
         return `${this.baseUrl()}/${id}`;
     },
@@ -25,9 +36,8 @@ export default RESTAdapter.extend({
         const query = this.buildQuery(snapshot);
 
         let response = await this.ajax(url, 'GET', { data: query });
-        if (_.isArray(response)) {
-            response = response[0];
-        }
+        response = _.get(response, 'entities.0');
+
         return {
             user: response
         };
