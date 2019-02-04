@@ -1,11 +1,11 @@
 'use strict';
 
 const { EventEmitter } = require('events');
+const { JSDOM } = require('jsdom');
 const assert = require('assert');
 const websocket = require('ws');
 
 // Mock a bunch of client state to get realtime to not crash on load
-const { JSDOM } = require('jsdom');
 const { window } = new JSDOM(``, {
     url: 'http://localhost'
 });
@@ -45,7 +45,6 @@ module.exports = class RealtimeAdapter extends EventEmitter {
         assert(config.authKey, 'An auth token is required when creating an instance of realtime');
         this.config = Object.assign(defaultConfig, config);
         this.realtime = new Realtime(this.config);
-        this.subscribedEvents = {};
         this.bindRealtimeEvents();
     }
 
