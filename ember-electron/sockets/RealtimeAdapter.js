@@ -2,20 +2,6 @@
 
 const { EventEmitter } = require('events');
 const assert = require('assert');
-const websocket = require('ws');
-
-// Mock a bunch of client state to get realtime to not crash on load
-const { JSDOM } = require('jsdom');
-const { window } = new JSDOM(``, {
-    url: 'http://localhost'
-});
-const { document } = window;
-global.window = window;
-global.document = document;
-global.WebSocket = websocket;
-global.navigator = {};
-global.location = global.window.location;
-global.localStorage = window.localStorage;
 
 // Realtime checks the global context for itself, window isn't global in node so add realtime to the global
 require('./realtime_node.js');
