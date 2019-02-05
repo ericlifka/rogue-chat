@@ -8,6 +8,13 @@ module.exports = class RosterWindow extends ChatWindow {
 
         this.registerRealtimeListener();
         this.registerWindowReadyListener();
+        this.subscribeToHawkTopic();
+    }
+
+    subscribeToHawkTopic () {
+        this.hawk.registerTopic(this.id, 'v2.users.d01867d6-d942-47b2-89c2-14b4f516db24.presence', false, (data) => {
+            console.log('hawk message: ', data);
+        });
     }
 
     createBrowserWindow () {
@@ -30,7 +37,7 @@ module.exports = class RosterWindow extends ChatWindow {
                 return;
             }
 
-            this.opts.realtime.reconnect();
+            this.realtime.reconnect();
         });
 
         ipcMain.on('resize-window', (event, size) => {
@@ -44,7 +51,7 @@ module.exports = class RosterWindow extends ChatWindow {
     }
 
     registerRealtimeListener () {
-        const { realtime } = this.opts;
+        const { realtime } = this;
         const { webContents } = this.window;
 
         realtime.on('active-chat:*', (activeChatEvent) => {

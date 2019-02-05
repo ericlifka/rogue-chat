@@ -9,20 +9,22 @@ const WINDOW_EVENTS = [
     'send-message',
     'get-room-info',
     'invite-to-room',
+    'add-pigeon-topic',
+    'remove-pigeon-topic',
     'window-ready',
     'close-window'
 ];
 
 module.exports = class ChatWindow extends EventEmitter {
     constructor (opts = {}) {
-        super(...arguments);
+        super();
         const window = this.createBrowserWindow();
         Object.assign(this, {
             windowReady: false,
             eventQueue: [],
             id: window.id,
             window,
-            opts
+            ...opts
         });
         this.registerListeners();
     }
@@ -38,7 +40,7 @@ module.exports = class ChatWindow extends EventEmitter {
     }
 
     registerListeners () {
-        const { realtime } = this.opts;
+        const { realtime } = this;
         const window = this.window;
 
         // TODO: Should not subscribe to events until browser ask for them
@@ -49,6 +51,9 @@ module.exports = class ChatWindow extends EventEmitter {
         this.occupantHandler = (occupantEvent) => {
             const id = _.first(occupantEvent.room.split('@'));
             window.webContents.send(`occupant:${id}`, occupantEvent);
+        };
+        this.pigeonHandler = ({topic, data}) => {
+            window.webContents.send(`pigeon:${topic}`, data);
         };
 
         realtime.on('message:*', this.messageHandler);
@@ -88,27 +93,33 @@ module.exports = class ChatWindow extends EventEmitter {
         const { id, payload, roomJid, userJid } = args || {};
         switch (name) {
             case 'join-room':
-                this.opts.realtime.joinRoom(payload, (error) => {
+                this.realtime.joinRoom(payload, (error) => {
                     this.window.webContents.send(`join:${id}`, null);
                 });
                 break;
             case 'request-history':
-                this.opts.realtime.getMessages(payload, (error, messages) => {
+                this.realtime.getMessages(payload, (error, messages) => {
                     this.window.webContents.send(`history:${id}`, messages);
                 });
                 break;
             case 'send-message':
-                this.opts.realtime.sendMessage(payload, (error, message) => {
+                this.realtime.sendMessage(payload, (error, message) => {
                     this.window.webContents.send(`send-message:${id}`, message);
                 });
                 break;
             case 'get-room-info':
-                this.opts.realtime.getRoomInfo(payload, (error, roomInfo) => {
+                this.realtime.getRoomInfo(payload, (error, roomInfo) => {
                     this.window.webContents.send(`room-info:${id}`, roomInfo);
                 });
                 break;
             case 'invite-to-room':
-                this.opts.realtime.inviteToRoom(roomJid, userJid);
+                this.realtime.inviteToRoom(roomJid, userJid);
+                break;
+            case 'add-pigeon-topic':
+                this.hawk.registerTopic(this.id, payload.topic, payload.priority, this.pigeonHandler);
+                break;
+            case 'remove-pigeon-topic':
+                this.hawk.removeTopic(this.id, payload.topic, payload.priority, this.pigeonHandler);
                 break;
             case 'window-ready':
                 this.processQueue();
@@ -120,13 +131,13 @@ module.exports = class ChatWindow extends EventEmitter {
     }
 
     removeListeners () {
-        const { realtime } = this.opts;
+        const { realtime, hawk } = this;
         realtime.removeListener('message:*', this.messageHandler);
         realtime.removeListener('occupant-change:*', this.occupantHandler);
     }
 
-    show ({ jid, rawSubject }) {
-        this.window.loadURL(`serve://dist/chat/${jid}?rawSubject=${rawSubject}`);
+    show ({ jid }) {
+        this.window.loadURL(`serve://dist/chat/${jid}`);
         this.window.show();
     }
 
