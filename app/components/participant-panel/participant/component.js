@@ -1,19 +1,23 @@
+import { inject as service } from '@ember/service';
 import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 
 export default Component.extend({
     classNames: ['participant'],
+    presence: service(),
 
     occupant: null,
 
     name: reads('occupant.name'),
+    presenceClass: reads('occupant.presenceClass'),
 
-    presenceClass: computed('occupant.presence.presenceDefinition.systemPresence', function () {
-        const presence = this.get('occupant.presence.presenceDefinition.systemPresence');
-        if (presence) {
-            return presence.toLowerCase().replace(' ', '-');
-        }
-        return 'offline';
-    }),
+    didInsertElement() {
+        const user = this.get('occupant');
+        this.get('presence').subscribeToPresenceUpdates(user, false);
+    },
+
+    willDestroyElement() {
+        const user = this.get('occupant');
+        this.get('presence').unsubscribeFromPresenceUpdates(user, false);
+    },
 });

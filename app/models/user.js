@@ -22,6 +22,9 @@ export default DS.Model.extend({
     subscriptionCount: 0,
 
     presenceClass: computed('presence.presenceDefinition.systemPresence', function () {
-        return this.get('presence.presenceDefinition.systemPresence').toLowerCase().replace(' ', '-');
+        return this.get('presence.presenceDefinition.systemPresence')
+            .toLowerCase()
+            .replace(' ', '-')
+            .replace('_', '-');
     })
 });
