@@ -20,8 +20,26 @@ export default Component.extend({
 
     showPresencePicker: false,
 
+    didInsertElement() {
+        const user = this.get('user');
+        this.get('presence').subscribeToPresenceUpdates(user, true);
+    },
+
+    willDestroyElement() {
+        const user = this.get('user');
+        this.get('presence').unsubscribeFromPresenceUpdates(user, true);
+    },
+
     user: reads('session.user'),
-    presenceLabel: reads('user.presence.presenceDefinition.systemPresence'),
+    presenceClass: reads('user.presenceClass'),
+
+    presenceLabel: computed('user.presence.presenceDefinition.systemPresence', 'presence.presences', function () {
+        const systemPresence = this.get('user.presence.presenceDefinition.systemPresence').toUpperCase();
+        const presences = this.get('presence.presences').filter((presence) => {
+            return presence.key.toUpperCase() === systemPresence
+        });
+        return presences.get('firstObject.label');
+    }),
 
     presences: computed('presence.presences', function () {
         const presences = this.get('presence.presences') || [];
@@ -32,10 +50,6 @@ export default Component.extend({
         const imageUrl = _.find(this.get('user.images'), {resolution: 'x96'});
         const fallbackUrl = this.get('application').buildBaseUrl('static-resources/avatar-x96.png');
         return _.get(imageUrl, 'imageUri', fallbackUrl);
-    }),
-
-    presenceClass: computed('user.presence.systemPresence', function () {
-        return this.get('session.user.presence.presenceDefinition.systemPresence').toLowerCase().replace(' ', '-');
     }),
 
     actions: {

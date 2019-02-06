@@ -14,9 +14,10 @@ export default Service.extend({
 
     init() {
         this._super(...arguments);
+        this._topicGuidMap = {};
+        this.set('presences', []);
         this.loadPresences();
         this.boundHandler = this.pigeonHandler.bind(this);
-        this._topicGuidMap = {};
     },
 
     async loadPresences() {
