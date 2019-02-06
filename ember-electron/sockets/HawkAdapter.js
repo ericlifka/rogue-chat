@@ -102,4 +102,20 @@ module.exports = class HawkAdapter {
         this.streamingClient.off(`notify:${topic}`, handler);
         this.throttledUpdate();
     }
+
+    removeAllTopicsByWindow (windowId, handler) {
+        const windowedTopic = this.windows[windowId];
+        if (!windowedTopic) {
+            return;
+        }
+
+        const topics = windowedTopic.topics();
+        const priority = windowedTopic.priorityTopics();
+        const allTopics = topics.concat(priority);
+
+        for (const topic of allTopics) {
+            this.streamingClient.off(`notify:${topic}`, handler);
+        }
+        this.throttledUpdate();
+    }
 };

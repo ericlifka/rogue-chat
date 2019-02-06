@@ -132,6 +132,7 @@ module.exports = class ChatWindow extends EventEmitter {
 
     removeListeners () {
         const { realtime, hawk } = this;
+        hawk.removeAllTopicsByWindow(this.id, this.pigeonHandler);
         realtime.removeListener('message:*', this.messageHandler);
         realtime.removeListener('occupant-change:*', this.occupantHandler);
     }
