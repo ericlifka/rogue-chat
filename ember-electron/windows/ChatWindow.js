@@ -52,8 +52,8 @@ module.exports = class ChatWindow extends EventEmitter {
             const id = _.first(occupantEvent.room.split('@'));
             window.webContents.send(`occupant:${id}`, occupantEvent);
         };
-        this.pigeonHandler = ({topic, data}) => {
-            window.webContents.send(`pigeon:${topic}`, data);
+        this.pigeonHandler = (data) => {
+            window.webContents.send(`pigeon:${data.topicName}`, data);
         };
 
         realtime.on('message:*', this.messageHandler);

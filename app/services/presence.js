@@ -4,7 +4,9 @@ import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 
 export default Service.extend({
+    ipc: service(),
     ajax: service(),
+    store: service(),
     session: service(),
     application: service(),
 
@@ -13,6 +15,8 @@ export default Service.extend({
     init() {
         this._super(...arguments);
         this.loadPresences();
+        this.boundHandler = this.pigeonHandler.bind(this);
+        this._topicGuidMap = {};
     },
 
     async loadPresences() {
@@ -61,6 +65,43 @@ export default Service.extend({
             });
             primaryPresence.set('secondaryPresences', secondaries);
         });
+    },
+
+    subscribeToPresenceUpdates(user, priority = false) {
+        user.incrementProperty('subscriptionCount', 1);
+        if (user.get('subscriptionCount') > 1) {
+            return;
+        }
+
+        const topic = `v2.users.${user.get('id')}.presence`;
+        this._topicGuidMap[topic] = user.get('id');
+        this.get('ipc').registerListener(`pigeon:${topic}`, this.boundHandler);
+        this.get('ipc').sendEvent('add-pigeon-topic', { payload: { topic, priority } })
+    },
+
+    unsubscribeFromPresenceUpdates(user, priority) {
+        const subscriptionCount = user.get('subscriptionCount');
+        if (subscriptionCount === 0) {
+            return;
+        } else if (subscriptionCount > 1) {
+            user.decrementProperty('subscriptionCount', 1);
+            return;
+        }
+
+        const topic = `v2.users.${user.get('id')}.presence`;
+        delete this._topicGuidMap[topic];
+        this.get('ipc').removeListener(`pigeon:${topic}`, this.boundHandler);
+        this.get('ipc').sendEvent('remove-pigeon-topic', { payload: { topic, priority } });
+    },
+
+    pigeonHandler(event, data) {
+        const { topicName, eventBody } = data;
+        const userGuid = this._topicGuidMap[topicName];
+        const user = this.get('store').peekRecord('user', userGuid);
+        if (!user) {
+            return;
+        }
+        user.set('presence.presenceDefinition', eventBody.presenceDefinition);
     },
 
     async setUserPresence(presence) {

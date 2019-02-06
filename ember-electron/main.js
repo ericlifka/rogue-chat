@@ -77,7 +77,8 @@ app.on('ready', async () => {
             return chatWindow.sendEvent('open-room', args);
         }
         chatWindow = WindowFactory.createWindow('ChatWindow', {
-            realtime
+            realtime,
+            hawk
         });
         chatWindow.on('closed', function () {
             chatWindow = null;

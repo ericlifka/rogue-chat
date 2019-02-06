@@ -19,8 +19,9 @@ export default DS.Model.extend({
     department: attr(),
     presence: attr(),
 
+    subscriptionCount: 0,
+
     presenceClass: computed('presence.presenceDefinition.systemPresence', function () {
-        console.log(this.get('presence.presenceDefinition.systemPresence'));
         return this.get('presence.presenceDefinition.systemPresence').toLowerCase().replace(' ', '-');
     })
 });
