@@ -5,9 +5,7 @@ const { ipcMain } = require('electron');
 module.exports = class RosterWindow extends ChatWindow {
     constructor (opts) {
         super(...arguments);
-
-        this.registerRealtimeListener();
-        this.registerWindowReadyListener();
+        this.registerAdditionalListeners();
     }
 
     createBrowserWindow () {
@@ -22,34 +20,41 @@ module.exports = class RosterWindow extends ChatWindow {
         });
     }
 
-    registerWindowReadyListener () {
-        // TODO: Ask for active chat instead of connecting and disconnecting realtime
-        ipcMain.on('window-ready', (event) => {
+    registerAdditionalListeners () {
+        const { realtime, window } = this;
+        const { webContents } = window;
+
+        this.readyListener = (event) => {
             const browserWindow = event.sender.getOwnerBrowserWindow();
             if (browserWindow.id !== this.id) {
                 return;
             }
 
             this.realtime.reconnect();
-        });
-
-        ipcMain.on('resize-window', (event, size) => {
+        };
+        this.resizeListener = (event, size) => {
             const browserWindow = event.sender.getOwnerBrowserWindow();
             if (browserWindow.id !== this.id) {
                 return;
             }
 
             this.window.setSize(size.width, size.height);
+        };
+        this.activeListener = (activeChatEvent) => {
+            webContents.send('activeChat', activeChatEvent);
+        };
+        window.on('closed', () => {
+            this.removeAdditionalListeners();
         });
+        ipcMain.on('window-ready', this.readyListener);
+        ipcMain.on('resize-window', this.resizeListener);
+        realtime.on('active-chat:*', this.activeListener);
     }
 
-    registerRealtimeListener () {
-        const { realtime } = this;
-        const { webContents } = this.window;
-
-        realtime.on('active-chat:*', (activeChatEvent) => {
-            webContents.send('activeChat', activeChatEvent);
-        });
+    removeAdditionalListeners () {
+        ipcMain.off('window-ready', this.readyListener);
+        ipcMain.off('resize-window', this.resizeListener);
+        this.realtime.removeListener('active-chat:*', this.activeListener);
     }
 
     show () {
