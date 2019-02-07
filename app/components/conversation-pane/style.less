@@ -11,13 +11,35 @@
         flex-direction: row;
         justify-content: space-between;
         font-weight: bold;
-        padding: 0 15px;
+        padding-right: 15px;
         height: 45px;
         background-color: @rogue-dark-grey;
 
         .header-left {
-            display: flex;
-            align-items: center;
+            flex: 1;
+
+            .search-input {
+                height: 45px;
+            }
+            .material-icons {
+                top: 10px;
+                right: unset;
+                left: 5px;
+            }
+            .search-results {
+                top: 45px;
+                right: unset;
+                left: 0;
+            }
+            .search-result {
+                width: 350px;
+            }
+            .search-input {
+                text-indent: 30px;
+            }
+            .field {
+                width: 275px;
+            }
         }
     }
 
@@ -36,23 +58,6 @@
         margin-top: 10px;
     }
 
-    .search {
-        .search-input {
-            height: 50px;
-        }
-        .material-icons {
-            top: 13px;
-        }
-        .search-results {
-            top: 50px;
-        }
-        .search-result {
-            width: 350px;
-        }
-        .field {
-            width: 275px;
-        }
-    }
 
     div::-webkit-scrollbar {
         width: 5px;

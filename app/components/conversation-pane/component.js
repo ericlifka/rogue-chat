@@ -26,6 +26,10 @@ export default Component.extend({
                 jid: rosterModel.jid,
                 rawSubject: rosterModel.get('rawSubject')
             })
+        },
+
+        onSearchSelection (entity) {
+            console.log('selection has been made', entity.get('name'));
         }
     }
 });

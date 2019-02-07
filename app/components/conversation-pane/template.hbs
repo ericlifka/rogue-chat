@@ -1,6 +1,6 @@
 <div class="header">
     <div class="header-left">
-        <span class="title">CONVERSATIONS</span>
+        {{entity-search types=searchTypes onSelection=(action "onSearchSelection")}}
     </div>
     <div class="header-right">
         <button class="sort-order icon">
@@ -10,9 +10,6 @@
             {{material-icon "add_circle_outline"}}
         </button>
     </div>
-</div>
-<div class="search">
-    {{entity-search types=searchTypes}}
 </div>
 <div class="participants">
     {{#each roster.activeChats as |activeChat|}}
