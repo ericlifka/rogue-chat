@@ -11,13 +11,15 @@ export default Component.extend({
     searchInput: null,
     requestBuilder: null,
     suggestRequest: null,
+    types: null,
 
     init() {
         this._super(...arguments);
+        const types = this.get('types') || ['users'];
         const requestBuilder = this.get('search')
             .getSuggestBuilder()
             .setExpansions(['presence'])
-            .setTypes(['users']);
+            .setTypes(types);
         this.set('requestBuilder', requestBuilder);
     },
 
