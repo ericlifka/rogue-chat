@@ -8,6 +8,13 @@ export default Component.extend({
     router: service(),
     ipc: service(),
 
+    searchTypes: null,
+
+    init() {
+        this._super(...arguments);
+        this.set('searchTypes', ['users', 'groups']);
+    },
+
     actions: {
         openRoom (rosterModel) {
             this.get('router').transitionTo('roster.room', rosterModel.get('jid'))

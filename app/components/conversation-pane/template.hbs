@@ -11,6 +11,9 @@
         </button>
     </div>
 </div>
+<div class="search">
+    {{entity-search types=searchTypes}}
+</div>
 <div class="participants">
     {{#each roster.activeChats as |activeChat|}}
         {{conversation-pane/conversation-item
