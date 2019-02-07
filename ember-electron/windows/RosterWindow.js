@@ -16,7 +16,8 @@ module.exports = class RosterWindow extends ChatWindow {
             webPreferences: {
                 webSecurity: false
             },
-            resizable: true
+            resizable: true,
+            autoHideMenuBar: true
         });
     }
 

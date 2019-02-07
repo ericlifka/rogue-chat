@@ -36,7 +36,8 @@ module.exports = class ChatWindow extends EventEmitter {
             height: 500,
             webPreferences: {
                 webSecurity: false
-            }
+            },
+            autoHideMenuBar: true
         });
     }
 
