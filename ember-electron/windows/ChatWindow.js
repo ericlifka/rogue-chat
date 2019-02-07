@@ -5,6 +5,7 @@ const _ = require('lodash');
 
 const WINDOW_EVENTS = [
     'join-room',
+    'leave-room',
     'request-history',
     'send-message',
     'get-room-info',
@@ -90,11 +91,16 @@ module.exports = class ChatWindow extends EventEmitter {
             return;
         }
 
-        const { id, payload, roomJid, userJid } = args || {};
+        const { id, payload } = args || {};
         switch (name) {
             case 'join-room':
                 this.realtime.joinRoom(payload, (error) => {
                     this.window.webContents.send(`join:${id}`, null);
+                });
+                break;
+            case 'leave-room':
+                this.realtime.leaveRoom(payload, (error) => {
+                    this.window.webContents.send(`leave:${id}`, null);
                 });
                 break;
             case 'request-history':
@@ -113,7 +119,7 @@ module.exports = class ChatWindow extends EventEmitter {
                 });
                 break;
             case 'invite-to-room':
-                this.realtime.inviteToRoom(roomJid, userJid);
+                this.realtime.inviteToRoom(payload.roomJid, payload.userJid);
                 break;
             case 'add-pigeon-topic':
                 this.hawk.registerTopic(this.id, payload.topic, payload.priority, this.pigeonHandler);

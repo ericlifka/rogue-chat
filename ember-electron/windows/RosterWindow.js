@@ -52,8 +52,8 @@ module.exports = class RosterWindow extends ChatWindow {
     }
 
     removeAdditionalListeners () {
-        ipcMain.off('window-ready', this.readyListener);
-        ipcMain.off('resize-window', this.resizeListener);
+        ipcMain.removeListener('window-ready', this.readyListener);
+        ipcMain.removeListener('resize-window', this.resizeListener);
         this.realtime.removeListener('active-chat:*', this.activeListener);
     }
 
