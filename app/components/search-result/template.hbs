@@ -2,7 +2,13 @@
     {{entity-image entity=entity}}
 </div>
 <div class="right-rail">
-    <span class="field name">{{name}}</span>
-    <span class="field title">{{title}}</span>
-    <span class="field department">{{department}}</span>
+    {{#if name}}
+        <span class="field name">{{name}}</span>
+    {{/if}}
+    {{#if title}}
+        <span class="field title">{{title}}</span>
+    {{/if}}
+    {{#if department}}
+        <span class="field department">{{department}}</span>
+    {{/if}}
 </div>
