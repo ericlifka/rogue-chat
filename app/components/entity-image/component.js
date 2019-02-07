@@ -1,3 +1,4 @@
+import { equal } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
@@ -5,14 +6,21 @@ import _ from 'lodash';
 
 export default Component.extend({
     classNames: ['entity-image', 'presence-status'],
-    classNameBindings: ['presenceClass'],
+    classNameBindings: ['presenceClass', 'entityType'],
     application: service(),
     entity: null,
 
+
+    isGroup: equal('entity.modelName', 'group'),
+
+    entityType: computed('isGroup', function () {
+       return this.get('isGroup') ? 'group' : 'profile';
+    }),
+
     profileImageUrl: computed('entity.images.[]', function () {
         const imageUrl = _.find(this.get('entity.images'), {resolution: 'x96'});
-        const fallbackUrl = this.get('application').buildBaseUrl('static-resources/avatar-x96.png');
-        return _.get(imageUrl, 'imageUri', fallbackUrl);
+        const fallbackImage = this.get('isGroup') ? 'assets/images/group.svg' : 'assets/images/person.svg';
+        return _.get(imageUrl, 'imageUri', fallbackImage);
     }),
 
     presenceClass: computed('entity.presence.systemPresence', function () {

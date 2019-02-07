@@ -3,9 +3,21 @@
     flex-direction: column;
     justify-content: center;
 
-    .profile-image {
-        border-radius: 50%;
-        border: 3px solid;
+    &.profile {
+        .image {
+            border-radius: 50%;
+            border: 3px solid;
+        }
+    }
+
+    &.group {
+        .image {
+            border-radius: 15%;
+            margin-left: 2px;
+        }
+    }
+
+    .image {
         margin-right: 15px;
         height: 35px;
         width: 35px;
