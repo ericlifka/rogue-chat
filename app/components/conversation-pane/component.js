@@ -29,7 +29,8 @@ export default Component.extend({
         },
 
         onSearchSelection (entity) {
-            console.log('selection has been made', entity.get('name'));
+            this.get('router').transitionTo('roster.room', entity.get('chat.jabberId'))
+                .then(() => this.get('ipc').sendEvent('resize-window', { width: 1400, height: window.outerHeight}));
         }
     }
 });

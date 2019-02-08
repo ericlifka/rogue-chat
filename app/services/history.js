@@ -39,7 +39,7 @@ export default Service.extend({
         return this.requestHistory(id, options)
             .then(async messages => {
                 const messagePromises = messages.map(message => {
-                    return this.get('chat').setupMessageModel(message, '');
+                    return this.get('chat').setupMessageModel(message, 'YYYY-MM-DD HH:mm:ss.SSS');
                 });
                 return await RSVP.all(messagePromises);
             })

@@ -92,7 +92,7 @@ export default Service.extend({
         const messageHandler = room.messageHandler.bind(room);
         const scopedMessageTopic = `message:${room.get('id')}`;
         this.get('ipc').registerListener(scopedMessageTopic, async (event, message) => {
-            message = await this.setupMessageModel(message, 'x');
+            message = await this.setupMessageModel(message, 'YYYY-MM-DD HH:mm:ss.SSS');
             messageHandler(message);
         });
 
