@@ -1,1 +1,5 @@
-export { default } from '../chat/room';
+import RoomRoute from '../chat/room';
+
+export default RoomRoute.extend({
+    afterModel() {}
+});
